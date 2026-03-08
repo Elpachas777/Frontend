@@ -1,0 +1,137 @@
+:root {
+  --bg: #f6f7fb;
+  --card: #ffffff;
+  --accent: #2563eb;
+  --accent-light: #3b82f6;
+  --danger: #ef4444;
+  --success: #16a34a;
+}
+
+.reset-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(180deg, var(--bg), #eef2ff);
+  padding: 16px;
+}
+
+.reset-card {
+  background: var(--card);
+  border-radius: 14px;
+  box-shadow: 0 10px 30px rgba(15, 23, 42, 0.12);
+  padding: 28px 30px;
+  max-width: 420px;
+  width: 100%;
+}
+
+.reset-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #1e293b;
+  text-align: center;
+  margin-bottom: 8px;
+}
+
+.reset-subtitle {
+  font-size: 0.95rem;
+  color: #64748b;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.reset-form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.reset-label {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--accent);
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+}
+
+.reset-input {
+  height: 46px;
+  width: auto;
+  padding: 10px 14px;
+  border-radius: 10px;
+  border: 2px solid #e2e8f0;
+  font-size: 0.95rem;
+  transition: all 0.2s ease;
+  font-family: inherit;
+}
+
+.reset-input:focus {
+  border-color: var(--accent-light);
+  box-shadow: 0 0 6px rgba(37, 99, 235, 0.25);
+  outline: none;
+}
+
+.reset-btn {
+  margin-top: 10px;
+  height: 46px;
+  border-radius: 999px;
+  border: none;
+  background: var(--accent);
+  color: #ffffff;
+  font-weight: 600;
+  font-size: 0.98rem;
+  cursor: pointer;
+  box-shadow: 0 8px 18px rgba(37, 99, 235, 0.35);
+  transition: background 0.15s ease, transform 0.1s ease, box-shadow 0.15s ease;
+}
+
+.reset-btn:hover {
+  background: var(--accent-light);
+  box-shadow: 0 6px 14px rgba(37, 99, 235, 0.3);
+}
+
+.reset-btn:active {
+  transform: translateY(1px);
+  box-shadow: 0 4px 10px rgba(37, 99, 235, 0.25);
+}
+
+.reset-message {
+  font-size: 0.85rem;
+  margin-top: 4px;
+}
+
+.reset-message.error {
+  color: var(--danger);
+}
+
+.reset-message.success {
+  color: var(--success);
+}
+
+.reset-links {
+  margin-top: 16px;
+  text-align: center;
+}
+
+.reset-links a {
+  font-size: 0.9rem;
+  color: var(--accent);
+  font-weight: 600;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.reset-links a:hover {
+  color: var(--accent-light);
+  text-decoration: underline;
+}
+
+@media (max-width: 480px) {
+  .reset-card {
+    padding: 22px 18px;
+  }
+
+  .reset-title {
+    font-size: 1.3rem;
+  }
+}
