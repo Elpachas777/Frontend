@@ -3,14 +3,12 @@ import axios from "../utils/axios.js";
 
 export function useIniciarSesion({ formData, setAutentificado, setMensaje }) {
   const navigate = useNavigate();
+  const urlBack = import.meta.env.VITE_URL_BACKEND;
 
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {
-      const respuesta = await axios.post(
-        "http://localhost:4000/iniciarSesion",
-        formData
-      );
+      const respuesta = await axios.post(`${urlBack}/iniciarSesion`, formData);
 
       if (respuesta) {
         setAutentificado(true);
@@ -30,10 +28,7 @@ export function useCorreoContraseña({ formData, setMensaje }) {
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {
-      const respuesta = await axios.post(
-        "http://localhost:4000/recuperar",
-        formData
-      );
+      const respuesta = await axios.post(`${urlBack}/recuperar`, formData);
       setMensaje(respuesta.data);
     } catch (error) {
       setMensaje(error.response.data);
@@ -57,10 +52,10 @@ export function useRecuperarContraseña({ formData, setMensaje }, token) {
         return;
       }
 
-      const respuesta = await axios.post(
-        "http://localhost:4000/recuperarContra",
-        { token, password }
-      );
+      const respuesta = await axios.post(`${urlBack}/recuperarContra`, {
+        token,
+        password,
+      });
       setMensaje(respuesta.data);
     } catch (error) {
       setMensaje(error.response.data);
@@ -74,7 +69,7 @@ export function useRecuperarContraseña({ formData, setMensaje }, token) {
 
 export async function cerrarSesion({ setAutentificado }) {
   try {
-    const respuesta = await axios.get("http://localhost:4000/cerrar");
+    const respuesta = await axios.get(`${urlBack}/cerrar`);
     if (respuesta.data === "ok") setAutentificado(false);
   } catch (error) {
     console.log(error);

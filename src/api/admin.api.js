@@ -2,6 +2,7 @@ import axios from "../utils/axios.js";
 
 export function useRegistrarAdmin({ formData }) {
   const handleSubmit = async (event) => {
+    const urlBack = import.meta.env.VITE_URL_BACKEND;
     event.preventDefault();
     try {
       const datos = {
@@ -10,11 +11,7 @@ export function useRegistrarAdmin({ formData }) {
         correo: formData.correo,
         password: formData.password,
       };
-
-      const respuesta = await axios.post(
-        "http://localhost:4000/crearAdmin",
-        datos
-      );
+      const respuesta = await axios.post(`${urlBack}/crearAdmin`, datos);
 
       console.log(respuesta);
     } catch (error) {
