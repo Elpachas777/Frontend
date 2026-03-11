@@ -11,9 +11,8 @@ export function useRegistrarAdmin({ formData }) {
         correo: formData.correo,
         password: formData.password,
       };
-      const respuesta = await axios.post(`${urlBack}/crearAdmin`, datos);
 
-      console.log(respuesta);
+      await axios.post(`${urlBack}/crearAdmin`, datos);
     } catch (error) {
       console.log(error);
     }

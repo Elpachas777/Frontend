@@ -3,11 +3,12 @@ import axios from "../utils/axios.js";
 
 function useCredenciales() {
   const [credencial, setCredencial] = useState("");
+  const urlBack = import.meta.env.VITE_URL_BACKEND;
 
   useEffect(() => {
     const vertificar = async () => {
       try {
-        const respuesta = await axios.get("http://localhost:4000/credenciales");
+        const respuesta = await axios.get(`${urlBack}/credenciales`);
         if (respuesta) setCredencial(respuesta.data);
       } catch (error) {
         console.log(error.response.data);
