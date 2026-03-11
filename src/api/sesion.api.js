@@ -1,9 +1,10 @@
 import { useNavigate } from "react-router-dom";
 import axios from "../utils/axios.js";
 
+const urlBack = import.meta.env.VITE_URL_BACKEND;
+
 export function useIniciarSesion({ formData, setAutentificado, setMensaje }) {
   const navigate = useNavigate();
-  const urlBack = import.meta.env.VITE_URL_BACKEND;
 
   const handleSubmit = async (event) => {
     event.preventDefault();
