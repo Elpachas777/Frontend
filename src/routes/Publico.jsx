@@ -9,7 +9,7 @@ import RegistrarAdmin from "../sesion/RegistroAdmin";
 function Publico({ setAutentificado }) {
   return (
     <div className="app-container">
-      <main style={{ marginLeft: "220px", padding: "20px" }}>
+     <main >
         <Routes>
           <Route path="/" element={<LandingPage />} />
           <Route

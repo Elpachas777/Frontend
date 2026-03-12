@@ -1,5 +1,6 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import "./Login.css";
+import "../components/button.css";
 import useFormData from "../hooks/useFormData";
 import { DATOS } from "../enums/datosUsuarios";
 import { useIniciarSesion } from "../api/sesion.api";
@@ -8,6 +9,7 @@ import { useState } from "react";
 
 function Login({ setAutentificado }) {
   const [mensaje, setMensaje] = useState(null);
+  const navigate = useNavigate();
   const { formData, handleChange } = useFormData(DATOS.docente_login);
 
   const { handleSubmit } = useIniciarSesion({
@@ -20,7 +22,10 @@ function Login({ setAutentificado }) {
     <div className="login-page">
       <div className="login-shell">
         <div className="login-illustration">
-          <img src="/img/login.png" alt="Ilustración de inicio de sesión" />
+          <img
+            src="/img/login.png"
+            alt="Ilustración de inicio de sesión"
+          />
         </div>
 
         <div className="login-card">
@@ -29,6 +34,16 @@ function Login({ setAutentificado }) {
               <Mensaje tipo={mensaje.tipo} mensaje={mensaje.mensaje} />
             </div>
           )}
+
+          <div className="login-topbar">
+            <button
+              type="button"
+              className="btn-secondary btn-secondary--blue"
+              onClick={() => navigate(-1)}
+            >
+              Volver
+            </button>
+          </div>
 
           <div className="login-header">
             <h1>Iniciar sesión</h1>
