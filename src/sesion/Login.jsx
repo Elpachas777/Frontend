@@ -23,18 +23,12 @@ function Login({ setAutentificado }) {
       <div className="login-shell">
         <div className="login-illustration">
           <img
-            src="/img/login.png"
+            src="/img/Login.jpeg"
             alt="Ilustración de inicio de sesión"
           />
         </div>
 
         <div className="login-card">
-          {mensaje && (
-            <div className="login-message">
-              <Mensaje tipo={mensaje.tipo} mensaje={mensaje.mensaje} />
-            </div>
-          )}
-
           <div className="login-topbar">
             <button
               type="button"
@@ -45,43 +39,51 @@ function Login({ setAutentificado }) {
             </button>
           </div>
 
-          <div className="login-header">
-            <h1>Iniciar sesión</h1>
-            <p>Accede con tu correo y contraseña</p>
-          </div>
+          {mensaje && (
+            <div className="login-message">
+              <Mensaje tipo={mensaje.tipo} mensaje={mensaje.mensaje} />
+            </div>
+          )}
 
-          <form className="login-form" onSubmit={handleSubmit}>
-            <div className="login-field">
-              <label htmlFor="correo">Correo electrónico</label>
-              <input
-                type="email"
-                id="correo"
-                name="correo"
-                placeholder="tu@correo.com"
-                required
-                onChange={handleChange}
-              />
+          <div className="login-body">
+            <div className="login-header">
+              <h1>Iniciar sesión</h1>
+              <p>Accede con tu correo y contraseña</p>
             </div>
 
-            <div className="login-field">
-              <label htmlFor="password">Contraseña</label>
-              <input
-                type="password"
-                id="password"
-                name="password"
-                placeholder="••••••••"
-                required
-                onChange={handleChange}
-              />
+            <form className="login-form" onSubmit={handleSubmit}>
+              <div className="login-field">
+                <label htmlFor="correo">Correo electrónico</label>
+                <input
+                  type="email"
+                  id="correo"
+                  name="correo"
+                  placeholder="tu@correo.com"
+                  required
+                  onChange={handleChange}
+                />
+              </div>
+
+              <div className="login-field">
+                <label htmlFor="password">Contraseña</label>
+                <input
+                  type="password"
+                  id="password"
+                  name="password"
+                  placeholder="••••••••"
+                  required
+                  onChange={handleChange}
+                />
+              </div>
+
+              <button type="submit" className="login-btn" name="iniciar">
+                Iniciar sesión
+              </button>
+            </form>
+
+            <div className="login-links">
+              <Link to="/Recuperar">¿Olvidaste tu contraseña?</Link>
             </div>
-
-            <button type="submit" className="login-btn" name="iniciar">
-              Iniciar sesión
-            </button>
-          </form>
-
-          <div className="login-links">
-            <Link to="/Recuperar">¿Olvidaste tu contraseña?</Link>
           </div>
         </div>
       </div>
