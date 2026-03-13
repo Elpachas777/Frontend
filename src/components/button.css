@@ -33,7 +33,7 @@
 
 .btn-secondary--blue:hover {
   transform: translateY(-1px);
-  box-shadow: 0 10px 20px rgba(58, 120, 232, 0.22);
+  
   filter: brightness(0.98);
 }
 

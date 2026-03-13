@@ -1,48 +1,280 @@
-.recuperar-form {
-  width: min(420px, 90vw);
-  background: #ffffff;
-  border-radius: 12px;
-  padding: 32px;
-  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+}
+
+body {
+  font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+}
+
+.recuperar-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background-color: #8fa088;
+background-image: url("https://www.transparenttextures.com/patterns/arabesque.png");
+/* This is mostly intended for prototyping; please download the pattern and re-host for production environments. Thank you! */
+}
+
+.recuperar-shell {
+  width: min(1100px, 94vw);
+  height: min(680px, 90vh);
+  display: grid;
+  grid-template-columns: 1.25fr 0.75fr; /* ← formulario izquierda, imagen derecha */
+  background: #304227;
+  border-radius: 28px;
+  padding: 10px;
+  box-shadow: 0 24px 60px rgba(19, 28, 14, 0.22);
+  overflow: hidden;
+}
+
+/* Panel formulario — izquierda */
+.recuperar-card {
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.97);
+  padding: 24px 32px 28px;
   display: flex;
   flex-direction: column;
+  min-height: 100%;
+}
+
+/* Imagen — derecha */
+.recuperar-illustration {
+  margin-left: 10px;
+  border-radius: 20px;
+  overflow: hidden;
+  background: linear-gradient(135deg, #dff1c7 0%, #b8db85 100%);
+  min-height: 100%;
+}
+
+.recuperar-illustration img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  display: block;
+}
+
+.recuperar-topbar {
+  display: flex;
+  justify-content: flex-start;
   align-items: center;
+  margin-bottom: 16px;
+  flex-shrink: 0;
 }
 
-.recuperar-form .title {
-  font-size: 1.5rem;
+.recuperar-back-btn {
+  font-size: 0.92rem;
+  color: #5c8524;
+  text-decoration: none;
   font-weight: 700;
-  color: #1e293b;
-  margin-bottom: 10px;
-  text-align: center;
+  transition: color 0.2s ease;
 }
 
-.recuperar-form .subtitle {
-  font-size: 0.95rem;
-  color: #475569;
-  text-align: center;
-  margin-bottom: 20px;
+.recuperar-back-btn:hover {
+  color: #446814;
+  text-decoration: underline;
+}
+
+.recuperar-message {
+  margin-bottom: 14px;
+  flex-shrink: 0;
+}
+
+.recuperar-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.recuperar-header {
+  margin-bottom: 22px;
+}
+
+.recuperar-header h1 {
+  margin: 0;
+  font-size: clamp(2rem, 2.6vw, 3rem);
+  line-height: 1.02;
+  color: #1f241b;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+}
+
+.recuperar-header p {
+  margin: 10px 0 0;
+  color: #687160;
+  font-size: 1rem;
   line-height: 1.4;
 }
 
-.recuperar-form .area {
+.recuperar-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.recuperar-field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.recuperar-field label {
+  font-size: 0.98rem;
+  font-weight: 700;
+  color: #2d3427;
+}
+
+.recuperar-field input {
   width: 100%;
-  margin-bottom: 14px;
+  height: 48px;
+  padding: 0 16px;
+  border: 1.5px solid #d8dfd0;
+  border-radius: 14px;
+  outline: none;
+  background: #fff;
+  font-size: 0.96rem;
+  color: #20251d;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
 }
 
-.recuperar-links {
-  margin-top: 16px;
-  text-align: center;
+.recuperar-field input::placeholder {
+  color: #9aa394;
 }
 
-.recuperar-links a {
-  color: #2563eb;
-  font-weight: 600;
-  text-decoration: none;
-  transition: color 0.25s;
+.recuperar-field input:hover {
+  border-color: #c6d7b1;
 }
 
-.recuperar-links a:hover {
-  color: #1e40af;
-  text-decoration: underline;
+.recuperar-field input:focus {
+  border-color: #9ed34d;
+  background: #fcfff8;
+  box-shadow: 0 0 0 4px rgba(158, 211, 77, 0.14);
+}
+
+.recuperar-btn {
+  width: 100%;
+  height: 50px;
+  margin-top: 4px;
+  border: none;
+  border-radius: 14px;
+  background: linear-gradient(180deg, #a7d94f 0%, #98cf42 100%);
+  color: #1b240f;
+  font-size: 1rem;
+  font-weight: 800;
+  cursor: pointer;
+  box-shadow: 0 10px 20px rgba(152, 207, 66, 0.22);
+  transition: transform 0.2s ease, filter 0.2s ease, box-shadow 0.2s ease;
+}
+
+.recuperar-btn:hover {
+  transform: translateY(-1px);
+  filter: brightness(0.98);
+  box-shadow: 0 12px 24px rgba(152, 207, 66, 0.26);
+}
+
+.recuperar-btn:active {
+  transform: translateY(0);
+}
+
+/* pantallas medianas */
+@media (max-width: 1100px) {
+  .recuperar-shell {
+    width: min(920px, 95vw);
+    grid-template-columns: 1.2fr 0.8fr;
+  }
+
+  .recuperar-card {
+    padding: 20px 24px 24px;
+  }
+}
+
+/* tablet */
+@media (max-width: 900px) {
+  body {
+    overflow: auto;
+  }
+
+  .recuperar-page {
+    min-height: 100vh;
+    padding: 16px;
+    align-items: center;
+  }
+
+  .recuperar-shell {
+    width: min(680px, 100%);
+    height: auto;
+    grid-template-columns: 1fr; /* ← apila verticalmente */
+    grid-template-rows: auto auto;
+    border-radius: 24px;
+  }
+
+  /* En tablet: formulario arriba, imagen abajo */
+  .recuperar-card {
+    order: 1;
+    min-height: auto;
+  }
+
+  .recuperar-illustration {
+    order: 2;
+    margin-left: 0;
+    margin-top: 10px;
+    min-height: 260px;
+    max-height: 300px;
+  }
+
+  .recuperar-body {
+    justify-content: flex-start;
+  }
+}
+
+/* móvil */
+@media (max-width: 600px) {
+  .recuperar-page {
+    padding: 12px;
+  }
+
+  .recuperar-shell {
+    padding: 8px;
+    border-radius: 18px;
+  }
+
+  .recuperar-illustration {
+    min-height: 190px;
+    max-height: 220px;
+    border-radius: 14px;
+  }
+
+  .recuperar-card {
+    border-radius: 14px;
+    padding: 18px 16px 20px;
+  }
+
+  .recuperar-topbar {
+    margin-bottom: 12px;
+  }
+
+  .recuperar-header h1 {
+    font-size: 1.9rem;
+  }
+
+  .recuperar-header p {
+    font-size: 0.92rem;
+  }
+
+  .recuperar-field input,
+  .recuperar-btn {
+    height: 44px;
+  }
 }

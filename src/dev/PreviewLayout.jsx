@@ -8,8 +8,6 @@ function PreviewLayout({ title, credencial = null, children }) {
 
       <div
         style={{
-          marginLeft: credencial ? "220px" : "0",
-          padding: "24px",
           minHeight: "100vh",
           boxSizing: "border-box",
         }}
