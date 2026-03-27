@@ -5,11 +5,14 @@ import Registro from "../admin/Registro";
 import Recuperar from "../sesion/Recuperar";
 import RecuperarContra from "../sesion/RecuperarContra";
 import RegistrarAdmin from "../sesion/RegistroAdmin";
-import Docentes from "../admin/Docentes";
-import Alumnos from "../docente/Alumnos";
-import Grupos from "../docente/Grupos";
 import DesignHub from "./DesignHub";
 import PreviewLayout from "./PreviewLayout";
+import {
+  PreviewDocentes,
+  PreviewAlumnos,
+  PreviewGrupos,
+} from "./PreviewTables";
+import Ejercicios from "../docente/Ejercicios";
 
 function PreviewRoutes() {
   const noop = () => {};
@@ -17,78 +20,97 @@ function PreviewRoutes() {
   return (
     <Routes>
       <Route path="/design" element={<DesignHub />} />
+
       <Route
         path="/preview/landing"
         element={
-          <PreviewLayout title="Landing pública">
+          <PreviewLayout>
             <LandingPage />
           </PreviewLayout>
         }
       />
+
       <Route
         path="/preview/login"
         element={
-          <PreviewLayout title="Login público">
+          <PreviewLayout>
             <Login setAutentificado={noop} />
           </PreviewLayout>
         }
       />
+
       <Route
         path="/preview/registro"
         element={
-          <PreviewLayout title="Registro de docente">
-            <Registro />
+          <PreviewLayout>
+            <Registro onCerrar={noop} setActualizado={noop} />
           </PreviewLayout>
         }
       />
+
       <Route
         path="/preview/registro-admin"
         element={
-          <PreviewLayout title="Registro de administrador">
+          <PreviewLayout>
             <RegistrarAdmin />
           </PreviewLayout>
         }
       />
+
       <Route
         path="/preview/recuperar"
         element={
-          <PreviewLayout title="Recuperar contraseña">
+          <PreviewLayout>
             <Recuperar />
           </PreviewLayout>
         }
       />
+
       <Route
         path="/preview/restablecer"
         element={
-          <PreviewLayout title="Restablecer contraseña">
+          <PreviewLayout>
             <RecuperarContra />
           </PreviewLayout>
         }
       />
+
       <Route
         path="/preview/admin/docentes"
         element={
-          <PreviewLayout title="Panel admin · Docentes" credencial="admin">
-            <Docentes />
+          <PreviewLayout credencial="admin">
+            <PreviewDocentes />
           </PreviewLayout>
         }
       />
+
       <Route
         path="/preview/docente/alumnos"
         element={
-          <PreviewLayout title="Panel docente · Alumnos" credencial="docente">
-            <Alumnos />
+          <PreviewLayout credencial="docente">
+            <PreviewAlumnos />
           </PreviewLayout>
         }
       />
+
       <Route
         path="/preview/docente/grupos"
         element={
-          <PreviewLayout title="Panel docente · Grupos" credencial="docente">
-            <Grupos />
+          <PreviewLayout credencial="docente">
+            <PreviewGrupos />
           </PreviewLayout>
         }
       />
+
+      <Route
+        path="/preview/docente/ejercicios"
+        element={
+          <PreviewLayout credencial="docente">
+            <Ejercicios />
+          </PreviewLayout>
+        }
+      />
+
       <Route path="*" element={<Navigate to="/design" replace />} />
     </Routes>
   );

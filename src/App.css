@@ -1,7 +1,3 @@
-
-
-
-
 html,
 body,
 #root {
@@ -9,11 +5,69 @@ body,
   min-height: 100%;
   margin: 0;
   padding: 0;
-  background: var(--bg);
   font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto,
-    "Helvetica Neue", Arial;
+    "Helvetica Neue", Arial, sans-serif;
 }
 
 body {
   min-height: 100vh;
+  color: #203024;
+  background: #f7fbf4;
+}
+
+.private-layout {
+  min-height: 100vh;
+  background-color: #edf7ea;
+  background-image:
+    radial-gradient(circle at 2px 2px, rgba(87, 133, 92, 0.12) 1.2px, transparent 0);
+  background-size: 22px 22px;
+}
+
+.private-main {
+  min-height: 100vh;
+  margin-left: 286px;
+  padding: 26px 22px 26px 10px;
+}
+
+.private-main--preview {
+  padding-top: 26px;
+}
+
+.logout-btn {
+  position: fixed;
+  top: 22px;
+  right: 24px;
+  z-index: 30;
+  min-width: 150px;
+  height: 48px;
+  border: none;
+  border-radius: 16px;
+  background: #ff9c8a;
+  color: #5b1d16;
+  font-size: 0.95rem;
+  font-weight: 800;
+  cursor: pointer;
+  box-shadow: 0 12px 24px rgba(255, 156, 138, 0.2);
+  transition:
+    transform 0.2s ease,
+    filter 0.2s ease;
+}
+
+.logout-btn:hover {
+  transform: translateY(-1px);
+  filter: brightness(0.98);
+}
+
+@media (max-width: 920px) {
+  .private-main {
+    margin-left: 0;
+    padding: 12px;
+  }
+
+  .logout-btn {
+    position: static;
+    display: block;
+    width: calc(100% - 24px);
+    margin: 0 auto 12px;
+  }
 }

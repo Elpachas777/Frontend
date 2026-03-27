@@ -21,7 +21,7 @@ function CrearAlumno({ onCerrar, setActualizado, id }) {
           style={{ flexDirection: "column" }}
         >
           <div className="area">
-            <label htmlFor="nombre">Nombre del alumno</label>
+            <label htmlFor="ombre">Nombre del alumno</label>
             <input
               type="text"
               id="nombre"

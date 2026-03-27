@@ -4,21 +4,77 @@ import { USUARIOS } from "../enums/tipoUsuarios";
 import useFormData from "../hooks/useFormData";
 import Mensaje from "../components/Mensaje";
 import { useState } from "react";
+import Swal from "sweetalert2";
 
 function Registro({ onCerrar, setActualizado }) {
   const [mensaje, setMensaje] = useState(null);
   const { formData, handleChange } = useFormData(USUARIOS.DOCENTE);
   const { handleSubmit } = registrar({ formData, setActualizado, setMensaje });
 
+  const confirmarGuardar = async (e) => {
+    e.preventDefault();
+
+    const resultado = await Swal.fire({
+      title: "¿Guardar docente?",
+      text: "Se registrará un nuevo docente.",
+      icon: "question",
+      showCancelButton: true,
+      confirmButtonText: "Sí, guardar",
+      cancelButtonText: "Cancelar",
+      reverseButtons: true,
+      focusCancel: true,
+      allowOutsideClick: false,
+      customClass: {
+        popup: "swal-popup",
+        title: "swal-title",
+        htmlContainer: "swal-text",
+        confirmButton: "swal-confirm-btn",
+        cancelButton: "swal-cancel-btn",
+      },
+      buttonsStyling: false,
+    });
+
+    if (resultado.isConfirmed) {
+      handleSubmit(e);
+    }
+  };
+
+  const confirmarCancelar = async () => {
+    const resultado = await Swal.fire({
+      title: "¿Cancelar registro?",
+      text: "Se perderán los cambios no guardados.",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Sí, cancelar",
+      cancelButtonText: "Seguir editando",
+      reverseButtons: true,
+      focusCancel: true,
+      allowOutsideClick: false,
+      customClass: {
+        popup: "swal-popup",
+        title: "swal-title",
+        htmlContainer: "swal-text",
+        confirmButton: "swal-confirm-btn",
+        cancelButton: "swal-cancel-btn",
+      },
+      buttonsStyling: false,
+    });
+
+    if (resultado.isConfirmed) {
+      onCerrar();
+    }
+  };
+
   return (
     <div className="modal-overlay">
       <div className="modal form-wrap crear-docente">
         {mensaje && <Mensaje tipo={mensaje.tipo} mensaje={mensaje.mensaje} />}
+
         <h1 className="title">Crear nuevo docente</h1>
 
         <form
           className="areas"
-          onSubmit={handleSubmit}
+          onSubmit={confirmarGuardar}
           style={{ flexDirection: "column" }}
         >
           <div className="fields-container">
@@ -48,6 +104,7 @@ function Registro({ onCerrar, setActualizado }) {
                   onChange={handleChange}
                 />
               </div>
+
               <div className="area">
                 <label htmlFor="password">Contraseña</label>
                 <input
@@ -75,6 +132,7 @@ function Registro({ onCerrar, setActualizado }) {
                   onChange={handleChange}
                 />
               </div>
+
               <div className="area">
                 <label htmlFor="escuela">Escuela</label>
                 <input
@@ -87,6 +145,7 @@ function Registro({ onCerrar, setActualizado }) {
                   onChange={handleChange}
                 />
               </div>
+
               <div className="area">
                 <label htmlFor="confirmar">Confirmar contraseña</label>
                 <input
@@ -102,20 +161,15 @@ function Registro({ onCerrar, setActualizado }) {
             </div>
 
             <div className="modal-botones">
-              <button
-                type="submit"
-                className="guardar-btn"
-                name="guardar"
-                style={{ marginTop: "20px" }}
-              >
+              <button type="submit" className="guardar-btn" name="guardar">
                 Guardar docente
               </button>
+
               <button
                 type="button"
                 className="cancelar-btn"
                 name="cancelar"
-                onClick={onCerrar}
-                style={{ marginTop: "20px" }}
+                onClick={confirmarCancelar}
               >
                 Cancelar
               </button>
@@ -126,4 +180,5 @@ function Registro({ onCerrar, setActualizado }) {
     </div>
   );
 }
+
 export default Registro;

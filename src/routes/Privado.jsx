@@ -1,29 +1,28 @@
 import { Routes, Route, Navigate } from "react-router-dom";
 import SideBar from "../components/SideBar";
 import Grupos from "../docente/Grupos";
-import Inicio from "../docente/Inicio";
 import Docentes from "../admin/Docentes";
 import Alumnos from "../docente/Alumnos";
+import Ejercicios from "../docente/Ejercicios";
 import { cerrarSesion } from "../api/sesion.api";
 import useCredenciales from "../hooks/useCredenciales";
 
 function Privado({ setAutentificado }) {
   const { credencial } = useCredenciales();
+
   const handleClick = () => {
     cerrarSesion({ setAutentificado });
   };
 
   return (
-    <div className="app-container">
+    <div className="private-layout">
       <SideBar credencial={credencial} />
-      <button
-        className="corner-btn"
-        style={{ backgroundColor: "red" }}
-        onClick={handleClick}
-      >
-        Cerrar Sesión
+
+      <button className="logout-btn" onClick={handleClick}>
+        Cerrar sesión
       </button>
-      <main style={{ marginLeft: "220px", padding: "20px" }}>
+
+      <main className="private-main">
         {credencial === "admin" && (
           <Routes>
             <Route path="/Docentes" element={<Docentes />} />
@@ -35,6 +34,7 @@ function Privado({ setAutentificado }) {
           <Routes>
             <Route path="/Alumnos" element={<Alumnos />} />
             <Route path="/Grupos" element={<Grupos />} />
+            <Route path="/Ejercicios" element={<Ejercicios />} />
             <Route path="*" element={<Navigate to="/Alumnos" />} />
           </Routes>
         )}

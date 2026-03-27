@@ -1,198 +1,267 @@
+* {
+  box-sizing: border-box;
+}
+
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  min-height: 100vh;
+  background-color: #8fa088;
+  background-image: url("https://www.transparenttextures.com/patterns/arabesque.png");
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 24px;
+  z-index: 999;
+}
+
+.modal {
+  width: 100%;
+  max-width: 980px;
+  background: #ffffff;
+  border-radius: 30px;
+  box-shadow: 0 24px 60px rgba(19, 28, 14, 0.22);
+  overflow: hidden;
+  position: relative;
+}
+
 .crear-docente {
-  width: min(600px, 90vw);
-  background: white;
-  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
-  border-radius: 12px;
-  padding: 32px;
+  width: 100%;
+  background: #ffffff;
+  border-radius: 30px;
+  padding: 34px 38px 34px;
   display: flex;
   flex-direction: column;
   align-items: center;
+  position: relative;
+}
+
+.crear-docente::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 10px;
+  background: #a7d94f;
 }
 
 .crear-docente .title {
-  font-size: 1.6rem;
-  font-weight: 700;
-  color: #1e293b;
+  width: 100%;
+  margin: 6px 0 30px;
   text-align: center;
-  margin-bottom: 20px;
+  font-size: clamp(2.4rem, 3.4vw, 4rem);
+  line-height: 1.02;
+  font-weight: 900;
+  letter-spacing: -0.04em;
+  color: #1f241b;
+}
+
+.areas {
+  width: 100%;
+  display: flex;
+}
+
+.fields-container {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  gap: 28px;
+  flex-wrap: wrap;
+}
+
+.left-column,
+.right-column {
+  width: calc(50% - 14px);
 }
 
 .crear-docente .area {
   width: 100%;
-  margin-bottom: 14px;
+  margin-bottom: 22px;
 }
 
 .crear-docente label {
   display: block;
-  font-weight: 600;
-  color: #334155;
-  margin-bottom: 6px;
-}
-
-.crear-docente textarea,
-.crear-docente select {
-  padding: 10px 14px;
-  border: 2px solid #e2e8f0;
-  border-radius: 10px;
+  margin-bottom: 8px;
   font-size: 1rem;
-  font-family: inherit;
-  transition: all 0.25s ease;
-  box-shadow: inset 0 0 0 rgba(0, 0, 0, 0);
+  font-weight: 800;
+  color: #2d3427;
 }
 
 .crear-docente input,
 .crear-docente textarea,
 .crear-docente select {
   width: 100%;
-  padding: 10px 12px;
-  border: 1px solid #cbd5e1;
-  border-radius: 8px;
-  font-size: 0.95rem;
+  height: 60px;
+  padding: 0 18px;
+  border: 1.5px solid #d8dfd0;
+  border-radius: 18px;
+  outline: none;
+  background: #ffffff;
+  font-size: 1rem;
+  color: #20251d;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+}
 
-  color: #1e293b;
-  transition: border 0.3s ease, box-shadow 0.3s ease;
+.crear-docente input::placeholder,
+.crear-docente textarea::placeholder,
+.crear-docente select::placeholder {
+  color: #97a193;
+}
+
+.crear-docente input:hover,
+.crear-docente textarea:hover,
+.crear-docente select:hover {
+  border-color: #c6d7b1;
 }
 
 .crear-docente input:focus,
 .crear-docente textarea:focus,
 .crear-docente select:focus {
-  border-color: #2563eb;
-  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.2);
-  outline: none;
+  border-color: #9ed34d;
+  background: #fcfff8;
+  box-shadow: 0 0 0 4px rgba(158, 211, 77, 0.14);
 }
 
-.corner-btn {
-  background: #2563eb;
-  color: white;
-  font-weight: 600;
-  border: none;
-  padding: 10px 18px;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: background 0.25s;
-}
-
-.corner-btn:hover {
-  background: #1d4ed8;
-}
-
-/* === Overlay pantalla completa === */
-.modal-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
+.modal-botones {
   width: 100%;
-  height: 100vh;
-  background: rgba(15, 23, 42, 0.6); /* fondo oscuro translúcido */
   display: flex;
   justify-content: center;
-  align-items: center;
-  z-index: 999; /* por encima del contenido */
+  gap: 18px;
+  margin-top: 14px;
+  padding-top: 4px;
 }
 
-/* Contenedor del modal */
-.modal {
-  background: #ffffff;
-  border-radius: 12px;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25);
-  width: 90%;
-  max-width: 600px;
-  padding: 30px;
-  animation: fadeIn 0.3s ease;
-}
-
-/* Animación de aparición */
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: scale(0.97);
-  }
-  to {
-    opacity: 1;
-    transform: scale(1);
-  }
-}
-
-/* Botones inferiores del modal */
-.modal-botones {
-  display: flex;
-  justify-content: flex-end;
-  gap: 10px;
-  margin-top: 10px;
+.guardar-btn,
+.cancelar-btn {
+  min-width: 250px;
+  height: 56px;
+  padding: 0 24px;
+  border-radius: 18px;
+  font-size: 1rem;
+  font-weight: 900;
+  cursor: pointer;
+  box-shadow: none;
+  transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
 }
 
 .guardar-btn {
-  background-color: #2563eb;
-  color: white;
+  background: #a7d94f;
+  color: #1b240f;
   border: none;
-  padding: 8px 16px;
-  border-radius: 8px;
-  cursor: pointer;
-  font-weight: 600;
-  transition: background 0.2s ease;
 }
 
 .guardar-btn:hover {
-  background-color: #1d4ed8;
+  background: #a7d94f;
+  color: #1b240f;
+  box-shadow: none;
+  transform: none;
+  filter: none;
 }
 
 .cancelar-btn {
-  background-color: red;
-  border: none;
-  padding: 8px 16px;
-  border-radius: 8px;
-  cursor: pointer;
-  font-weight: 600;
-  transition: background 0.2s ease;
+  background: #ffffff;
+  color: #d24d4d;
+  border: 1.5px solid #f2c7c7;
 }
 
 .cancelar-btn:hover {
-  background-color: darkred;
+  background: #ffffff;
+  color: #d24d4d;
+  box-shadow: none;
+  transform: none;
+  filter: none;
+}
+
+.corner-btn {
+  background: #4f8df7;
+  color: #ffffff;
+  font-weight: 800;
+  border: none;
+  padding: 12px 18px;
+  border-radius: 14px;
+  cursor: pointer;
+}
+
+.corner-btn:hover {
+  background: #4f8df7;
 }
 
 .registro-form {
-  background: white;
-  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
-  border-radius: 12px;
-  padding: 30px;
+  width: 100%;
+  background: transparent;
+  box-shadow: none;
+  border-radius: 0;
+  padding: 0;
   display: flex;
   flex-direction: column;
   align-items: center;
 }
 
-.fields-container {
-  display: flex;
-  justify-content: space-between;
-  gap: 20px;
-  flex-wrap: wrap; /* Permite que los elementos se acomoden en pantallas pequeñas */
-}
-
-.left-column,
-.right-column {
-  width: 46%; /* Establece que cada columna ocupará el 48% del ancho */
-}
-
-.area {
-  margin-bottom: 25px;
-  width: 100%;
-}
-
 input {
   width: 100%;
-  padding: 12px;
-  border-radius: 8px;
-  border: 1px solid #ccc;
 }
 
 button {
-  padding: 12px 20px;
   border: none;
-  background-color: #2563eb;
-  color: white;
-  border-radius: 8px;
-  cursor: pointer;
 }
 
-button:hover {
-  background-color: #1e40af;
+@media (max-width: 900px) {
+  .modal {
+    max-width: 760px;
+  }
+
+  .crear-docente {
+    padding: 28px 24px 28px;
+  }
+
+  .crear-docente .title {
+    margin-bottom: 24px;
+    font-size: 2.5rem;
+  }
+
+  .fields-container {
+    gap: 0;
+  }
+
+  .left-column,
+  .right-column {
+    width: 100%;
+  }
+}
+
+@media (max-width: 640px) {
+  .modal-overlay {
+    padding: 14px;
+  }
+
+  .modal {
+    border-radius: 24px;
+  }
+
+  .crear-docente {
+    border-radius: 24px;
+    padding: 24px 18px 24px;
+  }
+
+  .crear-docente .title {
+    font-size: 2.1rem;
+  }
+
+  .crear-docente input,
+  .crear-docente textarea,
+  .crear-docente select {
+    height: 56px;
+    border-radius: 16px;
+  }
+
+  .modal-botones {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .guardar-btn,
+  .cancelar-btn {
+    width: 100%;
+    min-width: 100%;
+  }
 }

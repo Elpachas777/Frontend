@@ -1,20 +1,24 @@
-import { Link } from "react-router-dom";
 import SideBar from "../components/SideBar";
 
-function PreviewLayout({ title, credencial = null, children }) {
-  return (
-    <div className="app-container" style={{ minHeight: "100vh", width: "100%" }}>
-      {credencial && <SideBar credencial={credencial} />}
+function PreviewLayout({ credencial = null, children }) {
+  const basePath =
+    credencial === "admin"
+      ? "/preview/admin"
+      : credencial === "docente"
+      ? "/preview/docente"
+      : "";
 
-      <div
-        style={{
-          minHeight: "100vh",
-          boxSizing: "border-box",
-        }}
-      >
-        
+  if (!credencial) {
+    return <>{children}</>;
+  }
+
+  return (
+    <div className="private-layout">
+      <SideBar credencial={credencial} basePath={basePath} />
+
+      <main className="private-main private-main--preview">
         {children}
-      </div>
+      </main>
     </div>
   );
 }

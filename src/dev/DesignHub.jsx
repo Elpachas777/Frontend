@@ -10,6 +10,7 @@ const pages = [
   { to: "/preview/admin/docentes", label: "Docentes", desc: "Vista privada admin" },
   { to: "/preview/docente/alumnos", label: "Alumnos", desc: "Vista privada docente" },
   { to: "/preview/docente/grupos", label: "Grupos", desc: "Vista privada docente" },
+  { to: "/preview/docente/ejercicios", label: "Ejercicios", desc: "Vista privada docente" },
 ];
 
 function DesignHub() {

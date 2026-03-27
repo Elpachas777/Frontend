@@ -18,27 +18,60 @@ function Tabla({
   const [actualizado, setActualizado] = useState(true);
   const [mostrarEditar, setMostrarEditar] = useState(false);
   const [mostrarVer, setMostrarVer] = useState(false);
-  const [filaSeleccionada, SetFilaSeleccionada] = useState(null);
+  const [filaSeleccionada, setFilaSeleccionada] = useState(null);
   const [mostrarBorrar, setMostrarBorrar] = useState(false);
+
+  const textos = {
+    docentes: {
+      plural: "docentes",
+      singular: "docente",
+      emoji: "🧑‍🏫",
+      descripcion: "Administra fácilmente a los docentes registrados.",
+    },
+    alumnos: {
+      plural: "alumnos",
+      singular: "alumno",
+      emoji: "🧒",
+      descripcion: "Consulta y organiza a tus alumnos de forma sencilla.",
+    },
+    grupo: {
+      plural: "grupos",
+      singular: "grupo",
+      emoji: "👨‍👩‍👧‍👦",
+      descripcion: "Gestiona grupos y revisa quiénes pertenecen a cada uno.",
+    },
+    ejercicios: {
+      plural: "ejercicios",
+      singular: "ejercicio",
+      emoji: "🧩",
+      descripcion: "Crea y organiza ejercicios para tus alumnos.",
+    },
+  };
+
+  const config = textos[titulo] || {
+    plural: titulo,
+    singular: titulo,
+    emoji: "📋",
+    descripcion: "Administra la información disponible.",
+  };
 
   const handleEditar = (fila) => {
     setMostrarEditar(true);
-    SetFilaSeleccionada(fila);
+    setFilaSeleccionada(fila);
   };
 
   const handleVer = (fila) => {
     setMostrarVer(true);
-    SetFilaSeleccionada(fila);
+    setFilaSeleccionada(fila);
   };
 
   const handleBorrar = (fila) => {
     setMostrarBorrar(true);
-    SetFilaSeleccionada(fila);
+    setFilaSeleccionada(fila);
   };
 
-  const handleCrear = async (fila) => {
+  const handleCrear = () => {
     setMostrarModal(true);
-    SetFilaSeleccionada(fila);
   };
 
   useEffect(() => {
@@ -49,6 +82,8 @@ function Tabla({
 
         if (response.length > 0) {
           setEncabezados(Object.keys(response[0]));
+        } else {
+          setEncabezados([]);
         }
       } catch (error) {
         console.log(error);
@@ -56,71 +91,104 @@ function Tabla({
     };
 
     consultarDatos();
-  }, [actualizado]);
+  }, [actualizado, obtenerDatos, id]);
 
   return (
-    <div className="tabla-container">
-      <h1>Lista de {titulo}</h1>
+    <section className="tabla-container">
+      <div className="tabla-decor tabla-decor--one" />
+      <div className="tabla-decor tabla-decor--two" />
 
-      <div className="ejercicios-header">
-        <button className="crear-btn" name="crear" onClick={handleCrear}>
-          + Crear nuevo {titulo}
-        </button>
+      <div className="tabla-hero">
+        <div className="tabla-hero-copy">
+          <span className="tabla-badge">{config.emoji} Panel</span>
+          <h1>Lista de {config.plural}</h1>
+          <p>{config.descripcion}</p>
+        </div>
+
+        <div className="ejercicios-header">
+          <button className="crear-btn" name="crear" onClick={handleCrear}>
+            + Crear nuevo {config.singular}
+          </button>
+        </div>
       </div>
 
-      <table className="tabla">
-        <thead>
-          <tr>
-            {encabezados.map((columna, valor) => (
-              <th key={valor}>{columna}</th>
-            ))}
-            <th key="acciones">Acciones</th>
-          </tr>
-        </thead>
-        <tbody>
-          {datos &&
-            datos.length > 0 &&
-            datos.map((fila, valor) => (
-              <tr key={valor}>
-                {encabezados.map((columna, valor) => (
-                  <td key={valor}>{fila[columna]}</td>
-                ))}
+      <div className="tabla-wrap">
+        <table className="tabla">
+          <thead>
+            <tr>
+              {encabezados.map((columna) => (
+                <th key={columna}>{columna}</th>
+              ))}
+              <th key="acciones">Acciones</th>
+            </tr>
+          </thead>
 
-                <td key="acciones" className="acciones">
-                  {Ver && (
+          <tbody>
+            {datos && datos.length > 0 ? (
+              datos.map((fila, filaIndex) => (
+                <tr key={fila.id ?? filaIndex}>
+                  {encabezados.map((columna) => (
+                    <td key={`${fila.id ?? filaIndex}-${columna}`}>
+                      {fila[columna]}
+                    </td>
+                  ))}
+
+                  <td className="acciones">
+                    {Ver && (
+                      <button
+                        className="btn btn-ver"
+                        name="ver"
+                        onClick={() => handleVer(fila)}
+                      >
+                        Ver
+                      </button>
+                    )}
+
                     <button
-                      className="btn editar"
+                      className="btn btn-editar"
                       name="editar"
-                      style={{ backgroundColor: "green" }}
-                      onClick={() => handleVer(fila)}
+                      onClick={() => handleEditar(fila)}
                     >
-                      Ver
+                      Editar
                     </button>
-                  )}
 
-                  <button
-                    className="btn editar"
-                    name="editar"
-                    onClick={() => handleEditar(fila)}
-                  >
-                    Editar
-                  </button>
-                  <button
-                    className="btn eliminar"
-                    name="eliminar"
-                    onClick={() => handleBorrar(fila)}
-                  >
-                    Eliminar
-                  </button>
+                    <button
+                      className="btn btn-eliminar"
+                      name="eliminar"
+                      onClick={() => handleBorrar(fila)}
+                    >
+                      Eliminar
+                    </button>
+                  </td>
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td colSpan={encabezados.length + 1}>
+                  <div className="tabla-empty">
+                    <span className="tabla-empty-icon">🌱</span>
+                    <h3>Aún no hay registros</h3>
+                    <p>
+                      Cuando agregues un nuevo {config.singular}, aparecerá aquí.
+                    </p>
+                  </div>
                 </td>
               </tr>
-            ))}
-        </tbody>
-      </table>
+            )}
+          </tbody>
+        </table>
+      </div>
+
       {children}
-      {mostrarVer && (
-        <Ver onCerrar={() => setMostrarVer(false)} id={filaSeleccionada.id} />
+
+      {mostrarVer && filaSeleccionada && (
+        <Ver
+          onCerrar={() => setMostrarVer(false)}
+          filaSeleccionada={filaSeleccionada}
+          {...filaSeleccionada}
+        />
       )}
+
       {mostrarModal && (
         <Crear
           setActualizado={setActualizado}
@@ -128,14 +196,16 @@ function Tabla({
           id={id}
         />
       )}
-      {mostrarEditar && (
+
+      {mostrarEditar && filaSeleccionada && (
         <Editar
           setActualizado={setActualizado}
           onCerrar={() => setMostrarEditar(false)}
           filaSeleccionada={filaSeleccionada}
         />
       )}
-      {mostrarBorrar && (
+
+      {mostrarBorrar && filaSeleccionada && (
         <Confirmar
           onCerrar={() => setMostrarBorrar(false)}
           filaSeleccionada={filaSeleccionada}
@@ -143,7 +213,7 @@ function Tabla({
           setActualizado={setActualizado}
         />
       )}
-    </div>
+    </section>
   );
 }
 
