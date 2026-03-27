@@ -5,6 +5,8 @@ body,
   min-height: 100%;
   margin: 0;
   padding: 0;
+  overflow-x: hidden;
+  overflow-y: auto;
   font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto,
     "Helvetica Neue", Arial, sans-serif;
 }
@@ -26,7 +28,7 @@ body {
 .private-main {
   min-height: 100vh;
   margin-left: 286px;
-  padding: 26px 22px 26px 10px;
+  padding: 26px 22px 40px 10px;
 }
 
 .private-main--preview {
@@ -61,7 +63,7 @@ body {
 @media (max-width: 920px) {
   .private-main {
     margin-left: 0;
-    padding: 12px;
+    padding: 12px 12px 28px;
   }
 
   .logout-btn {
