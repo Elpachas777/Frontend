@@ -1,15 +1,16 @@
-import { useEffect, useState } from "react";
-import { verAlumno } from "../api/alumno.api";
-import Mensaje from "../components/Mensaje";
-import { USUARIOS } from "../enums/tipoUsuarios";
 import useFormData from "../hooks/useFormData";
 import editar from "../utils/editarAlumno";
 import "./CrearAlumno.css";
+import { USUARIOS } from "../enums/tipoUsuarios";
+import Mensaje from "../components/Mensaje";
+import { useState } from "react";
+import { useEffect } from "react";
+import { verAlumno } from "../api/alumno.api";
 
 function EditarAlumno({ onCerrar, setActualizado, filaSeleccionada }) {
   const [mensaje, setMensaje] = useState(null);
   const { formData, setFormData, handleChange } = useFormData(
-    USUARIOS.ALUMNO_EDITAR,
+    USUARIOS.ALUMNO_EDITAR
   );
   const { handleSubmit } = editar({
     filaSeleccionada,

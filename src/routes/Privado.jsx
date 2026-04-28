@@ -1,6 +1,5 @@
-import { Navigate, Route, Routes } from "react-router-dom";
-import Docentes from "../admin/Docentes";
 import { useState } from "react";
+import { Routes, Route, Navigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import SideBar from "../components/SideBar";
 import Grupos from "../docente/Grupos";
@@ -9,7 +8,6 @@ import DocentesAdmin from "../RolAdmin/DocentesAdmin";
 import EscuelasAdmin from "../RolAdmin/Escuelas";
 import Ejercicios from "../docente/Ejercicios";
 import { cerrarSesion } from "../api/sesion.api";
-import CrearCuentos from "../ejercicios/Cuentos";
 import useCredenciales from "../hooks/useCredenciales";
 
 function Privado({ setAutentificado }) {
@@ -94,7 +92,6 @@ function Privado({ setAutentificado }) {
             <Route path="/Alumnos" element={<Alumnos />} />
             <Route path="/Grupos" element={<Grupos />} />
             <Route path="/Ejercicios" element={<Ejercicios />} />
-            <Route path="/Canvas" element={<CrearCuentos />} />
             <Route path="*" element={<Navigate to="/Alumnos" />} />
           </Routes>
         )}
