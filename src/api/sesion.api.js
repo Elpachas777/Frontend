@@ -1,4 +1,5 @@
 import { useNavigate } from "react-router-dom";
+import Swal from "sweetalert2";
 import axios from "../utils/axios.js";
 
 const urlBack = import.meta.env.VITE_URL_BACKEND;
@@ -43,27 +44,45 @@ export function useIniciarSesion({ formData, setAutentificado, setMensaje }) {
     const previewMode = import.meta.env.DEV || import.meta.env.VITE_PREVIEW_MODE === "true";
 
     // Simulación temporal: verificar credenciales específicas
-    if (correo === "docente@ipn.mx" && password === "Docente123$") {
-      const usuario = {
-        nombre: "Docente IPN",
-        rol: "docente",
-        foto: null,
-      };
+    if (correo === "admin@ipn.mx" && password === "Admin123$") {
+      const usuario = { nombre: "Administrador", rol: "admin", foto: null };
       localStorage.setItem("frontend_user", JSON.stringify(usuario));
-      setAutentificado(true);
+      navigate("/preview/admin/docentes");
+      await Swal.fire({
+        icon: "success",
+        title: `¡Bienvenido, ${usuario.nombre}!`,
+        timer: 1800,
+        showConfirmButton: false,
+        timerProgressBar: true,
+      });
+      return;
+    }
+
+    if (correo === "docente@ipn.mx" && password === "Docente123$") {
+      const usuario = { nombre: "Docente", rol: "docente", foto: null };
+      localStorage.setItem("frontend_user", JSON.stringify(usuario));
       navigate("/preview/docente/alumnos");
+      await Swal.fire({
+        icon: "success",
+        title: `¡Bienvenido, ${usuario.nombre}!`,
+        timer: 1800,
+        showConfirmButton: false,
+        timerProgressBar: true,
+      });
       return;
     }
 
     if (correo === "director@ipn.mx" && password === "Director123$") {
-      const usuario = {
-        nombre: "Director IPN",
-        rol: "director",
-        foto: null,
-      };
+      const usuario = { nombre: "Director IPN", rol: "director", foto: null };
       localStorage.setItem("frontend_user", JSON.stringify(usuario));
-      setAutentificado(true);
       navigate("/preview/docente/alumnos");
+      await Swal.fire({
+        icon: "success",
+        title: `¡Bienvenido, ${usuario.nombre}!`,
+        timer: 1800,
+        showConfirmButton: false,
+        timerProgressBar: true,
+      });
       return;
     }
 

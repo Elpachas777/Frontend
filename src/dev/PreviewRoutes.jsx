@@ -8,10 +8,11 @@ import RegistrarAdmin from "../sesion/RegistroAdmin";
 import DesignHub from "./DesignHub";
 import PreviewLayout from "./PreviewLayout";
 import {
-  PreviewDocentes,
   PreviewAlumnos,
   PreviewGrupos,
 } from "./PreviewTables";
+import DocentesAdmin from "../RolAdmin/DocentesAdmin";
+import EscuelasAdmin from "../RolAdmin/Escuelas";
 import Ejercicios from "../docente/Ejercicios";
 
 function PreviewRoutes() {
@@ -79,7 +80,16 @@ function PreviewRoutes() {
         path="/preview/admin/docentes"
         element={
           <PreviewLayout credencial="admin">
-            <PreviewDocentes />
+            <DocentesAdmin />
+          </PreviewLayout>
+        }
+      />
+
+      <Route
+        path="/preview/admin/escuelas"
+        element={
+          <PreviewLayout credencial="admin">
+            <EscuelasAdmin />
           </PreviewLayout>
         }
       />

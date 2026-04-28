@@ -151,17 +151,25 @@ background-image: url("https://www.transparenttextures.com/patterns/arabesque.pn
 
 .password-field {
   position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.password-field input {
+  flex: 1;
+  padding-right: 44px;
 }
 
 .toggle-password-btn {
   position: absolute;
-  right: 16px;
+  right: 14px;
   top: 50%;
   transform: translateY(-50%);
   background: transparent;
   border: none;
   color: #6b795f;
-  font-size: 1.1rem;
+  display: flex;
+  align-items: center;
   cursor: pointer;
   padding: 0;
 }

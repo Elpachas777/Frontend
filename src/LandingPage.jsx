@@ -26,15 +26,20 @@ function LandingPage() {
       <div className="landing-decor" />
       <div className="landing-decor small" />
 
+      {/* Topbar con btn esquina superior derecha */}
+      <div className="landing-topbar">
+        <button className="landing-button" onClick={handleClick}>
+          ¿Eres docente?
+        </button>
+      </div>
+
       <div className="landing-content">
         <div className="landing-copy">
-          <span className="landing-badge">Aprender y organizar</span>
           <h1 className="landing-heading">
-            Una plataforma elegante para el aula moderna
+            <span className="landing-heading-sila">Sila</span><span className="landing-heading-trazo">Trazo</span>
           </h1>
           <p className="landing-copy-text">
-            Gestiona grupos, alumnos y sesiones desde un solo lugar. Ingresa el
-            ID de clase o inicia sesión como docente para empezar.
+            Para comenzar, ingresa el ID del estudiante que realizará el ejercicio.
           </p>
 
           <div className="landing-card">
@@ -46,14 +51,7 @@ function LandingPage() {
                 id="id"
                 placeholder="3BC"
               />
-              <button className="landing-button" onClick={handleClick}>
-                ¿Eres docente?
-              </button>
             </div>
-            <p className="landing-note">
-              El video se reproduce en bucle sin controles ni volumen para una
-              experiencia limpia.
-            </p>
           </div>
         </div>
       </div>

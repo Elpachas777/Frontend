@@ -190,7 +190,6 @@ function Tabla({
 
       <div className="tabla-hero">
         <div className="tabla-hero-copy">
-          <span className="tabla-badge">{config.emoji} Panel</span>
           <h1>Lista de {config.plural}</h1>
           <p>{config.descripcion}</p>
         </div>

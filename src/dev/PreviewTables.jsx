@@ -1072,7 +1072,6 @@ export function PreviewAlumnos() {
 
       <div className="tabla-hero">
         <div className="tabla-hero-copy">
-          <span className="tabla-badge">🧒 Panel</span>
           <h1>Lista de alumnos</h1>
           <p>Consulta y organiza a tus alumnos de forma sencilla.</p>
         </div>

@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import "./Recuperar.css";
 import "../components/button.css"; 
 import useFormData from "../hooks/useFormData";
@@ -11,6 +11,10 @@ function Recuperar() {
   const [mensaje, setMensaje] = useState(null);
   const { formData, handleChange } = useFormData(USUARIOS.RECUPERACION);
   const { handleSubmit } = useCorreoContraseña({ formData, setMensaje });
+  const location = useLocation();
+  const loginPath = location.pathname.startsWith("/preview")
+    ? "/preview/login"
+    : "/Login";
 
   return (
     <div className="recuperar-page">
@@ -20,7 +24,7 @@ function Recuperar() {
         <div className="recuperar-card">
           <div className="recuperar-topbar">
             <Link
-              to="/login"
+              to={loginPath}
               className="btn-secondary btn-secondary--blue"
             >
               ← Volver al inicio de sesión

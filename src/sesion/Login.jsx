@@ -1,4 +1,4 @@
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import "./Login.css";
 import "../components/button.css";
 import useFormData from "../hooks/useFormData";
@@ -6,11 +6,16 @@ import { DATOS } from "../enums/datosUsuarios";
 import { useIniciarSesion } from "../api/sesion.api";
 import Mensaje from "../components/Mensaje";
 import { useState } from "react";
+import { IconEye, IconEyeOff } from "../RolAdmin/EyeIcons";
 
 function Login({ setAutentificado }) {
   const [mensaje, setMensaje] = useState(null);
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
+  const location = useLocation();
+  const isPreview = location.pathname.startsWith("/preview");
+  const recuperarPath = isPreview ? "/preview/recuperar" : "/Recuperar";
+  const landingPath = isPreview ? "/preview/landing" : "/";
   const { formData, handleChange } = useFormData("docente_login");
 
   const { handleSubmit } = useIniciarSesion({
@@ -34,7 +39,7 @@ function Login({ setAutentificado }) {
             <button
               type="button"
               className="btn-secondary btn-secondary--blue"
-              onClick={() => navigate("/")}
+              onClick={() => navigate(landingPath)}
             >
               Volver
             </button>
@@ -59,32 +64,34 @@ function Login({ setAutentificado }) {
                   type="email"
                   id="correo"
                   name="correo"
-                  placeholder="tu@ipn.mx"
+                  placeholder="docente@ipn.mx"
                   required
                   value={formData.correo}
                   onChange={handleChange}
                 />
               </div>
 
-              <div className="login-field password-field">
+              <div className="login-field">
                 <label htmlFor="password">Contraseña</label>
-                <input
-                  type={showPassword ? "text" : "password"}
-                  id="password"
-                  name="password"
-                  placeholder="••••••••"
-                  required
-                  value={formData.password}
-                  onChange={handleChange}
-                />
-                <button
-                  type="button"
-                  className="toggle-password-btn"
-                  onClick={() => setShowPassword((prev) => !prev)}
-                  aria-label={showPassword ? "Ocultar contraseña" : "Mostrar contraseña"}
-                >
-                  {showPassword ? "🙈" : "👁️"}
-                </button>
+                <div className="password-field">
+                  <input
+                    type={showPassword ? "text" : "password"}
+                    id="password"
+                    name="password"
+                    placeholder="••••••••"
+                    required
+                    value={formData.password}
+                    onChange={handleChange}
+                  />
+                  <button
+                    type="button"
+                    className="toggle-password-btn"
+                    onClick={() => setShowPassword((prev) => !prev)}
+                    aria-label={showPassword ? "Ocultar contraseña" : "Mostrar contraseña"}
+                  >
+                    {showPassword ? <IconEyeOff /> : <IconEye />}
+                  </button>
+                </div>
               </div>
 
               <button type="submit" className="login-btn" name="iniciar">
@@ -93,7 +100,7 @@ function Login({ setAutentificado }) {
             </form>
 
             <div className="login-links">
-              <Link to="/Recuperar">¿Olvidaste tu contraseña?</Link>
+              <Link to={recuperarPath}>¿Olvidaste tu contraseña?</Link>
             </div>
           </div>
         </div>

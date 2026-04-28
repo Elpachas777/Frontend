@@ -1,9 +1,10 @@
 import { NavLink } from "react-router-dom";
 import "./SideBar.css";
 
-function SideBar({ credencial, basePath = "", onCerrarSesion }) {
+function SideBar({ credencial, basePath = "", onCerrarSesion, usuario }) {
   const rutas = {
-    admin: basePath ? `${basePath}/docentes` : "/Docentes",
+    admin: basePath ? `${basePath}/docentes` : "/admin/docentes",
+    adminEscuelas: basePath ? `${basePath}/escuelas` : "/admin/escuelas",
     alumnos: basePath ? `${basePath}/alumnos` : "/Alumnos",
     grupos: basePath ? `${basePath}/grupos` : "/Grupos",
     ejercicios: basePath ? `${basePath}/ejercicios` : "/Ejercicios",
@@ -12,21 +13,29 @@ function SideBar({ credencial, basePath = "", onCerrarSesion }) {
   return (
     <aside className="sidebar">
       <div className="sidebar-brand">
-        <div className="sidebar-brand-badge">🌟</div>
+        <img src="/img/logo.png" alt="Logo" className="sidebar-brand-logo" />
         <div>
           <h2 className="sidebar-title">Menú</h2>
-          <p className="sidebar-subtitle">Aprender y organizar</p>
+          <p className="sidebar-subtitle">{usuario?.nombre || "Usuario"}</p>
         </div>
       </div>
 
       <nav className="sidebar-nav">
         {credencial === "admin" && (
-          <NavLink
-            to={rutas.admin}
-            className={({ isActive }) => (isActive ? "active" : "")}
-          >
-            Docentes
-          </NavLink>
+          <>
+            <NavLink
+              to={rutas.admin}
+              className={({ isActive }) => (isActive ? "active" : "")}
+            >
+              Docentes
+            </NavLink>
+            <NavLink
+              to={rutas.adminEscuelas}
+              className={({ isActive }) => (isActive ? "active" : "")}
+            >
+              Escuelas
+            </NavLink>
+          </>
         )}
 
         {(credencial === "docente" || credencial === "director") && (

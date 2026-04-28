@@ -1,9 +1,11 @@
 import { useState } from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
+import Swal from "sweetalert2";
 import SideBar from "../components/SideBar";
 import Grupos from "../docente/Grupos";
-import Docentes from "../admin/Docentes";
 import Alumnos from "../docente/Alumnos";
+import DocentesAdmin from "../RolAdmin/DocentesAdmin";
+import EscuelasAdmin from "../RolAdmin/Escuelas";
 import Ejercicios from "../docente/Ejercicios";
 import { cerrarSesion } from "../api/sesion.api";
 import useCredenciales from "../hooks/useCredenciales";
@@ -12,7 +14,17 @@ function Privado({ setAutentificado }) {
   const [menuAbierto, setMenuAbierto] = useState(false);
   const { credencial, usuario } = useCredenciales();
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
+    const result = await Swal.fire({
+      title: "¿Cerrar sesión?",
+      icon: "question",
+      showCancelButton: true,
+      confirmButtonText: "Sí, salir",
+      cancelButtonText: "Cancelar",
+      confirmButtonColor: "#e74c3c",
+      cancelButtonColor: "#7bc043",
+    });
+    if (!result.isConfirmed) return;
     cerrarSesion({ setAutentificado });
   };
 
@@ -28,7 +40,7 @@ function Privado({ setAutentificado }) {
 
   return (
     <div className="private-layout">
-      <SideBar credencial={credencial} />
+      <SideBar credencial={credencial} usuario={usuario} />
 
       <div className="private-topbar">
         <div className="private-user-widget">
@@ -69,8 +81,9 @@ function Privado({ setAutentificado }) {
       <main className="private-main">
         {credencial === "admin" && (
           <Routes>
-            <Route path="/Docentes" element={<Docentes />} />
-            <Route path="*" element={<Navigate to="/Docentes" />} />
+            <Route path="/admin/docentes" element={<DocentesAdmin />} />
+            <Route path="/admin/escuelas" element={<EscuelasAdmin />} />
+            <Route path="*" element={<Navigate to="/admin/docentes" />} />
           </Routes>
         )}
 

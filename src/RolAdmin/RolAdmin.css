@@ -1,0 +1,689 @@
+/* ── Filtros ── */
+.admin-filtros {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+  margin-bottom: 24px;
+}
+
+.admin-filtro-grupo {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  flex: 1;
+  min-width: 180px;
+}
+
+.admin-filtro-grupo label {
+  font-weight: 700;
+  font-size: 0.9rem;
+  color: #3a5a40;
+}
+
+.admin-filtro-grupo input,
+.admin-filtro-grupo select {
+  padding: 10px 14px;
+  border: 1.5px solid #c8dfc8;
+  border-radius: 14px;
+  font-size: 0.97rem;
+  background: #f7fbf4;
+  color: #1e2e22;
+  outline: none;
+  transition: border-color 0.18s;
+}
+
+.admin-filtro-grupo input:focus,
+.admin-filtro-grupo select:focus {
+  border-color: #7bc043;
+}
+
+/* ── Modal overlay ── */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(20, 40, 25, 0.45);
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.modal-card {
+  background: #fff;
+  border-radius: 24px;
+  padding: 32px;
+  width: 100%;
+  max-width: 480px;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 24px 60px rgba(10, 30, 16, 0.18);
+}
+
+.modal-card--wide {
+  max-width: 600px;
+}
+
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 24px;
+}
+
+.modal-header h2 {
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: 900;
+  color: #1e2e22;
+}
+
+.modal-close {
+  background: none;
+  border: none;
+  font-size: 1.2rem;
+  cursor: pointer;
+  color: #667763;
+  padding: 4px 8px;
+  border-radius: 8px;
+  transition: background 0.15s;
+}
+
+.modal-close:hover {
+  background: #f0f5ee;
+}
+
+/* ── Form ── */
+.modal-form {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.modal-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.modal-field label {
+  font-weight: 700;
+  font-size: 0.9rem;
+  color: #3a5a40;
+}
+
+.modal-field input,
+.modal-field select {
+  padding: 11px 14px;
+  border: 1.5px solid #c8dfc8;
+  border-radius: 14px;
+  font-size: 0.97rem;
+  background: #f7fbf4;
+  color: #1e2e22;
+  outline: none;
+  transition: border-color 0.18s;
+}
+
+.modal-field input:focus,
+.modal-field select:focus {
+  border-color: #7bc043;
+}
+
+.modal-error {
+  color: #e74c3c;
+  font-size: 0.84rem;
+  font-weight: 600;
+}
+
+/* ── Actions ── */
+.modal-actions {
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+  margin-top: 8px;
+}
+
+.modal-btn-cancel {
+  padding: 11px 22px;
+  border: 1.5px solid #c8dfc8;
+  border-radius: 14px;
+  background: transparent;
+  color: #3a5a40;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.modal-btn-cancel:hover {
+  background: #f0f5ee;
+}
+
+.modal-btn-save {
+  padding: 11px 22px;
+  border: none;
+  border-radius: 14px;
+  background: #7bc043;
+  color: #14310d;
+  font-weight: 800;
+  cursor: pointer;
+  transition: background 0.18s;
+}
+
+.modal-btn-save:hover {
+  background: #69ac34;
+}
+
+/* ── Detalle ── */
+.modal-detalle {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin-bottom: 24px;
+}
+
+.modal-detalle-fila {
+  display: flex;
+  gap: 16px;
+  padding: 10px 0;
+  border-bottom: 1px solid #edf4ea;
+}
+
+.modal-detalle-label {
+  font-weight: 700;
+  color: #3a5a40;
+  min-width: 120px;
+  font-size: 0.9rem;
+}
+
+.modal-detalle-logo {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 8px;
+}
+
+.modal-detalle-logo img {
+  width: 100px;
+  height: 100px;
+  object-fit: contain;
+  border-radius: 16px;
+  border: 1px solid #dbe9da;
+}
+
+/* ── Logo thumbnail in table ── */
+.escuela-logo-thumb {
+  width: 44px;
+  height: 44px;
+  object-fit: contain;
+  border-radius: 10px;
+  border: 1px solid #dbe9da;
+}
+
+.escuela-logo-empty {
+  font-size: 1.4rem;
+}
+
+/* ── Logo preview in form ── */
+.logo-preview {
+  width: 80px;
+  height: 80px;
+  object-fit: contain;
+  border-radius: 12px;
+  border: 1px solid #c8dfc8;
+  margin-top: 6px;
+}
+
+/* ── Foto upload ── */
+.foto-upload-row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.foto-upload-preview {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #c8dfc8;
+  flex-shrink: 0;
+}
+
+/* ── Password input with eye toggle ── */
+.password-input-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.password-input-wrap input {
+  flex: 1;
+  padding-right: 42px;
+}
+
+.password-eye {
+  position: absolute;
+  right: 10px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  color: #667763;
+  transition: color 0.15s;
+}
+
+.password-eye:hover {
+  color: #244431;
+}
+
+.password-eye--inline {
+  position: static;
+  margin-left: 6px;
+}
+
+/* ── Section divider in form ── */
+.modal-seccion-label {
+  font-size: 0.82rem;
+  font-weight: 800;
+  color: #3a5a40;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  padding-top: 8px;
+  border-top: 1px solid #edf4ea;
+}
+
+/* ── Password row in VerDocente ── */
+.docente-password-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* ── Docente detail panel ── */
+.modal-card--perfil {
+  max-width: 780px;
+}
+
+.docente-panel-top {
+  display: flex;
+  gap: 28px;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+}
+
+.docente-panel-left {
+  flex-shrink: 0;
+}
+
+.docente-foto {
+  width: 120px;
+  height: 120px;
+  border-radius: 16px;
+  border: 2px solid #c8dfc8;
+  background: #f0f5ee;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 3rem;
+  overflow: hidden;
+}
+
+.docente-foto img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.docente-panel-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  justify-content: center;
+  min-width: 160px;
+}
+
+.docente-info-escuela {
+  font-size: 0.82rem;
+  color: #587754;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.docente-info-nombre {
+  font-size: 1.55rem;
+  font-weight: 900;
+  color: #1e2e22;
+  line-height: 1.1;
+}
+
+.docente-info-correo {
+  font-size: 0.97rem;
+  color: #667763;
+}
+
+.docente-panel-grupos {
+  flex-shrink: 0;
+  min-width: 160px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.docente-grupos-title {
+  font-size: 0.82rem;
+  font-weight: 800;
+  color: #3a5a40;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin: 0 0 4px;
+}
+
+.docente-grupo-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 14px;
+  border: 1.5px solid #c8dfc8;
+  border-radius: 12px;
+  background: #f7fbf4;
+  color: #244431;
+  font-weight: 700;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
+  text-align: left;
+  width: 100%;
+}
+
+.docente-grupo-btn:hover {
+  background: #e8f5e1;
+  border-color: #7bc043;
+}
+
+.docente-grupo-btn-empty {
+  color: #94a3b8;
+  font-style: italic;
+  font-size: 0.9rem;
+}
+
+.docente-panel-mid {
+  display: flex;
+  gap: 36px;
+  padding: 20px 0;
+  border-top: 1px solid #edf4ea;
+  border-bottom: 1px solid #edf4ea;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+
+.docente-mid-item {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.docente-mid-label {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #94a3b8;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.docente-mid-value {
+  font-size: 1rem;
+  color: #1e2e22;
+  font-weight: 600;
+}
+
+.docente-estado-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 12px;
+  border-radius: 999px;
+  font-size: 0.85rem;
+  font-weight: 800;
+}
+
+.docente-estado-badge--activo {
+  background: #eaf7e0;
+  color: #3a7d2c;
+}
+
+.docente-estado-badge--inactivo {
+  background: #fde8e8;
+  color: #c0392b;
+}
+
+.docente-panel-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.docente-btn-toggle {
+  padding: 12px 22px;
+  border-radius: 14px;
+  font-weight: 800;
+  font-size: 0.97rem;
+  cursor: pointer;
+  transition: opacity 0.15s;
+}
+
+.docente-btn-toggle--inhabilitar {
+  background: #fde8e8;
+  color: #c0392b;
+  border: 1.5px solid #f5c6c6;
+}
+
+.docente-btn-toggle--inhabilitar:hover {
+  background: #fbd5d5;
+}
+
+.docente-btn-toggle--habilitar {
+  background: #eaf7e0;
+  color: #3a7d2c;
+  border: 1.5px solid #b8e4a0;
+}
+
+.docente-btn-toggle--habilitar:hover {
+  background: #d8f0c8;
+}
+
+.docente-btn-eliminar-perm {
+  padding: 12px 22px;
+  border: none;
+  border-radius: 14px;
+  background: #e74c3c;
+  color: #fff;
+  font-weight: 800;
+  font-size: 0.97rem;
+  cursor: pointer;
+  transition: background 0.18s;
+}
+
+.docente-btn-eliminar-perm:hover {
+  background: #c0392b;
+}
+
+/* ── Grupo read-only view ── */
+.modal-overlay--top {
+  z-index: 300;
+}
+
+.grupo-info-row {
+  display: flex;
+  gap: 32px;
+  margin-bottom: 20px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid #edf4ea;
+  flex-wrap: wrap;
+}
+
+.grupo-info-item {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.grupo-alumnos-title {
+  font-size: 1rem;
+  font-weight: 800;
+  color: #244431;
+  margin: 0 0 12px;
+}
+
+/* ── Escuela detail panel ── */
+.modal-card--escuela {
+  max-width: 900px;
+}
+
+.escuela-panel {
+  display: flex;
+  gap: 32px;
+  flex-wrap: wrap;
+}
+
+.escuela-panel-left {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  flex: 0 0 260px;
+}
+
+.escuela-panel-logo {
+  width: 130px;
+  height: 130px;
+  border-radius: 16px;
+  border: 2px solid #c8dfc8;
+  background: #f0f5ee;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.escuela-panel-logo img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.escuela-logo-placeholder {
+  font-size: 3rem;
+}
+
+.escuela-panel-info {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.escuela-info-nombre {
+  font-size: 1.5rem;
+  font-weight: 900;
+  color: #1e2e22;
+  line-height: 1.1;
+}
+
+.escuela-info-fila {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.escuela-info-label {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #94a3b8;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.escuela-info-count {
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: #3a7d2c;
+}
+
+.escuela-panel-right {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-width: 280px;
+}
+
+.escuela-mapa {
+  width: 100%;
+  height: 300px;
+  border: none;
+  border-radius: 16px;
+  border: 1.5px solid #c8dfc8;
+}
+
+.escuela-mapa-fallback {
+  width: 100%;
+  height: 300px;
+  border-radius: 16px;
+  border: 1.5px solid #c8dfc8;
+  background: #f7fbf4;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  color: #667763;
+  font-size: 0.95rem;
+  text-align: center;
+  padding: 20px;
+}
+
+.escuela-mapa-link {
+  color: #3a7d2c;
+  font-weight: 700;
+  text-decoration: none;
+  border: 1.5px solid #b8e4a0;
+  padding: 8px 16px;
+  border-radius: 12px;
+  background: #eaf7e0;
+  transition: background 0.15s;
+}
+
+.escuela-mapa-link:hover {
+  background: #d8f0c8;
+}
+
+.escuela-profesores-list {
+  margin: 4px 0 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.escuela-profesores-list li {
+  font-size: 0.95rem;
+  color: #1e2e22;
+  font-weight: 600;
+  padding: 4px 0;
+  border-bottom: 1px solid #edf4ea;
+}
+
+.escuela-profesores-list li:last-child {
+  border-bottom: none;
+}
+
+.escuela-sin-profesores {
+  font-size: 0.9rem;
+  color: #94a3b8;
+  font-style: italic;
+}

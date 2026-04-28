@@ -79,6 +79,37 @@
   line-height: 1.5;
 }
 
+.tabla-filtros {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 20px;
+  position: relative;
+  z-index: 1;
+}
+
+.tabla-filtro-input {
+  flex: 1;
+  min-width: 200px;
+  border: 1.5px solid #d0e8c8;
+  border-radius: 14px;
+  padding: 10px 16px;
+  font-size: 0.95rem;
+  color: #1e2e22;
+  background: #f5fbf2;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.tabla-filtro-input:focus {
+  border-color: #7bc043;
+  box-shadow: 0 0 0 3px rgba(123, 192, 67, 0.15);
+}
+
+.tabla-filtro-input::placeholder {
+  color: #9ab896;
+}
+
 .ejercicios-header {
   display: flex;
   justify-content: flex-end;
