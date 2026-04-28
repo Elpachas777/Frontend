@@ -9,10 +9,7 @@ function useAuth() {
   useEffect(() => {
     const vertificar = async () => {
       try {
-        const respuesta = await axios.get(`${urlBack}/autentificado`, {
-          withCredentials: true,
-        });
-
+        const respuesta = await axios.get(`${urlBack}/autentificado`);
 
         let autenticado = false;
         if (typeof respuesta?.data?.autenticado !== "undefined") {

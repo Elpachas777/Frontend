@@ -1,10 +1,10 @@
-import { useEffect, useState } from "react";
-import { verDocente } from "../api/docente.api";
-import Mensaje from "../components/Mensaje";
+import "./Registro.css";
 import { USUARIOS } from "../enums/tipoUsuarios";
 import useFormData from "../hooks/useFormData";
 import editar from "../utils/editarDocente";
-import "./Registro.css";
+import { useEffect, useState } from "react";
+import Mensaje from "../components/Mensaje";
+import { verDocente } from "../api/docente.api";
 function EditarDocente({ onCerrar, setActualizado, filaSeleccionada }) {
   const [mensaje, setMensaje] = useState(null);
   const { formData, setFormData, handleChange } = useFormData(USUARIOS.DOCENTE);
