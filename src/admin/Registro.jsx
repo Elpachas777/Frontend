@@ -1,24 +1,24 @@
-import { useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import Mensaje from "../components/Mensaje";
 import { USUARIOS } from "../enums/tipoUsuarios";
 import useFormData from "../hooks/useFormData";
 import registrar from "../utils/registrarDocente";
 import "./Registro.css";
+import { obtenerEscuelas } from "../api/escuela.api";
 
 function Registro({ onCerrar, setActualizado }) {
   const [mensaje, setMensaje] = useState(null);
   const { formData, handleChange } = useFormData(USUARIOS.DOCENTE);
   const { handleSubmit } = registrar({ formData, setActualizado, setMensaje });
   const [escuelas, setEscuelas] = useState([]);
-  const [escuelaSelec, setEscuelaSelec] = useState("");
 
-  useRef(() => {
+  useEffect(() => {
     const cargarEscuelas = async () => {
       const res = await obtenerEscuelas();
       setEscuelas(res);
     };
 
-    escuelas();
+    cargarEscuelas();
   }, []);
 
   return (
@@ -94,12 +94,12 @@ function Registro({ onCerrar, setActualizado }) {
                   name="escuela"
                   placeholder="Tu escuela"
                   required
-                  value={escuelaSelec}
-                  onChange={(e) => setEscuelaSelec(e.target.value)}
+                  value={formData.escuela}
+                  onChange={handleChange}
                 >
                   <option value={" "}>Selecciona una opcion</option>
                   {escuelas.map((escuela) => (
-                    <option key={escuela.id} value={escuela.id}>
+                    <option key={escuela.id_escuela} value={escuela.id_escuela}>
                       {escuela.nombre}
                     </option>
                   ))}

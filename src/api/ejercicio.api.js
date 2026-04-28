@@ -1,7 +1,7 @@
 import axios from "axios";
 const urlBack = import.meta.env.VITE_URL_BACKEND;
 
-export const verEjercicio = async (data) => {
+export const verEjercicio = async () => {
   const res = await axios.get(`${urlBack}/verEjercicio`);
 };
 
