@@ -9,7 +9,9 @@ function BotonCanvas() {
 
   return (
     <>
-      <button onClick={handleMostrar}>__</button>
+      <button type="button" onClick={handleMostrar}>
+        __
+      </button>
       {mostrarCanvas && <Canvas onCerrar={() => setCanvas(false)} />}
     </>
   );

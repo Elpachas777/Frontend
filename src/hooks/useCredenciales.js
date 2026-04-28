@@ -9,7 +9,7 @@ function useCredenciales() {
     const vertificar = async () => {
       try {
         const respuesta = await axios.get(`${urlBack}/credenciales`);
-        if (respuesta) setCredencial(respuesta.data);
+        if (respuesta) setCredencial(respuesta.data.rol);
       } catch (error) {
         console.log(error.response.data);
         setCredencial("");

@@ -57,9 +57,15 @@ function Canvas({ onCerrar }) {
         ></canvas>
         <div className="modal-botones">
           <br />
-          <button onClick={handlePredecir}>Terminar Ejercicio</button>
-          <button onClick={() => canvasState.clear()}>Limpíar Canvas</button>
-          <button onClick={onCerrar}>Cerrar</button>
+          <button type="button" onClick={handlePredecir}>
+            Terminar Ejercicio
+          </button>
+          <button type="button" onClick={() => canvasState.clear()}>
+            Limpíar Canvas
+          </button>
+          <button type="button" onClick={onCerrar}>
+            Cerrar
+          </button>
         </div>
         <div id="resultado"></div>
       </div>

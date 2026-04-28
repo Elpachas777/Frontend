@@ -1,5 +1,5 @@
 import { useState } from "react";
-import sustituir from "../utils/sustituir";
+import { crearCuento, guardar } from "../utils/ejercicio";
 import MostrarEjercicio from "./MostrarEjercicio";
 import Previsualizar from "./PevCuento";
 
@@ -9,39 +9,65 @@ function CrearCuentos() {
 
   const [ejercicio, setEjercicio] = useState(null);
   const [canvasState, setCanvas] = useState(null);
+  const { handleSubmit } = guardar();
+
+  const guardarEjercicio = () => {
+    const ejercicioNuevo = crearCuento();
+    setEjercicio(ejercicioNuevo);
+    return ejercicioNuevo;
+  };
 
   const handlePrevisualizar = () => {
-    const ejercicioNuevo = sustituir();
-    setEjercicio(ejercicioNuevo);
+    guardarEjercicio();
     setCanvas(true);
   };
 
   return (
     <div>
-      <br />
-      <p>Escribe o copia el cuento</p>
+      <form
+        onSubmit={(e) => {
+          guardarEjercicio();
+          handleSubmit(e, ejercicio);
+        }}
+      >
+        <p>Escribe o copia el cuento</p>
 
-      <label>Titulo</label>
-      <input type="text" id="titulo" />
-      <br />
+        <label for="titulo">Titulo</label>
+        <input type="text" id="titulo" />
+        <br />
 
-      <label>Silaba</label>
-      <input type="text" id="silaba" />
-      <br />
-      <br />
+        <label for="silaba">Silaba</label>
+        <input type="text" id="silaba" />
+        <br />
+        <br />
 
-      <textarea cols={col} rows={row} id="cuento"></textarea>
-      <br />
-      <button onClick={handlePrevisualizar}>Previsualizar</button>
-      {canvasState && (
-        <Previsualizar
-          onCerrar={() => {
-            setCanvas(false);
-          }}
-        >
-          <MostrarEjercicio ejercicio={ejercicio} />
-        </Previsualizar>
-      )}
+        <label for="fi">Fecha Inicio</label>
+        <input type="datetime-local" id="fi" />
+        <br />
+        <br />
+
+        <label for="ff">Fecha Final</label>
+        <input type="datetime-local" id="ff" />
+        <br />
+        <br />
+
+        <textarea cols={col} rows={row} id="cuento"></textarea>
+        <br />
+
+        <button type="button" onClick={handlePrevisualizar}>
+          Previsualizar
+        </button>
+
+        {canvasState && (
+          <Previsualizar
+            onCerrar={() => {
+              setCanvas(false);
+            }}
+          >
+            <MostrarEjercicio ejercicio={ejercicio} />
+          </Previsualizar>
+        )}
+      </form>
     </div>
   );
 }

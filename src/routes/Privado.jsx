@@ -1,10 +1,10 @@
-import { Routes, Route, Navigate } from "react-router-dom";
-import SideBar from "../components/SideBar";
-import Grupos from "../docente/Grupos";
-import Inicio from "../docente/Inicio";
+import { Navigate, Route, Routes } from "react-router-dom";
 import Docentes from "../admin/Docentes";
-import Alumnos from "../docente/Alumnos";
 import { cerrarSesion } from "../api/sesion.api";
+import SideBar from "../components/SideBar";
+import Alumnos from "../docente/Alumnos";
+import Grupos from "../docente/Grupos";
+import CrearCuentos from "../ejercicios/Cuentos";
 import useCredenciales from "../hooks/useCredenciales";
 
 function Privado({ setAutentificado }) {
@@ -35,6 +35,7 @@ function Privado({ setAutentificado }) {
           <Routes>
             <Route path="/Alumnos" element={<Alumnos />} />
             <Route path="/Grupos" element={<Grupos />} />
+            <Route path="/Canvas" element={<CrearCuentos />} />
             <Route path="*" element={<Navigate to="/Alumnos" />} />
           </Routes>
         )}

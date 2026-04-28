@@ -1,14 +1,25 @@
-import "./Registro.css";
-import registrar from "../utils/registrarDocente";
+import { useRef, useState } from "react";
+import Mensaje from "../components/Mensaje";
 import { USUARIOS } from "../enums/tipoUsuarios";
 import useFormData from "../hooks/useFormData";
-import Mensaje from "../components/Mensaje";
-import { useState } from "react";
+import registrar from "../utils/registrarDocente";
+import "./Registro.css";
 
 function Registro({ onCerrar, setActualizado }) {
   const [mensaje, setMensaje] = useState(null);
   const { formData, handleChange } = useFormData(USUARIOS.DOCENTE);
   const { handleSubmit } = registrar({ formData, setActualizado, setMensaje });
+  const [escuelas, setEscuelas] = useState([]);
+  const [escuelaSelec, setEscuelaSelec] = useState("");
+
+  useRef(() => {
+    const cargarEscuelas = async () => {
+      const res = await obtenerEscuelas();
+      setEscuelas(res);
+    };
+
+    escuelas();
+  }, []);
 
   return (
     <div className="modal-overlay">
@@ -77,15 +88,22 @@ function Registro({ onCerrar, setActualizado }) {
               </div>
               <div className="area">
                 <label htmlFor="escuela">Escuela</label>
-                <input
+                <select
                   type="text"
                   id="escuela"
                   name="escuela"
                   placeholder="Tu escuela"
                   required
-                  value={formData.escuela}
-                  onChange={handleChange}
-                />
+                  value={escuelaSelec}
+                  onChange={(e) => setEscuelaSelec(e.target.value)}
+                >
+                  <option value={" "}>Selecciona una opcion</option>
+                  {escuelas.map((escuela) => (
+                    <option key={escuela.id} value={escuela.id}>
+                      {escuela.nombre}
+                    </option>
+                  ))}
+                </select>
               </div>
               <div className="area">
                 <label htmlFor="confirmar">Confirmar contraseña</label>

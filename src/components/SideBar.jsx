@@ -29,6 +29,12 @@ function SideBar({ credencial }) {
             >
               Grupos
             </NavLink>
+            <NavLink
+              to="/Canvas"
+              className={({ isActive }) => (isActive ? "active" : "")}
+            >
+              Ejercicio
+            </NavLink>
           </>
         )}
       </nav>
