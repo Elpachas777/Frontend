@@ -3,12 +3,23 @@ import registrar from "../utils/registrarDocente";
 import { USUARIOS } from "../enums/tipoUsuarios";
 import useFormData from "../hooks/useFormData";
 import Mensaje from "../components/Mensaje";
-import { useState } from "react";
+import { useRef, useState } from "react";
 
 function Registro({ onCerrar, setActualizado }) {
   const [mensaje, setMensaje] = useState(null);
   const { formData, handleChange } = useFormData(USUARIOS.DOCENTE);
   const { handleSubmit } = registrar({ formData, setActualizado, setMensaje });
+  const [escuelas, setEscuelas] = useState([])
+  const [escuelaSelect, setEscuelaSelect] = ("")
+
+  useRef(()=>{
+    const asignarEscuelas = async () => {
+      const res = await obtenerEscuelas()
+      setEscuelas(res)
+    }
+
+    asignarEscuelas()
+  }, [])
 
   return (
     <div className="modal-overlay">
@@ -77,15 +88,19 @@ function Registro({ onCerrar, setActualizado }) {
               </div>
               <div className="area">
                 <label htmlFor="escuela">Escuela</label>
-                <input
+                <select
                   type="text"
                   id="escuela"
                   name="escuela"
-                  placeholder="Tu escuela"
                   required
-                  value={formData.escuela}
-                  onChange={handleChange}
-                />
+                  value={escuelaSelect}
+                  onChange={(e) => (setEscuelaSelect(e.target.value))}
+                >
+                  <option value={""}>Seleccione una opción</option>
+                  {escuelas.map((escuela)=>(
+                    <option key={escuela.id} value={escuela.id}>{escuela.nombre}</option>
+                  ))}
+                  </select>
               </div>
               <div className="area">
                 <label htmlFor="confirmar">Confirmar contraseña</label>
