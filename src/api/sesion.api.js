@@ -21,76 +21,17 @@ export function useIniciarSesion({ formData, setAutentificado, setMensaje }) {
   const handleSubmit = async (event) => {
     event.preventDefault();
 
-    const { correo, password } = formData;
+    event.preventDefault();
+    try {
+      const respuesta = await axios.post(`${urlBack}/iniciarSesion`, formData);
 
-    // Validar correo
-    if (!validarCorreo(correo)) {
-      setMensaje({
-        tipo: "error",
-        mensaje: "El correo debe terminar en @ipn.mx"
-      });
-      return;
+      if (respuesta) {
+        setAutentificado(true);
+        navigate("/inicio");
+      }
+    } catch (error) {
+      setMensaje(error.response.data);
     }
-
-    // Validar contraseña
-    if (!validarContraseña(password)) {
-      setMensaje({
-        tipo: "error",
-        mensaje: "La contraseña debe tener al menos 8 caracteres, una mayúscula, una minúscula, un número y un carácter especial (@$!%*?&)"
-      });
-      return;
-    }
-
-    const previewMode = import.meta.env.DEV || import.meta.env.VITE_PREVIEW_MODE === "true";
-
-    // Simulación temporal: verificar credenciales específicas
-    if (correo === "admin@ipn.mx" && password === "Admin123$") {
-      const usuario = { nombre: "Administrador", rol: "admin", foto: null };
-      localStorage.setItem("frontend_user", JSON.stringify(usuario));
-      navigate("/preview/admin/docentes");
-      await Swal.fire({
-        icon: "success",
-        title: `¡Bienvenido, ${usuario.nombre}!`,
-        timer: 1800,
-        showConfirmButton: false,
-        timerProgressBar: true,
-      });
-      return;
-    }
-
-    if (correo === "docente@ipn.mx" && password === "Docente123$") {
-      const usuario = { nombre: "Docente", rol: "docente", foto: null };
-      localStorage.setItem("frontend_user", JSON.stringify(usuario));
-      navigate("/preview/docente/alumnos");
-      await Swal.fire({
-        icon: "success",
-        title: `¡Bienvenido, ${usuario.nombre}!`,
-        timer: 1800,
-        showConfirmButton: false,
-        timerProgressBar: true,
-      });
-      return;
-    }
-
-    if (correo === "director@ipn.mx" && password === "Director123$") {
-      const usuario = { nombre: "Director IPN", rol: "director", foto: null };
-      localStorage.setItem("frontend_user", JSON.stringify(usuario));
-      navigate("/preview/docente/alumnos");
-      await Swal.fire({
-        icon: "success",
-        title: `¡Bienvenido, ${usuario.nombre}!`,
-        timer: 1800,
-        showConfirmButton: false,
-        timerProgressBar: true,
-      });
-      return;
-    }
-
-    // Si no coincide, mostrar mensaje de error
-    setMensaje({
-      tipo: "error",
-      mensaje: "El correo no está registrado, contacta a soporte"
-    });
   };
 
   return {
