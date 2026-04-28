@@ -3,6 +3,7 @@ import Tabla from "../components/Tabla";
 import { borrarAlumno } from "../api/alumno.api";
 import CrearAlumno from "./CrearAlumno";
 import EditarAlumno from "./EditarAlumno";
+import VerAlumnoDetalle from "./VerAlumnoDetalle";
 import { verGrupo } from "../api/grupo.api";
 
 function VerAlumnos({ onCerrar, id, filaSeleccionada }) {
@@ -34,6 +35,7 @@ function VerAlumnos({ onCerrar, id, filaSeleccionada }) {
             titulo="alumnos"
             Borrar={borrarAlumno}
             Editar={EditarAlumno}
+            Ver={VerAlumnoDetalle}
             id={grupoId}
             ocultarColumnas={["correo"]}
           />

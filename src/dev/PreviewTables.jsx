@@ -3,6 +3,7 @@ import Swal from "sweetalert2";
 import "sweetalert2/dist/sweetalert2.min.css";
 import Tabla from "../components/Tabla";
 import { verificarContraseña } from "../api/sesion.api";
+import VerAlumnoDetalle from "../docente/VerAlumnoDetalle";
 
 const docentesMock = [
   {
@@ -610,7 +611,7 @@ function PreviewVerGrupo({ onCerrar, id, filaSeleccionada }) {
       )}
 
       {alumnoSeleccionado && (
-        <PreviewVerAlumno
+        <VerAlumnoDetalle
           onCerrar={() => setAlumnoSeleccionado(null)}
           filaSeleccionada={alumnoSeleccionado}
         />
@@ -1166,7 +1167,7 @@ export function PreviewAlumnos() {
       )}
 
       {alumnoVer && (
-        <PreviewVerAlumno
+        <VerAlumnoDetalle
           onCerrar={() => setAlumnoVer(null)}
           filaSeleccionada={alumnoVer}
         />

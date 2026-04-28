@@ -49,7 +49,7 @@ function LandingPage() {
                 className="landing-input"
                 type="text"
                 id="id"
-                placeholder="3BC"
+                placeholder="CR3CV4-09"
               />
             </div>
           </div>

@@ -1,0 +1,231 @@
+.asignar-container {
+  position: relative;
+  width: min(1120px, calc(100% - 48px));
+  margin: 34px auto;
+  padding: 30px;
+  border-radius: 32px;
+  background: rgba(255, 255, 255, 0.96);
+  border: 1px solid #dbe9da;
+  box-shadow:
+    0 18px 40px rgba(40, 77, 52, 0.08),
+    0 6px 18px rgba(31, 53, 37, 0.06);
+  overflow: hidden;
+}
+
+.asignar-decor {
+  position: absolute;
+  border-radius: 999px;
+  pointer-events: none;
+  opacity: 0.5;
+}
+
+.asignar-decor--one {
+  width: 180px;
+  height: 180px;
+  top: -70px;
+  right: -40px;
+  background: rgba(181, 230, 138, 0.25);
+}
+
+.asignar-decor--two {
+  width: 120px;
+  height: 120px;
+  bottom: -40px;
+  left: -30px;
+  background: rgba(143, 209, 255, 0.18);
+}
+
+.asignar-hero {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-bottom: 28px;
+  position: relative;
+  z-index: 1;
+}
+
+.asignar-hero h1 {
+  margin: 0;
+  font-size: clamp(2rem, 3vw, 3.1rem);
+  line-height: 1.05;
+  color: #1e2e22;
+  font-weight: 900;
+  letter-spacing: -0.03em;
+}
+
+.asignar-hero p {
+  margin: 10px 0 0;
+  color: #667763;
+  font-size: 1rem;
+}
+
+/* ── Exercise selector ── */
+.asignar-select-row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 28px;
+  flex-wrap: wrap;
+  position: relative;
+  z-index: 1;
+}
+
+.asignar-select-row label {
+  font-weight: 700;
+  color: #1e2e22;
+  font-size: 1rem;
+  white-space: nowrap;
+}
+
+.asignar-select {
+  flex: 1;
+  min-width: 260px;
+  max-width: 520px;
+  height: 52px;
+  padding: 0 16px;
+  border-radius: 16px;
+  border: 1.5px solid #c5e89a;
+  background: #f5fbf2;
+  font-size: 1rem;
+  color: #1e2e22;
+  outline: none;
+  cursor: pointer;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.asignar-select:focus {
+  border-color: #7bc043;
+  box-shadow: 0 0 0 3px rgba(123, 192, 67, 0.15);
+}
+
+/* ── Groups card ── */
+.asignar-card {
+  border-radius: 22px;
+  border: 1.5px solid #dbe9da;
+  overflow: hidden;
+  position: relative;
+  z-index: 1;
+}
+
+.asignar-card-header {
+  display: grid;
+  grid-template-columns: 120px 1fr auto;
+  gap: 16px;
+  align-items: center;
+  padding: 16px 24px;
+  background: linear-gradient(135deg, #4caf50, #2e7d32);
+  color: #fff;
+  font-weight: 800;
+  font-size: 0.9rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.asignar-row {
+  display: grid;
+  grid-template-columns: 120px 1fr auto;
+  gap: 16px;
+  align-items: center;
+  padding: 18px 24px;
+  border-bottom: 1px solid #e8f0e5;
+  transition: background 0.12s;
+}
+
+.asignar-row:last-child {
+  border-bottom: none;
+}
+
+.asignar-row:hover {
+  background: #f8fdf5;
+}
+
+.asignar-grupo-nombre {
+  font-weight: 800;
+  font-size: 1.05rem;
+  color: #1e2e22;
+}
+
+/* ── Status cell ── */
+.asignar-status-cell {
+  min-width: 0;
+}
+
+.asignar-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 18px;
+  border-radius: 14px;
+  font-size: 0.92rem;
+  font-weight: 600;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.asignar-status--realizado {
+  background: #edf7e5;
+  border: 1.5px solid #b5e68a;
+  color: #2d5a1e;
+}
+
+.asignar-status--pendiente {
+  background: #fff8e1;
+  border: 1.5px solid #ffe082;
+  color: #7a5c00;
+}
+
+.asignar-status--sin {
+  background: #f3f4f6;
+  border: 1.5px solid #d1d5db;
+  color: #6b7280;
+}
+
+.asignar-progress {
+  flex: 1;
+  height: 8px;
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  min-width: 60px;
+}
+
+.asignar-progress-bar {
+  height: 100%;
+  border-radius: 999px;
+  background: #4caf50;
+  transition: width 0.4s ease;
+}
+
+.asignar-pct {
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+/* ── Action buttons ── */
+.asignar-acciones {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+/* ── Empty state ── */
+.asignar-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding: 60px 20px;
+  color: #8faa88;
+  position: relative;
+  z-index: 1;
+}
+
+.asignar-empty-icon {
+  font-size: 2.4rem;
+}
+
+.asignar-empty p {
+  font-size: 1rem;
+  margin: 0;
+}

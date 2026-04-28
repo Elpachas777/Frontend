@@ -14,6 +14,7 @@ import {
 import DocentesAdmin from "../RolAdmin/DocentesAdmin";
 import EscuelasAdmin from "../RolAdmin/Escuelas";
 import Ejercicios from "../docente/Ejercicios";
+import Asignar from "../docente/Asignar";
 
 function PreviewRoutes() {
   const noop = () => {};
@@ -117,6 +118,15 @@ function PreviewRoutes() {
         element={
           <PreviewLayout credencial="docente">
             <Ejercicios />
+          </PreviewLayout>
+        }
+      />
+
+      <Route
+        path="/preview/docente/asignar"
+        element={
+          <PreviewLayout credencial="docente">
+            <Asignar />
           </PreviewLayout>
         }
       />

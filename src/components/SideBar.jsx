@@ -8,6 +8,7 @@ function SideBar({ credencial, basePath = "", onCerrarSesion, usuario }) {
     alumnos: basePath ? `${basePath}/alumnos` : "/Alumnos",
     grupos: basePath ? `${basePath}/grupos` : "/Grupos",
     ejercicios: basePath ? `${basePath}/ejercicios` : "/Ejercicios",
+    asignar: basePath ? `${basePath}/asignar` : "/Asignar",
   };
 
   return (
@@ -59,6 +60,13 @@ function SideBar({ credencial, basePath = "", onCerrarSesion, usuario }) {
               className={({ isActive }) => (isActive ? "active" : "")}
             >
               Ejercicios
+            </NavLink>
+
+            <NavLink
+              to={rutas.asignar}
+              className={({ isActive }) => (isActive ? "active" : "")}
+            >
+              Asignar
             </NavLink>
           </>
         )}

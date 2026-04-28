@@ -1,0 +1,237 @@
+.ep-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  padding: 16px;
+}
+
+.ep-card {
+  position: relative;
+  background: #fff;
+  border-radius: 28px;
+  padding: 40px 44px 36px;
+  width: min(900px, 100%);
+  max-height: 92vh;
+  overflow-y: auto;
+  box-shadow: 0 28px 80px rgba(10, 40, 20, 0.24);
+  border: 1px solid #dbe9da;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 24px;
+}
+
+.ep-card--center {
+  text-align: center;
+  gap: 20px;
+  padding: 60px 44px;
+}
+
+.ep-card--done {
+  background: linear-gradient(160deg, #f4fbee 0%, #fff 60%);
+}
+
+/* ── Close ── */
+.ep-close {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: none;
+  background: #eef8e5;
+  color: #3a5c2e;
+  font-size: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.ep-close:hover { background: #d5f0b8; }
+
+/* ── Progress ── */
+.ep-progress-wrap {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.ep-progress-track {
+  flex: 1;
+  height: 10px;
+  background: #e8f0e5;
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.ep-progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #7bc043, #4caf50);
+  border-radius: 999px;
+  transition: width 0.5s ease;
+}
+
+.ep-progress-label {
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: #667763;
+  white-space: nowrap;
+}
+
+/* ── Sentence ── */
+.ep-sentence {
+  font-size: 1.1rem;
+  color: #1e2e22;
+  text-align: center;
+  line-height: 1.7;
+  margin: 0;
+  max-width: 640px;
+}
+
+/* ── Syllable label ── */
+.ep-syllable-label {
+  font-size: 1.6rem;
+  font-weight: 800;
+  color: #2d5a1e;
+  letter-spacing: 0.06em;
+  margin: 0;
+  text-align: center;
+}
+
+/* ── Canvases row ── */
+.ep-canvases {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: center;
+  align-items: center;
+}
+
+.ep-arrow {
+  font-size: 3rem;
+  color: #b5e68a;
+  font-weight: 900;
+  line-height: 1;
+  align-self: center;
+}
+
+.ep-canvas-col {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.ep-canvas-hint {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #8faa88;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.ep-canvas {
+  border: 2px solid #b5e68a;
+  border-radius: 18px;
+  background: #f8fff5;
+  cursor: crosshair;
+  touch-action: none;
+  width: 200px;
+  height: 200px;
+  display: block;
+}
+
+.ep-clear-btn {
+  background: #eef8e5;
+  border: 1.5px solid #c5e89a;
+  border-radius: 10px;
+  padding: 6px 18px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #2d5a1e;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.ep-clear-btn:hover { background: #d5f0b8; }
+
+/* ── Actions ── */
+.ep-actions {
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.ep-btn {
+  background: linear-gradient(135deg, #c2f26b, #63a44a);
+  border: none;
+  border-radius: 16px;
+  padding: 14px 32px;
+  font-size: 1rem;
+  font-weight: 800;
+  color: #10220d;
+  cursor: pointer;
+  box-shadow: 0 8px 24px rgba(90, 156, 72, 0.22);
+  transition: transform 0.15s, filter 0.15s;
+}
+
+.ep-btn:hover {
+  transform: translateY(-2px);
+  filter: brightness(1.05);
+}
+
+.ep-btn-secondary {
+  background: #eef8e5;
+  border: 1.5px solid #b5e68a;
+  border-radius: 14px;
+  padding: 12px 28px;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #2d5a1e;
+  cursor: pointer;
+}
+
+/* ── Done screen ── */
+.ep-done-emoji { font-size: 4rem; }
+
+.ep-done-title {
+  font-size: 2.2rem;
+  font-weight: 900;
+  color: #1e2e22;
+  margin: 0;
+}
+
+.ep-done-sub {
+  color: #667763;
+  font-size: 1rem;
+  margin: 0;
+}
+
+.ep-empty-msg {
+  color: #667763;
+  font-size: 1rem;
+}
+
+/* ── Responsive ── */
+@media (max-width: 600px) {
+  .ep-card {
+    padding: 28px 20px 24px;
+  }
+
+  .ep-canvas {
+    width: 150px;
+    height: 150px;
+  }
+
+  .ep-syllable-label {
+    font-size: 1.3rem;
+  }
+}
