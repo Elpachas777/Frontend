@@ -103,7 +103,7 @@ function RegistrarAdmin() {
         confirmar: "",
       });
 
-      navigate("/Login");
+      navigate("/login");
     } catch (error) {
       await Swal.fire({
         title: "No se pudo registrar",
@@ -128,7 +128,7 @@ function RegistrarAdmin() {
       <div className="admin-register-shell">
         <div className="admin-register-card">
           <div className="admin-register-topbar">
-            <Link to="/Login" className="btn-secondary btn-secondary--blue">
+            <Link to="/login" className="btn-secondary btn-secondary--blue">
               ← Volver al inicio de sesión
             </Link>
           </div>

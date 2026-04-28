@@ -23,7 +23,7 @@ function RecuperarContra() {
         {/* Panel formulario — izquierda */}
         <div className="reset-card">
           <div className="reset-topbar">
-            <Link to="/Login" className="btn-secondary btn-secondary--blue">
+            <Link to="/login" className="btn-secondary btn-secondary--blue">
               ← Volver al inicio de sesión
             </Link>
           </div>

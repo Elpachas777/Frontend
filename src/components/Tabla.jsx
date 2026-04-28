@@ -1,6 +1,8 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
+import Swal from "sweetalert2";
+import "sweetalert2/dist/sweetalert2.min.css";
 import "./Tabla.css";
-import Confirmar from "./Confirmar";
+import { verificarContraseña } from "../api/sesion.api";
 
 function Tabla({
   children,
@@ -11,6 +13,7 @@ function Tabla({
   Borrar,
   Editar,
   id,
+  ocultarColumnas = [],
 }) {
   const [encabezados, setEncabezados] = useState([]);
   const [mostrarModal, setMostrarModal] = useState(false);
@@ -19,7 +22,6 @@ function Tabla({
   const [mostrarEditar, setMostrarEditar] = useState(false);
   const [mostrarVer, setMostrarVer] = useState(false);
   const [filaSeleccionada, setFilaSeleccionada] = useState(null);
-  const [mostrarBorrar, setMostrarBorrar] = useState(false);
 
   const textos = {
     docentes: {
@@ -49,49 +51,137 @@ function Tabla({
   };
 
   const config = textos[titulo] || {
-    plural: titulo,
-    singular: titulo,
+    plural: titulo || "registros",
+    singular: titulo || "registro",
     emoji: "📋",
     descripcion: "Administra la información disponible.",
   };
 
-  const handleEditar = (fila) => {
-    setMostrarEditar(true);
-    setFilaSeleccionada(fila);
+  const cerrarCrear = () => {
+    setMostrarModal(false);
   };
 
-  const handleVer = (fila) => {
-    setMostrarVer(true);
-    setFilaSeleccionada(fila);
+  const cerrarEditar = () => {
+    setMostrarEditar(false);
+    setFilaSeleccionada(null);
   };
 
-  const handleBorrar = (fila) => {
-    setMostrarBorrar(true);
-    setFilaSeleccionada(fila);
+  const cerrarVer = () => {
+    setMostrarVer(false);
+    setFilaSeleccionada(null);
   };
 
   const handleCrear = () => {
     setMostrarModal(true);
   };
 
+  const handleEditar = (fila) => {
+    setFilaSeleccionada(fila);
+    setMostrarEditar(true);
+  };
+
+  const handleVer = (fila) => {
+    setFilaSeleccionada(fila);
+    setMostrarVer(true);
+  };
+
+  const handleBorrar = async (fila) => {
+    if (!Borrar) return;
+
+    const result = await Swal.fire({
+      title: "Confirmación requerida",
+      html: `Ingresa la contraseña de tu usuario para eliminar el ${config.singular}.`,
+      icon: "warning",
+      input: "password",
+      inputPlaceholder: "Contraseña",
+      inputAttributes: {
+        autocapitalize: "off",
+        autocorrect: "off",
+      },
+      showCancelButton: true,
+      confirmButtonText: "Eliminar",
+      cancelButtonText: "Cancelar",
+      reverseButtons: true,
+      focusCancel: true,
+      preConfirm: async (value) => {
+        if (!value) {
+          Swal.showValidationMessage(
+            "Debes ingresar tu contraseña para confirmar."
+          );
+          return false;
+        }
+
+        const esValida = await verificarContraseña(value);
+        if (!esValida) {
+          Swal.showValidationMessage(
+            "Esa no es la contraseña correcta. Inténtalo de nuevo."
+          );
+          return false;
+        }
+
+        return value;
+      },
+    });
+
+    if (!result.isConfirmed || !result.value) return;
+
+    try {
+      await Borrar(fila.id != null ? fila.id : fila);
+
+      setActualizado((prev) => !prev);
+
+      await Swal.fire({
+        title: "Eliminado",
+        text: `${
+          config.singular.charAt(0).toUpperCase() + config.singular.slice(1)
+        } eliminado correctamente.`,
+        icon: "success",
+        timer: 1600,
+        showConfirmButton: false,
+      });
+    } catch (error) {
+      console.log(error);
+
+      Swal.fire({
+        title: "Error",
+        text: "No se pudo eliminar el registro. Intenta de nuevo.",
+        icon: "error",
+      });
+    }
+  };
+
+  const ocultarColumnasKey = ocultarColumnas.join(",");
+
   useEffect(() => {
     const consultarDatos = async () => {
       try {
-        const response = await obtenerDatos(id);
-        setDatos(response);
+        if (!obtenerDatos) return;
 
-        if (response.length > 0) {
-          setEncabezados(Object.keys(response[0]));
+        const response = await obtenerDatos(id);
+        const datosRespuesta = Array.isArray(response) ? response : [];
+
+        setDatos(datosRespuesta);
+
+        if (datosRespuesta.length > 0) {
+          const columnas = Object.keys(datosRespuesta[0]).filter(
+            (columna) => !ocultarColumnas.includes(columna)
+          );
+
+          setEncabezados(columnas);
         } else {
           setEncabezados([]);
         }
       } catch (error) {
         console.log(error);
+        setDatos([]);
+        setEncabezados([]);
       }
     };
 
     consultarDatos();
-  }, [actualizado, obtenerDatos, id]);
+    // ocultarColumnasKey es la versión estable (string) de ocultarColumnas
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [actualizado, id, ocultarColumnasKey]);
 
   return (
     <section className="tabla-container">
@@ -105,11 +195,13 @@ function Tabla({
           <p>{config.descripcion}</p>
         </div>
 
-        <div className="ejercicios-header">
-          <button className="crear-btn" name="crear" onClick={handleCrear}>
-            + Crear nuevo {config.singular}
-          </button>
-        </div>
+        {Crear && (
+          <div className="ejercicios-header">
+            <button className="crear-btn" name="crear" onClick={handleCrear}>
+              + Crear nuevo {config.singular}
+            </button>
+          </div>
+        )}
       </div>
 
       <div className="tabla-wrap">
@@ -119,6 +211,7 @@ function Tabla({
               {encabezados.map((columna) => (
                 <th key={columna}>{columna}</th>
               ))}
+
               <th key="acciones">Acciones</th>
             </tr>
           </thead>
@@ -136,6 +229,7 @@ function Tabla({
                   <td className="acciones">
                     {Ver && (
                       <button
+                        type="button"
                         className="btn btn-ver"
                         name="ver"
                         onClick={() => handleVer(fila)}
@@ -144,21 +238,27 @@ function Tabla({
                       </button>
                     )}
 
-                    <button
-                      className="btn btn-editar"
-                      name="editar"
-                      onClick={() => handleEditar(fila)}
-                    >
-                      Editar
-                    </button>
+                    {Editar && (
+                      <button
+                        type="button"
+                        className="btn btn-editar"
+                        name="editar"
+                        onClick={() => handleEditar(fila)}
+                      >
+                        Editar
+                      </button>
+                    )}
 
-                    <button
-                      className="btn btn-eliminar"
-                      name="eliminar"
-                      onClick={() => handleBorrar(fila)}
-                    >
-                      Eliminar
-                    </button>
+                    {Borrar && (
+                      <button
+                        type="button"
+                        className="btn btn-eliminar"
+                        name="eliminar"
+                        onClick={() => handleBorrar(fila)}
+                      >
+                        Eliminar
+                      </button>
+                    )}
                   </td>
                 </tr>
               ))
@@ -169,7 +269,8 @@ function Tabla({
                     <span className="tabla-empty-icon">🌱</span>
                     <h3>Aún no hay registros</h3>
                     <p>
-                      Cuando agregues un nuevo {config.singular}, aparecerá aquí.
+                      Cuando agregues un nuevo {config.singular}, aparecerá
+                      aquí.
                     </p>
                   </div>
                 </td>
@@ -181,36 +282,27 @@ function Tabla({
 
       {children}
 
-      {mostrarVer && filaSeleccionada && (
+      {mostrarVer && filaSeleccionada && Ver && (
         <Ver
-          onCerrar={() => setMostrarVer(false)}
+          onCerrar={cerrarVer}
+          id={filaSeleccionada.id}
           filaSeleccionada={filaSeleccionada}
-          {...filaSeleccionada}
         />
       )}
 
-      {mostrarModal && (
+      {mostrarModal && Crear && (
         <Crear
           setActualizado={setActualizado}
-          onCerrar={() => setMostrarModal(false)}
+          onCerrar={cerrarCrear}
           id={id}
         />
       )}
 
-      {mostrarEditar && filaSeleccionada && (
+      {mostrarEditar && filaSeleccionada && Editar && (
         <Editar
           setActualizado={setActualizado}
-          onCerrar={() => setMostrarEditar(false)}
+          onCerrar={cerrarEditar}
           filaSeleccionada={filaSeleccionada}
-        />
-      )}
-
-      {mostrarBorrar && filaSeleccionada && (
-        <Confirmar
-          onCerrar={() => setMostrarBorrar(false)}
-          filaSeleccionada={filaSeleccionada}
-          Borrar={Borrar}
-          setActualizado={setActualizado}
         />
       )}
     </section>

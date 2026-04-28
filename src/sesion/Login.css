@@ -149,6 +149,27 @@ background-image: url("https://www.transparenttextures.com/patterns/arabesque.pn
   box-shadow: 0 0 0 4px rgba(158, 211, 77, 0.14);
 }
 
+.password-field {
+  position: relative;
+}
+
+.toggle-password-btn {
+  position: absolute;
+  right: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: transparent;
+  border: none;
+  color: #6b795f;
+  font-size: 1.1rem;
+  cursor: pointer;
+  padding: 0;
+}
+
+.toggle-password-btn:hover {
+  color: #4b5f3e;
+}
+
 .login-btn {
   width: 100%;
   height: 50px;

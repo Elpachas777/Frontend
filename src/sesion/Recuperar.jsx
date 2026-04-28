@@ -20,7 +20,7 @@ function Recuperar() {
         <div className="recuperar-card">
           <div className="recuperar-topbar">
             <Link
-              to="/Login"
+              to="/login"
               className="btn-secondary btn-secondary--blue"
             >
               ← Volver al inicio de sesión

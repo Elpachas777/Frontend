@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
 import SideBar from "../components/SideBar";
 import Grupos from "../docente/Grupos";
@@ -8,19 +9,62 @@ import { cerrarSesion } from "../api/sesion.api";
 import useCredenciales from "../hooks/useCredenciales";
 
 function Privado({ setAutentificado }) {
-  const { credencial } = useCredenciales();
+  const [menuAbierto, setMenuAbierto] = useState(false);
+  const { credencial, usuario } = useCredenciales();
 
-  const handleClick = () => {
+  const handleLogout = () => {
     cerrarSesion({ setAutentificado });
   };
+
+  const displayName = usuario?.nombre || "Usuario";
+  const roleLabel =
+    credencial === "director"
+      ? "Director"
+      : credencial === "docente"
+      ? "Docente"
+      : credencial === "admin"
+      ? "Admin"
+      : "Usuario";
 
   return (
     <div className="private-layout">
       <SideBar credencial={credencial} />
 
-      <button className="logout-btn" onClick={handleClick}>
-        Cerrar sesión
-      </button>
+      <div className="private-topbar">
+        <div className="private-user-widget">
+          <button
+            type="button"
+            className="private-user-toggle"
+            onClick={() => setMenuAbierto((prev) => !prev)}
+          >
+            <div className="private-user-avatar">
+              {usuario?.foto ? (
+                <img src={usuario.foto} alt={displayName} />
+              ) : (
+                <span>👤</span>
+              )}
+            </div>
+            <div className="private-user-summary">
+              <span className="private-user-name">{displayName}</span>
+              <span className="private-user-role">{roleLabel}</span>
+            </div>
+            <span className="private-user-caret">{menuAbierto ? "▴" : "▾"}</span>
+          </button>
+
+          {menuAbierto && (
+            <div className="private-user-dropdown">
+              <div className="private-user-dropdown-name">{displayName}</div>
+              <button
+                type="button"
+                className="private-user-dropdown-logout"
+                onClick={handleLogout}
+              >
+                Cerrar sesión
+              </button>
+            </div>
+          )}
+        </div>
+      </div>
 
       <main className="private-main">
         {credencial === "admin" && (
@@ -30,7 +74,7 @@ function Privado({ setAutentificado }) {
           </Routes>
         )}
 
-        {credencial === "docente" && (
+        {(credencial === "docente" || credencial === "director") && (
           <Routes>
             <Route path="/Alumnos" element={<Alumnos />} />
             <Route path="/Grupos" element={<Grupos />} />

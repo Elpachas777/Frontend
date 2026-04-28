@@ -168,6 +168,8 @@
 .acciones {
   display: flex;
   flex-wrap: wrap;
+  justify-content: flex-end;
+  align-items: center;
   gap: 10px;
 }
 
@@ -207,6 +209,11 @@
   background: #ff7f7f;
   color: #651818;
   box-shadow: 0 8px 18px rgba(255, 127, 127, 0.2);
+  min-width: 78px;
+  height: 34px;
+  padding: 0 12px;
+  font-size: 0.9rem;
+  margin-left: auto;
 }
 
 .tabla-empty {

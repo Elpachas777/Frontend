@@ -4,7 +4,7 @@ import PreviewRoutes from "../dev/PreviewRoutes";
 import useAuth from "../hooks/useAuth";
 
 function AppRouter() {
-  const { autentificado, setAutentificado } = useAuth();
+  const { autentificado, cargando, setAutentificado } = useAuth();
 
   const previewMode =
     import.meta.env.DEV || import.meta.env.VITE_PREVIEW_MODE === "true";

@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(node -e ' *)",
+      "PowerShell(winget install Anthropic.ClaudeCode)"
+    ]
+  }
+}

@@ -98,6 +98,7 @@ function EditarGrupo({ onCerrar, setActualizado, filaSeleccionada }) {
           </div>
 
           <button
+            type="button"
             className="guardar-btn"
             style={{ marginTop: "20px" }}
             onClick={handleClick}

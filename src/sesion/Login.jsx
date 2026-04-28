@@ -9,8 +9,9 @@ import { useState } from "react";
 
 function Login({ setAutentificado }) {
   const [mensaje, setMensaje] = useState(null);
+  const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
-  const { formData, handleChange } = useFormData(DATOS.docente_login);
+  const { formData, handleChange } = useFormData("docente_login");
 
   const { handleSubmit } = useIniciarSesion({
     formData,
@@ -33,7 +34,7 @@ function Login({ setAutentificado }) {
             <button
               type="button"
               className="btn-secondary btn-secondary--blue"
-              onClick={() => navigate(-1)}
+              onClick={() => navigate("/")}
             >
               Volver
             </button>
@@ -58,22 +59,32 @@ function Login({ setAutentificado }) {
                   type="email"
                   id="correo"
                   name="correo"
-                  placeholder="tu@correo.com"
+                  placeholder="tu@ipn.mx"
                   required
+                  value={formData.correo}
                   onChange={handleChange}
                 />
               </div>
 
-              <div className="login-field">
+              <div className="login-field password-field">
                 <label htmlFor="password">Contraseña</label>
                 <input
-                  type="password"
+                  type={showPassword ? "text" : "password"}
                   id="password"
                   name="password"
                   placeholder="••••••••"
                   required
+                  value={formData.password}
                   onChange={handleChange}
                 />
+                <button
+                  type="button"
+                  className="toggle-password-btn"
+                  onClick={() => setShowPassword((prev) => !prev)}
+                  aria-label={showPassword ? "Ocultar contraseña" : "Mostrar contraseña"}
+                >
+                  {showPassword ? "🙈" : "👁️"}
+                </button>
               </div>
 
               <button type="submit" className="login-btn" name="iniciar">

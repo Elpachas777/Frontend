@@ -1,7 +1,7 @@
 import { NavLink } from "react-router-dom";
 import "./SideBar.css";
 
-function SideBar({ credencial, basePath = "" }) {
+function SideBar({ credencial, basePath = "", onCerrarSesion }) {
   const rutas = {
     admin: basePath ? `${basePath}/docentes` : "/Docentes",
     alumnos: basePath ? `${basePath}/alumnos` : "/Alumnos",
@@ -29,7 +29,7 @@ function SideBar({ credencial, basePath = "" }) {
           </NavLink>
         )}
 
-        {credencial === "docente" && (
+        {(credencial === "docente" || credencial === "director") && (
           <>
             <NavLink
               to={rutas.alumnos}
@@ -54,6 +54,14 @@ function SideBar({ credencial, basePath = "" }) {
           </>
         )}
       </nav>
+
+      {onCerrarSesion && (
+        <div className="sidebar-logout">
+          <button className="sidebar-logout-btn" onClick={onCerrarSesion}>
+            Cerrar sesión
+          </button>
+        </div>
+      )}
     </aside>
   );
 }
