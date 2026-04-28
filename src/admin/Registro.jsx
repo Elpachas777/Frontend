@@ -4,6 +4,7 @@ import { USUARIOS } from "../enums/tipoUsuarios";
 import useFormData from "../hooks/useFormData";
 import Mensaje from "../components/Mensaje";
 import { useRef, useState } from "react";
+import { obtenerEscuelas } from "../api/escuela.api";
 
 function Registro({ onCerrar, setActualizado }) {
   const [mensaje, setMensaje] = useState(null);
