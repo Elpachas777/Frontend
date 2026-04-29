@@ -5,7 +5,6 @@ export const DATOS = {
     escuela: "",
     correo: "",
     password: "",
-    confirmar: "",
   },
   docente_login: {
     correo: "",

@@ -1,11 +1,21 @@
 import { registrarDocente } from "../api/docente.api";
 
-function registrar({ formData, setActualizado, setMensaje }) {
+function validar(formData) {
+  const e = {};
+  if (!formData.nombres) e.nombre = "El nombre es obligatorio.";
+  if (!formData.apellidos) e.apellidos = "Los apellidos son obligatorios";
+  if (!formData.escuela) e.escuela = "Selecciona una escuela.";
+  if (!formData.correo) e.correo = "El correo es obligatorio";
+  return e;
+}
+
+function registrar({ formData, setErrores, setMensaje }) {
   const handleSubmit = async (event) => {
     event.preventDefault();
+    const errores = validar(formData);
 
-    if (formData.password !== formData.confirmar) {
-      setMensaje({ tipo: "error", mensaje: "Las contraseñas no coinciden" });
+    if (!errores) {
+      setErrores(errores);
       return;
     }
 
@@ -19,7 +29,7 @@ function registrar({ formData, setActualizado, setMensaje }) {
       };
 
       const respuesta = await registrarDocente(datos);
-      setActualizado((prev) => !prev);
+
       setMensaje(respuesta);
     } catch (error) {
       setMensaje(error.response.data);

@@ -1,5 +1,6 @@
 import axios from "axios";
 const urlBack = import.meta.env.VITE_URL_BACKEND;
+
 export const registrarDocente = async (data) => {
   const res = await axios.post(`${urlBack}/registrarDocente`, data);
   return res.data;

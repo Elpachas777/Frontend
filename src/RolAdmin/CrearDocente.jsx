@@ -1,6 +1,9 @@
 import { useState } from "react";
+import Mensaje from "../components/Mensaje";
+import { USUARIOS } from "../enums/tipoUsuarios";
+import useFormData from "../hooks/useFormData";
+import registrar from "../utils/registrarDocente";
 import { IconEye, IconEyeOff } from "./EyeIcons";
-import { getDocentes, nextId, saveDocentes } from "./mockData";
 import "./RolAdmin.css";
 
 const CORREO_REGEX = /^[^\s@]+@ipn\.mx$/;
@@ -8,16 +11,16 @@ const PASSWORD_REGEX =
   /^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
 
 function CrearDocente({ escuelas, onCerrar, onGuardado }) {
-  const [form, setForm] = useState({
-    nombre: "",
-    apellidos: "",
-    escuela: "",
-    correo: "",
-    password: "",
-    foto: "",
-  });
   const [errores, setErrores] = useState({});
   const [showPassword, setShowPassword] = useState(false);
+  const [mensaje, setMensaje] = useState(null);
+
+  const { formData, handleChange } = useFormData(USUARIOS.DOCENTE);
+  const { handleSubmit } = registrar({ formData, setErrores, setMensaje });
+
+  const [form, setForm] = useState({
+    foto: "",
+  });
 
   const handleFoto = (e) => {
     const file = e.target.files[0];
@@ -26,49 +29,6 @@ function CrearDocente({ escuelas, onCerrar, onGuardado }) {
     reader.onload = (ev) =>
       setForm((prev) => ({ ...prev, foto: ev.target.result }));
     reader.readAsDataURL(file);
-  };
-
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setForm((prev) => ({ ...prev, [name]: value }));
-    setErrores((prev) => ({ ...prev, [name]: "" }));
-  };
-
-  const validar = () => {
-    const e = {};
-    if (!form.nombre.trim()) e.nombre = "El nombre es obligatorio.";
-    if (!form.apellidos.trim()) e.apellidos = "Los apellidos son obligatorios";
-    if (!form.escuela) e.escuela = "Selecciona una escuela.";
-    /*if (!CORREO_REGEX.test(form.correo))
-      e.correo = "El correo debe terminar en @ipn.mx";
-    if (!PASSWORD_REGEX.test(form.password))
-      e.password =
-        "Mínimo 8 caracteres, una mayúscula, un número y un carácter especial (@$!%*?&).";*/
-    return e;
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    const errs = validar();
-    if (Object.keys(errs).length > 0) {
-      setErrores(errs);
-      return;
-    }
-
-    const docentes = getDocentes();
-    const nuevo = {
-      id: nextId(docentes),
-      nombre: form.nombre,
-      escuela: form.escuela,
-      correo: form.correo,
-      password: form.password,
-      foto: form.foto,
-      habilitado: true,
-      fechaIngreso: new Date().toISOString().split("T")[0],
-      grupos: [],
-    };
-    saveDocentes([...docentes, nuevo]);
-    onGuardado();
   };
 
   return (
@@ -81,6 +41,7 @@ function CrearDocente({ escuelas, onCerrar, onGuardado }) {
           </button>
         </div>
         <form className="modal-form" onSubmit={handleSubmit}>
+          {mensaje && <Mensaje tipo={mensaje.tipo} mensaje={mensaje.mensaje} />}
           <div className="modal-field">
             <label>Foto</label>
             <div className="foto-upload-row">
@@ -97,8 +58,8 @@ function CrearDocente({ escuelas, onCerrar, onGuardado }) {
           <div className="modal-field">
             <label>Nombre</label>
             <input
-              name="nombre"
-              value={form.nombre}
+              name="nombres"
+              value={formData.nombres}
               onChange={handleChange}
               placeholder="Nombre completo"
             />
@@ -110,7 +71,7 @@ function CrearDocente({ escuelas, onCerrar, onGuardado }) {
             <label>Apellidos</label>
             <input
               name="apellidos"
-              value={form.apellidos}
+              value={formData.apellidos}
               onChange={handleChange}
               placeholder="Apellidos completos"
             />
@@ -120,10 +81,14 @@ function CrearDocente({ escuelas, onCerrar, onGuardado }) {
           </div>
           <div className="modal-field">
             <label>Escuela</label>
-            <select name="escuela" value={form.escuela} onChange={handleChange}>
+            <select
+              name="escuela"
+              value={formData.escuela}
+              onChange={handleChange}
+            >
               <option value="">Selecciona una escuela</option>
               {escuelas.map((e) => (
-                <option key={e.id} value={e.nombre}>
+                <option key={e.id} value={e.id}>
                   {e.nombre}
                 </option>
               ))}
@@ -136,7 +101,7 @@ function CrearDocente({ escuelas, onCerrar, onGuardado }) {
             <label>Correo</label>
             <input
               name="correo"
-              value={form.correo}
+              value={formData.correo}
               onChange={handleChange}
               placeholder="nombre@ipn.mx"
               type="email"
@@ -150,7 +115,7 @@ function CrearDocente({ escuelas, onCerrar, onGuardado }) {
             <div className="password-input-wrap">
               <input
                 name="password"
-                value={form.password}
+                value={formData.password}
                 onChange={handleChange}
                 placeholder="••••••••"
                 type={showPassword ? "text" : "password"}

@@ -1,5 +1,4 @@
 import { useNavigate } from "react-router-dom";
-import Swal from "sweetalert2";
 import axios from "../utils/axios.js";
 
 const urlBack = import.meta.env.VITE_URL_BACKEND;
@@ -14,13 +13,12 @@ export function useIniciarSesion({ formData, setAutentificado, setMensaje }) {
 
   const validarContraseña = (password) => {
     // Al menos 8 caracteres, una mayúscula, una minúscula, un número y un carácter especial
-    const regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+    const regex =
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
     return regex.test(password);
   };
 
   const handleSubmit = async (event) => {
-    event.preventDefault();
-
     event.preventDefault();
     try {
       const respuesta = await axios.post(`${urlBack}/iniciarSesion`, formData);
@@ -104,7 +102,7 @@ export async function verificarContraseña(password) {
   if (previewMode) {
     try {
       const stored = JSON.parse(
-        localStorage.getItem("frontend_user") || "null"
+        localStorage.getItem("frontend_user") || "null",
       );
       return password === PREVIEW_PASSWORDS[stored?.rol];
     } catch {
