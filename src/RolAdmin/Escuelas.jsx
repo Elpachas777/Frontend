@@ -1,13 +1,13 @@
-import { useState, useEffect, useCallback } from "react";
+import { useCallback, useEffect, useState } from "react";
 import Swal from "sweetalert2";
 import "sweetalert2/dist/sweetalert2.min.css";
-import "../components/Tabla.css";
-import "./RolAdmin.css";
-import { getEscuelas, saveEscuelas } from "./mockData";
 import { verificarContraseña } from "../api/sesion.api";
+import "../components/Tabla.css";
 import CrearEscuela from "./CrearEscuela";
 import EditarEscuela from "./EditarEscuela";
+import "./RolAdmin.css";
 import VerEscuela from "./VerEscuela";
+import { getEscuelas, saveEscuelas } from "./mockData";
 
 function Escuelas() {
   const [escuelas, setEscuelas] = useState([]);
@@ -46,7 +46,9 @@ function Escuelas() {
         }
         const valida = await verificarContraseña(value);
         if (!valida) {
-          Swal.showValidationMessage("Contraseña incorrecta. Inténtalo de nuevo.");
+          Swal.showValidationMessage(
+            "Contraseña incorrecta. Inténtalo de nuevo.",
+          );
           return false;
         }
         return value;
@@ -114,44 +116,59 @@ function Escuelas() {
             {(() => {
               const n = filtroNombre.toLowerCase();
               const d = filtroDirector.toLowerCase();
-              const filtradas = escuelas.filter((e) =>
-                (!n || e.nombre?.toLowerCase().includes(n)) &&
-                (!d || e.director?.toLowerCase().includes(d))
+              const filtradas = escuelas.filter(
+                (e) =>
+                  (!n || e.nombre?.toLowerCase().includes(n)) &&
+                  (!d || e.director?.toLowerCase().includes(d)),
               );
-              return filtradas.length > 0 ? filtradas.map((e) => (
-                <tr key={e.id}>
-                  <td>{e.id}</td>
-                  <td>
-                    {e.logo ? (
-                      <img
-                        src={e.logo}
-                        alt={e.nombre}
-                        className="escuela-logo-thumb"
-                      />
-                    ) : (
-                      <span className="escuela-logo-empty">🏫</span>
-                    )}
-                  </td>
-                  <td>{e.nombre}</td>
-                  <td className="acciones">
-                    <button
-                      type="button"
-                      className="btn btn-ver"
-                      onClick={() => { setSeleccionada(e); setMostrarVer(true); }}
-                    >Ver</button>
-                    <button
-                      type="button"
-                      className="btn btn-editar"
-                      onClick={() => { setSeleccionada(e); setMostrarEditar(true); }}
-                    >Editar</button>
-                    <button
-                      type="button"
-                      className="btn btn-eliminar"
-                      onClick={() => handleEliminar(e)}
-                    >Eliminar</button>
-                  </td>
-                </tr>
-              )) : (
+              return filtradas.length > 0 ? (
+                filtradas.map((e) => (
+                  <tr key={e.id}>
+                    <td>{e.id}</td>
+                    <td>
+                      {e.logo ? (
+                        <img
+                          src={e.logo}
+                          alt={e.nombre}
+                          className="escuela-logo-thumb"
+                        />
+                      ) : (
+                        <span className="escuela-logo-empty">🏫</span>
+                      )}
+                    </td>
+                    <td>{e.nombre}</td>
+                    <td className="acciones">
+                      <button
+                        type="button"
+                        className="btn btn-ver"
+                        onClick={() => {
+                          setSeleccionada(e);
+                          setMostrarVer(true);
+                        }}
+                      >
+                        Ver
+                      </button>
+                      <button
+                        type="button"
+                        className="btn btn-editar"
+                        onClick={() => {
+                          setSeleccionada(e);
+                          setMostrarEditar(true);
+                        }}
+                      >
+                        Editar
+                      </button>
+                      <button
+                        type="button"
+                        className="btn btn-eliminar"
+                        onClick={() => handleEliminar(e)}
+                      >
+                        Eliminar
+                      </button>
+                    </td>
+                  </tr>
+                ))
+              ) : (
                 <tr>
                   <td colSpan={4}>
                     <div className="tabla-empty">
@@ -170,22 +187,35 @@ function Escuelas() {
       {mostrarVer && seleccionada && (
         <VerEscuela
           escuela={seleccionada}
-          onCerrar={() => { setMostrarVer(false); setSeleccionada(null); }}
+          onCerrar={() => {
+            setMostrarVer(false);
+            setSeleccionada(null);
+          }}
         />
       )}
 
       {mostrarCrear && (
         <CrearEscuela
           onCerrar={() => setMostrarCrear(false)}
-          onGuardado={() => { setMostrarCrear(false); cargar(); }}
+          onGuardado={() => {
+            setMostrarCrear(false);
+            cargar();
+          }}
         />
       )}
 
       {mostrarEditar && seleccionada && (
         <EditarEscuela
           escuela={seleccionada}
-          onCerrar={() => { setMostrarEditar(false); setSeleccionada(null); }}
-          onGuardado={() => { setMostrarEditar(false); setSeleccionada(null); cargar(); }}
+          onCerrar={() => {
+            setMostrarEditar(false);
+            setSeleccionada(null);
+          }}
+          onGuardado={() => {
+            setMostrarEditar(false);
+            setSeleccionada(null);
+            cargar();
+          }}
         />
       )}
     </section>

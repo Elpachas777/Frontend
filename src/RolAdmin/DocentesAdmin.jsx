@@ -1,9 +1,10 @@
-import { useState, useEffect, useCallback } from "react";
+import { useCallback, useEffect, useState } from "react";
 import "../components/Tabla.css";
-import "./RolAdmin.css";
-import { getDocentes, getEscuelas } from "./mockData";
+import { obtenerDocentes } from "../utils/docentes";
+import { obtenerEscuelas } from "../utils/escuela";
 import CrearDocente from "./CrearDocente";
 import EditarDocente from "./EditarDocente";
+import "./RolAdmin.css";
 import VerDocente from "./VerDocente";
 
 function DocentesAdmin() {
@@ -16,18 +17,24 @@ function DocentesAdmin() {
   const [mostrarVer, setMostrarVer] = useState(false);
   const [seleccionado, setSeleccionado] = useState(null);
 
-  const cargar = useCallback(() => {
-    setDocentes(getDocentes());
-    setEscuelas(getEscuelas());
+  const cargar = useCallback(async () => {
+    const docentesArreglo = await obtenerDocentes();
+    const escuelasArreglo = await obtenerEscuelas();
+
+    setDocentes(docentesArreglo);
+    setEscuelas(escuelasArreglo);
   }, []);
 
   useEffect(() => {
     cargar();
   }, [cargar]);
 
-  const docentesFiltrados = docentes.filter((d) => {
-    const matchNombre = d.nombre.toLowerCase().includes(filtroNombre.toLowerCase());
-    const matchEscuela = filtroEscuela === "" || d.escuela === filtroEscuela;
+  const docentesFiltrados = docentes.filter((docente) => {
+    const matchNombre = docente.nombre
+      .toLowerCase()
+      .includes(filtroNombre.toLowerCase());
+    const matchEscuela =
+      filtroEscuela === "" || docente.escuela === filtroEscuela;
     return matchNombre && matchEscuela;
   });
 
@@ -63,8 +70,10 @@ function DocentesAdmin() {
             onChange={(e) => setFiltroEscuela(e.target.value)}
           >
             <option value="">Todas</option>
-            {escuelas.map((e) => (
-              <option key={e.id} value={e.nombre}>{e.nombre}</option>
+            {escuelas.map((escuela) => (
+              <option key={escuela.id} value={escuela.nombre}>
+                {escuela.nombre}
+              </option>
             ))}
           </select>
         </div>
@@ -83,23 +92,33 @@ function DocentesAdmin() {
           </thead>
           <tbody>
             {docentesFiltrados.length > 0 ? (
-              docentesFiltrados.map((d) => (
-                <tr key={d.id}>
-                  <td>{d.id}</td>
-                  <td>{d.nombre}</td>
-                  <td>{d.escuela}</td>
-                  <td>{d.correo}</td>
+              docentesFiltrados.map((docente) => (
+                <tr key={docente.id}>
+                  <td>{docente.id}</td>
+                  <td>{docente.nombre}</td>
+                  <td>{docente.escuela}</td>
+                  <td>{docente.correo}</td>
                   <td className="acciones">
                     <button
                       type="button"
                       className="btn btn-ver"
-                      onClick={() => { setSeleccionado(d); setMostrarVer(true); }}
-                    >Ver</button>
+                      onClick={() => {
+                        setSeleccionado(docente);
+                        setMostrarVer(true);
+                      }}
+                    >
+                      Ver
+                    </button>
                     <button
                       type="button"
                       className="btn btn-editar"
-                      onClick={() => { setSeleccionado(d); setMostrarEditar(true); }}
-                    >Editar</button>
+                      onClick={() => {
+                        setSeleccionado(docente);
+                        setMostrarEditar(true);
+                      }}
+                    >
+                      Editar
+                    </button>
                   </td>
                 </tr>
               ))
@@ -121,8 +140,15 @@ function DocentesAdmin() {
       {mostrarVer && seleccionado && (
         <VerDocente
           docente={seleccionado}
-          onCerrar={() => { setMostrarVer(false); setSeleccionado(null); }}
-          onEliminado={() => { setMostrarVer(false); setSeleccionado(null); cargar(); }}
+          onCerrar={() => {
+            setMostrarVer(false);
+            setSeleccionado(null);
+          }}
+          onEliminado={() => {
+            setMostrarVer(false);
+            setSeleccionado(null);
+            cargar();
+          }}
         />
       )}
 
@@ -130,7 +156,10 @@ function DocentesAdmin() {
         <CrearDocente
           escuelas={escuelas}
           onCerrar={() => setMostrarCrear(false)}
-          onGuardado={() => { setMostrarCrear(false); cargar(); }}
+          onGuardado={() => {
+            setMostrarCrear(false);
+            cargar();
+          }}
         />
       )}
 
@@ -138,8 +167,15 @@ function DocentesAdmin() {
         <EditarDocente
           docente={seleccionado}
           escuelas={escuelas}
-          onCerrar={() => { setMostrarEditar(false); setSeleccionado(null); }}
-          onGuardado={() => { setMostrarEditar(false); setSeleccionado(null); cargar(); }}
+          onCerrar={() => {
+            setMostrarEditar(false);
+            setSeleccionado(null);
+          }}
+          onGuardado={() => {
+            setMostrarEditar(false);
+            setSeleccionado(null);
+            cargar();
+          }}
         />
       )}
     </section>

@@ -23,7 +23,8 @@ function toEmbedUrl(url) {
     // Fallback: q param
     const u = new URL(url);
     const q = u.searchParams.get("q");
-    if (q) return `https://maps.google.com/maps?q=${encodeURIComponent(q)}&output=embed`;
+    if (q)
+      return `https://maps.google.com/maps?q=${encodeURIComponent(q)}&output=embed`;
 
     return null;
   } catch {
@@ -35,9 +36,7 @@ function VerEscuela({ escuela, onCerrar }) {
   const embedUrl = toEmbedUrl(escuela.ubicacion);
   const isMapUrl = /^https?:\/\//i.test(escuela.ubicacion || "");
 
-  const profesores = getDocentes().filter(
-    (d) => d.escuela === escuela.nombre
-  );
+  const profesores = getDocentes().filter((d) => d.escuela === escuela.nombre);
 
   return (
     <div className="modal-overlay" onClick={onCerrar}>
@@ -47,7 +46,9 @@ function VerEscuela({ escuela, onCerrar }) {
       >
         <div className="modal-header">
           <h2>Detalle de la escuela</h2>
-          <button type="button" className="modal-close" onClick={onCerrar}>✕</button>
+          <button type="button" className="modal-close" onClick={onCerrar}>
+            ✕
+          </button>
         </div>
 
         <div className="escuela-panel">
@@ -82,7 +83,9 @@ function VerEscuela({ escuela, onCerrar }) {
               )}
 
               <div className="escuela-info-fila">
-                <span className="escuela-info-label">Profesores ingresados</span>
+                <span className="escuela-info-label">
+                  Profesores ingresados
+                </span>
                 {profesores.length > 0 ? (
                   <ul className="escuela-profesores-list">
                     {profesores.map((p) => (
@@ -90,7 +93,9 @@ function VerEscuela({ escuela, onCerrar }) {
                     ))}
                   </ul>
                 ) : (
-                  <span className="escuela-sin-profesores">Sin profesores registrados</span>
+                  <span className="escuela-sin-profesores">
+                    Sin profesores registrados
+                  </span>
                 )}
               </div>
             </div>
@@ -129,7 +134,9 @@ function VerEscuela({ escuela, onCerrar }) {
         </div>
 
         <div className="modal-actions" style={{ marginTop: "24px" }}>
-          <button type="button" className="modal-btn-cancel" onClick={onCerrar}>Cerrar</button>
+          <button type="button" className="modal-btn-cancel" onClick={onCerrar}>
+            Cerrar
+          </button>
         </div>
       </div>
     </div>

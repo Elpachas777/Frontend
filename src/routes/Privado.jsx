@@ -1,16 +1,15 @@
-import { Navigate, Route, Routes } from "react-router-dom";
-import Docentes from "../admin/Docentes";
 import { useState } from "react";
+import { Navigate, Route, Routes } from "react-router-dom";
 import Swal from "sweetalert2";
-import SideBar from "../components/SideBar";
-import Grupos from "../docente/Grupos";
-import Alumnos from "../docente/Alumnos";
-import DocentesAdmin from "../RolAdmin/DocentesAdmin";
-import EscuelasAdmin from "../RolAdmin/Escuelas";
-import Ejercicios from "../docente/Ejercicios";
 import { cerrarSesion } from "../api/sesion.api";
+import SideBar from "../components/SideBar";
+import Alumnos from "../docente/Alumnos";
+import Ejercicios from "../docente/Ejercicios";
+import Grupos from "../docente/Grupos";
 import CrearCuentos from "../ejercicios/Cuentos";
 import useCredenciales from "../hooks/useCredenciales";
+import DocentesAdmin from "../RolAdmin/DocentesAdmin";
+import EscuelasAdmin from "../RolAdmin/Escuelas";
 
 function Privado({ setAutentificado }) {
   const [menuAbierto, setMenuAbierto] = useState(false);
@@ -35,10 +34,10 @@ function Privado({ setAutentificado }) {
     credencial === "director"
       ? "Director"
       : credencial === "docente"
-      ? "Docente"
-      : credencial === "admin"
-      ? "Admin"
-      : "Usuario";
+        ? "Docente"
+        : credencial === "admin"
+          ? "Admin"
+          : "Usuario";
 
   return (
     <div className="private-layout">
@@ -62,7 +61,9 @@ function Privado({ setAutentificado }) {
               <span className="private-user-name">{displayName}</span>
               <span className="private-user-role">{roleLabel}</span>
             </div>
-            <span className="private-user-caret">{menuAbierto ? "▴" : "▾"}</span>
+            <span className="private-user-caret">
+              {menuAbierto ? "▴" : "▾"}
+            </span>
           </button>
 
           {menuAbierto && (

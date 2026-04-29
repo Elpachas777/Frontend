@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
+import { verEscuelas } from "../api/escuela.api";
 import Mensaje from "../components/Mensaje";
 import { USUARIOS } from "../enums/tipoUsuarios";
 import useFormData from "../hooks/useFormData";
 import registrar from "../utils/registrarDocente";
 import "./Registro.css";
-import { obtenerEscuelas } from "../api/escuela.api";
 
 function Registro({ onCerrar, setActualizado }) {
   const [mensaje, setMensaje] = useState(null);
@@ -14,7 +14,7 @@ function Registro({ onCerrar, setActualizado }) {
 
   useEffect(() => {
     const cargarEscuelas = async () => {
-      const res = await obtenerEscuelas();
+      const res = await verEscuelas();
       setEscuelas(res);
     };
 

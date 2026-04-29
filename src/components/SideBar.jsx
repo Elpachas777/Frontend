@@ -54,6 +54,7 @@ function SideBar({ credencial, basePath = "", onCerrarSesion, usuario }) {
             >
               Grupos
             </NavLink>
+
             <NavLink
               to="/Canvas"
               className={({ isActive }) => (isActive ? "active" : "")}
