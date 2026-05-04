@@ -10,7 +10,7 @@ export function useRegistrarAdmin({ formData }) {
         nombres: formData.nombres,
         apellido: formData.apellidos,
         correo: formData.correo,
-        password: formData.password,
+        contraseña: formData.password,
       };
 
       await axios.post(`${urlBack}/crearAdmin`, datos);
