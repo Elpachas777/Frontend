@@ -1,13 +1,14 @@
 import { useCallback, useEffect, useState } from "react";
 import Swal from "sweetalert2";
 import "sweetalert2/dist/sweetalert2.min.css";
-import { verificarContraseña } from "../api/sesion.api";
+import { eliminar } from "../api/escuela.api";
 import "../components/Tabla.css";
+import { comprobarContraseña } from "../utils/admin";
+import { obtenerEscuelas } from "../utils/escuela";
 import CrearEscuela from "./CrearEscuela";
 import EditarEscuela from "./EditarEscuela";
 import "./RolAdmin.css";
 import VerEscuela from "./VerEscuela";
-import { getEscuelas, saveEscuelas } from "./mockData";
 
 function Escuelas() {
   const [escuelas, setEscuelas] = useState([]);
@@ -18,8 +19,9 @@ function Escuelas() {
   const [mostrarVer, setMostrarVer] = useState(false);
   const [seleccionada, setSeleccionada] = useState(null);
 
-  const cargar = useCallback(() => {
-    setEscuelas(getEscuelas());
+  const cargar = useCallback(async () => {
+    const escuelasArreglo = await obtenerEscuelas();
+    setEscuelas(escuelasArreglo);
   }, []);
 
   useEffect(() => {
@@ -44,7 +46,7 @@ function Escuelas() {
           Swal.showValidationMessage("Ingresa tu contraseña para confirmar.");
           return false;
         }
-        const valida = await verificarContraseña(value);
+        const valida = await comprobarContraseña(value);
         if (!valida) {
           Swal.showValidationMessage(
             "Contraseña incorrecta. Inténtalo de nuevo.",
@@ -57,9 +59,7 @@ function Escuelas() {
 
     if (!result.isConfirmed) return;
 
-    const actualizadas = escuelas.filter((e) => e.id !== escuela.id);
-    saveEscuelas(actualizadas);
-    setEscuelas(actualizadas);
+    await eliminar(escuela.id);
 
     await Swal.fire({
       title: "Eliminada",
@@ -87,6 +87,7 @@ function Escuelas() {
 
       <div className="tabla-filtros">
         <input
+          name="filtro-escuela"
           className="tabla-filtro-input"
           type="text"
           placeholder="Buscar por escuela..."
@@ -94,6 +95,7 @@ function Escuelas() {
           onChange={(ev) => setFiltroNombre(ev.target.value)}
         />
         <input
+          name="filtro-director"
           className="tabla-filtro-input"
           type="text"
           placeholder="Buscar por director..."
@@ -109,6 +111,7 @@ function Escuelas() {
               <th>id</th>
               <th>logo</th>
               <th>nombre</th>
+              <th>director</th>
               <th>Acciones</th>
             </tr>
           </thead>
@@ -117,32 +120,33 @@ function Escuelas() {
               const n = filtroNombre.toLowerCase();
               const d = filtroDirector.toLowerCase();
               const filtradas = escuelas.filter(
-                (e) =>
-                  (!n || e.nombre?.toLowerCase().includes(n)) &&
-                  (!d || e.director?.toLowerCase().includes(d)),
+                (escuela) =>
+                  (!n || escuela.nombre?.toLowerCase().includes(n)) &&
+                  (!d || escuela.director?.toLowerCase().includes(d)),
               );
               return filtradas.length > 0 ? (
-                filtradas.map((e) => (
-                  <tr key={e.id}>
-                    <td>{e.id}</td>
+                filtradas.map((escuela) => (
+                  <tr key={escuela.id}>
+                    <td>{escuela.id}</td>
                     <td>
-                      {e.logo ? (
+                      {escuela.logo ? (
                         <img
-                          src={e.logo}
-                          alt={e.nombre}
+                          src={escuela.logo}
+                          alt={escuela.nombre}
                           className="escuela-logo-thumb"
                         />
                       ) : (
                         <span className="escuela-logo-empty">🏫</span>
                       )}
                     </td>
-                    <td>{e.nombre}</td>
+                    <td>{escuela.nombre}</td>
+                    <td>{escuela.director}</td>
                     <td className="acciones">
                       <button
                         type="button"
                         className="btn btn-ver"
                         onClick={() => {
-                          setSeleccionada(e);
+                          setSeleccionada(escuela);
                           setMostrarVer(true);
                         }}
                       >
@@ -152,7 +156,7 @@ function Escuelas() {
                         type="button"
                         className="btn btn-editar"
                         onClick={() => {
-                          setSeleccionada(e);
+                          setSeleccionada(escuela);
                           setMostrarEditar(true);
                         }}
                       >
@@ -161,7 +165,7 @@ function Escuelas() {
                       <button
                         type="button"
                         className="btn btn-eliminar"
-                        onClick={() => handleEliminar(e)}
+                        onClick={() => handleEliminar(escuela)}
                       >
                         Eliminar
                       </button>

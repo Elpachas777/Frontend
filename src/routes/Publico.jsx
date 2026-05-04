@@ -1,7 +1,7 @@
-import { Routes, Route, Navigate } from "react-router-dom";
+import { Navigate, Route, Routes } from "react-router-dom";
+import Registro from "../admin/Registro";
 import LandingPage from "../LandingPage";
 import Login from "../sesion/Login";
-import Registro from "../admin/Registro";
 import Recuperar from "../sesion/Recuperar";
 import RecuperarContra from "../sesion/RecuperarContra";
 import RegistrarAdmin from "../sesion/RegistroAdmin";
@@ -12,10 +12,22 @@ function Publico({ setAutentificado }) {
       <main>
         <Routes>
           <Route path="/" element={<LandingPage />} />
-          <Route path="/Login" element={<Login setAutentificado={setAutentificado} />} />
-          <Route path="/login" element={<Login setAutentificado={setAutentificado} />} />
-          <Route path="/Registro" element={<Registro setAutentificado={setAutentificado} />} />
-          <Route path="/registro" element={<Registro setAutentificado={setAutentificado} />} />
+          <Route
+            path="/Login"
+            element={<Login setAutentificado={setAutentificado} />}
+          />
+          <Route
+            path="/login"
+            element={<Login setAutentificado={setAutentificado} />}
+          />
+          <Route
+            path="/Registro"
+            element={<Registro setAutentificado={setAutentificado} />}
+          />
+          <Route
+            path="/registro"
+            element={<Registro setAutentificado={setAutentificado} />}
+          />
           <Route path="/RegistroAdmin" element={<RegistrarAdmin />} />
           <Route path="/registro-admin" element={<RegistrarAdmin />} />
           <Route path="/registraradmin" element={<RegistrarAdmin />} />

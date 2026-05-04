@@ -1,10 +1,11 @@
 import { useState } from "react";
 import Swal from "sweetalert2";
 import "sweetalert2/dist/sweetalert2.min.css";
-import { verificarContraseña } from "../api/sesion.api";
+import { eliminarDocente } from "../api/docente.api";
 import "../components/Tabla.css";
+import { comprobarContraseña } from "../utils/admin";
+import { modificarHabilitado } from "../utils/docentes";
 import { IconEye, IconEyeOff } from "./EyeIcons";
-import { getDocentes, saveDocentes } from "./mockData";
 import "./RolAdmin.css";
 import VerGrupoAdmin from "./VerGrupoAdmin";
 
@@ -28,7 +29,7 @@ function VerDocente({ docente, onCerrar, onEliminado }) {
         reverseButtons: true,
       });
       if (!result.isConfirmed) return;
-      guardarHabilitado(false);
+      await modificarHabilitado(docente.id, false);
       setHabilitado(false);
     } else {
       const result = await Swal.fire({
@@ -42,17 +43,9 @@ function VerDocente({ docente, onCerrar, onEliminado }) {
         reverseButtons: true,
       });
       if (!result.isConfirmed) return;
-      guardarHabilitado(true);
+      await modificarHabilitado(docente.id, true);
       setHabilitado(true);
     }
-  };
-
-  const guardarHabilitado = (valor) => {
-    const docentes = getDocentes();
-    const actualizados = docentes.map((d) =>
-      d.id === docente.id ? { ...d, habilitado: valor } : d,
-    );
-    saveDocentes(actualizados);
   };
 
   const handleEliminar = async () => {
@@ -74,7 +67,7 @@ function VerDocente({ docente, onCerrar, onEliminado }) {
           Swal.showValidationMessage("Ingresa la contraseña para confirmar.");
           return false;
         }
-        const valida = await verificarContraseña(value);
+        const valida = await comprobarContraseña(value);
         if (!valida) {
           Swal.showValidationMessage(
             "Contraseña incorrecta. Inténtalo de nuevo.",
@@ -87,8 +80,7 @@ function VerDocente({ docente, onCerrar, onEliminado }) {
 
     if (!result.isConfirmed) return;
 
-    const docentes = getDocentes();
-    saveDocentes(docentes.filter((d) => d.id !== docente.id));
+    await eliminarDocente(docente.id);
 
     await Swal.fire({
       title: "Eliminado",
@@ -129,7 +121,9 @@ function VerDocente({ docente, onCerrar, onEliminado }) {
             </div>
 
             <div className="docente-panel-info">
-              <span className="docente-info-escuela">{docente.escuela}</span>
+              <span className="docente-info-escuela">
+                {docente.escuela.nombre}
+              </span>
               <span className="docente-info-nombre">{docente.nombre}</span>
               <span className="docente-info-correo">{docente.correo}</span>
             </div>

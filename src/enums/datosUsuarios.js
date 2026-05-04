@@ -6,6 +6,14 @@ export const DATOS = {
     correo: "",
     password: "",
   },
+  docente_editar: {
+    nombre: "",
+    apellidos: "",
+    escuela: "",
+    correo: "",
+    passwordAntigua: "",
+    passwordNueva: "",
+  },
   docente_login: {
     correo: "",
     password: "",
@@ -15,7 +23,7 @@ export const DATOS = {
     apellidos: "",
   },
   alumno_editar: {
-    nombre: "",
+    nombres: "",
     apellidos: "",
   },
   grupo: {
@@ -28,5 +36,14 @@ export const DATOS = {
   contraseña: {
     password: "",
     confirmar: "",
+  },
+  escuela: {
+    nombre: "",
+    ubicacion: "",
+    director: "",
+    logo: "",
+    logo_muestra: "",
+    contacto: "",
+    contacto_adicional: "",
   },
 };

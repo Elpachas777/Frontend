@@ -1,31 +1,35 @@
 import { useState } from "react";
+import Mensaje from "../components/Mensaje";
 import { USUARIOS } from "../enums/tipoUsuarios";
 import useFormData from "../hooks/useFormData";
+import "../RolAdmin/RolAdmin.css";
 import crear from "../utils/crearGrupo";
-import "./CrearGrupos.css";
-import Mensaje from "../components/Mensaje";
 
 function CrearGrupos({ onCerrar, setActualizado }) {
   const [mensaje, setMensaje] = useState(null);
   const { formData, handleChange } = useFormData(USUARIOS.GRUPO);
-  const { handleSubmit } = crear({ formData, setActualizado, setMensaje });
+  const { handleSubmit } = crear({ formData, setMensaje });
 
   return (
-    <div className="modal-overlay">
-      <div className="modal form-wrap crear-ejercicio">
-        {mensaje && <Mensaje tipo={mensaje.tipo} mensaje={mensaje.mensaje} />}
-        <h1 className="title">Crear nuevo grupo</h1>
+    <div className="modal-overlay" onClick={onCerrar}>
+      <div
+        className="modal-card modal-card--wide"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <div className="modal-header">
+          <h2>Crear grupo</h2>
+          <button type="button" className="modal-close" onClick={onCerrar}>
+            ✕
+          </button>
+        </div>
 
-        <form
-          className="areas"
-          onSubmit={handleSubmit}
-          style={{ flexDirection: "column" }}
-        >
-          <div className="area">
-            <label htmlFor="nombre">Nombre del grupo</label>
+        {mensaje && <Mensaje tipo={mensaje.tipo} mensaje={mensaje.mensaje} />}
+
+        <form className="modal-form" onSubmit={handleSubmit}>
+          <div className="modal-field">
+            <label>Nombre del grupo</label>
             <input
               type="text"
-              id="nombre"
               name="nombre"
               placeholder="Ejemplo: 3C, 2B, 5A"
               required
@@ -34,10 +38,9 @@ function CrearGrupos({ onCerrar, setActualizado }) {
             />
           </div>
 
-          <div className="area">
+          <div className="modal-field">
             <label htmlFor="turno">Turno</label>
             <select
-              id="turno"
               name="turno"
               required
               value={formData.turno}
@@ -48,24 +51,19 @@ function CrearGrupos({ onCerrar, setActualizado }) {
               <option value="Vespertino">Vespertino</option>
               <option value="Mixto">Mixto</option>
             </select>
-          </div>
 
-          <div className="modal-botones">
-            <button
-              type="submit"
-              className="guardar-btn"
-              style={{ marginTop: "20px" }}
-            >
-              Crear grupo
-            </button>
-            <button
-              type="button"
-              className="cancelar-btn"
-              onClick={onCerrar}
-              style={{ marginTop: "20px" }}
-            >
-              Cancelar
-            </button>
+            <div className="modal-field">
+              <button type="submit" className="modal-btn-save">
+                Guardar
+              </button>
+              <button
+                type="button"
+                className="modal-btn-cancel"
+                onClick={onCerrar}
+              >
+                Cancelar
+              </button>
+            </div>
           </div>
         </form>
       </div>

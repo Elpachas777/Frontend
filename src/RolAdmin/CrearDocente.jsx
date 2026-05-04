@@ -39,9 +39,9 @@ function CrearDocente({ escuelas, onCerrar, onGuardado }) {
           <button type="button" className="modal-close" onClick={onCerrar}>
             ✕
           </button>
+          {mensaje && <Mensaje tipo={mensaje.tipo} mensaje={mensaje.mensaje} />}
         </div>
         <form className="modal-form" onSubmit={handleSubmit}>
-          {mensaje && <Mensaje tipo={mensaje.tipo} mensaje={mensaje.mensaje} />}
           <div className="modal-field">
             <label>Foto</label>
             <div className="foto-upload-row">

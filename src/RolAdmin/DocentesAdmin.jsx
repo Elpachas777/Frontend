@@ -96,7 +96,7 @@ function DocentesAdmin() {
                 <tr key={docente.id}>
                   <td>{docente.id}</td>
                   <td>{docente.nombre}</td>
-                  <td>{docente.escuela}</td>
+                  <td>{docente.escuela.nombre}</td>
                   <td>{docente.correo}</td>
                   <td className="acciones">
                     <button

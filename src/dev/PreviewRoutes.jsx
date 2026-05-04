@@ -1,20 +1,17 @@
-import { Routes, Route, Navigate } from "react-router-dom";
+import { Navigate, Route, Routes } from "react-router-dom";
 import LandingPage from "../LandingPage";
-import Login from "../sesion/Login";
+import DocentesAdmin from "../RolAdmin/DocentesAdmin";
+import EscuelasAdmin from "../RolAdmin/Escuelas";
 import Registro from "../admin/Registro";
+import Asignar from "../docente/Asignar";
+import Ejercicios from "../docente/Ejercicios";
+import Login from "../sesion/Login";
 import Recuperar from "../sesion/Recuperar";
 import RecuperarContra from "../sesion/RecuperarContra";
 import RegistrarAdmin from "../sesion/RegistroAdmin";
 import DesignHub from "./DesignHub";
 import PreviewLayout from "./PreviewLayout";
-import {
-  PreviewAlumnos,
-  PreviewGrupos,
-} from "./PreviewTables";
-import DocentesAdmin from "../RolAdmin/DocentesAdmin";
-import EscuelasAdmin from "../RolAdmin/Escuelas";
-import Ejercicios from "../docente/Ejercicios";
-import Asignar from "../docente/Asignar";
+import { PreviewAlumnos, PreviewGrupos } from "./PreviewTables";
 
 function PreviewRoutes() {
   const noop = () => {};

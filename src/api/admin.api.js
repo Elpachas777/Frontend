@@ -1,8 +1,9 @@
 import axios from "../utils/axios.js";
 
+const urlBack = import.meta.env.VITE_URL_BACKEND;
+
 export function useRegistrarAdmin({ formData }) {
   const handleSubmit = async (event) => {
-    const urlBack = import.meta.env.VITE_URL_BACKEND;
     event.preventDefault();
     try {
       const datos = {
@@ -22,3 +23,12 @@ export function useRegistrarAdmin({ formData }) {
     handleSubmit,
   };
 }
+
+export const verificarContraseña = async (data) => {
+  const res = await axios.post(`${urlBack}/verificarPassword`, data, {
+    withCredentials: true,
+  });
+
+  console.log(res.data);
+  return res.data;
+};

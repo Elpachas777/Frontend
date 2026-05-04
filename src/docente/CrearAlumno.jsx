@@ -1,67 +1,70 @@
-import useFormData from "../hooks/useFormData";
-import crear from "../utils/crearAlumno";
-import "./CrearAlumno.css";
-import { USUARIOS } from "../enums/tipoUsuarios";
 import { useState } from "react";
-import Mensaje from "../components/Mensaje";
+import { USUARIOS } from "../enums/tipoUsuarios";
+import useFormData from "../hooks/useFormData";
+import "../RolAdmin/RolAdmin.css";
+import crear from "../utils/crearAlumno";
 
-function CrearAlumno({ onCerrar, setActualizado, id }) {
+const GMAPS_REGEX =
+  /^https?:\/\/(www\.)?(google\.[a-z.]+\/maps|maps\.google\.[a-z.]+|goo\.gl\/maps|maps\.app\.goo\.gl)/i;
+
+function CrearAlumno({ onCerrar, onGuardado }) {
+  const [errores, setErrores] = useState({});
   const [mensaje, setMensaje] = useState(null);
+
   const { formData, handleChange } = useFormData(USUARIOS.ALUMNO);
-  const { handleSubmit } = crear({ formData, setActualizado, id, setMensaje });
+  const { handleSubmit } = crear({
+    formData,
+    setErrores,
+    setMensaje,
+  });
 
   return (
-    <div className="modal-overlay">
-      <div className="modal form-wrap crear-ejercicio">
-        {mensaje && <Mensaje tipo={mensaje.tipo} mensaje={mensaje.mensaje} />}
-        <h1 className="title">Crear nuevo alumno</h1>
-        <form
-          className="areas"
-          onSubmit={handleSubmit}
-          style={{ flexDirection: "column" }}
-        >
-          <div className="area">
-            <label htmlFor="ombre">Nombre del alumno</label>
+    <div className="modal-overlay" onClick={onCerrar}>
+      <div
+        className="modal-card modal-card--wide"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <div className="modal-header">
+          <h2>Crear alumno</h2>
+          <button type="button" className="modal-close" onClick={onCerrar}>
+            ✕
+          </button>
+        </div>
+        <form className="modal-form" onSubmit={handleSubmit}>
+          <div className="modal-field">
+            <label>Nombre</label>
             <input
-              type="text"
-              id="nombre"
               name="nombre"
-              required
               value={formData.nombre}
               onChange={handleChange}
-              placeholder="Nombre"
+              placeholder="Nombre del alumno"
             />
+            {errores.nombre && (
+              <span className="modal-error">{errores.nombre}</span>
+            )}
           </div>
-
-          <div className="area">
-            <label htmlFor="apellidos">Apellidos del alumno</label>
+          <div className="modal-field">
+            <label>Apellidos</label>
             <input
-              type="text"
-              id="apellidos"
               name="apellidos"
-              required
               value={formData.apellidos}
               onChange={handleChange}
-              placeholder="Apellidos"
+              placeholder="Apellidos del alumno"
             />
+            {errores.apellidos && (
+              <span className="modal-error">{errores.apellidos}</span>
+            )}
           </div>
-
-          <div className="modal-botones">
-            <button
-              type="submit"
-              className="guardar-btn"
-              name="guardar"
-              style={{ marginTop: "20px" }}
-            >
-              Crear alumno
-            </button>
+          <div className="modal-field">
             <button
               type="button"
-              className="cancelar-btn"
+              className="modal-btn-cancel"
               onClick={onCerrar}
-              style={{ marginTop: "20px" }}
             >
               Cancelar
+            </button>
+            <button type="submit" className="modal-btn-save">
+              Guardar
             </button>
           </div>
         </form>

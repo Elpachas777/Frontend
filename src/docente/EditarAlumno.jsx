@@ -1,95 +1,85 @@
 import { useEffect, useState } from "react";
-import { verAlumno } from "../api/alumno.api";
-import Mensaje from "../components/Mensaje";
 import { USUARIOS } from "../enums/tipoUsuarios";
 import useFormData from "../hooks/useFormData";
-import editar from "../utils/editarAlumno";
-import "./CrearAlumno.css";
+import "../RolAdmin/RolAdmin.css";
+import { actualizar } from "../utils/alumnos";
 
-function EditarAlumno({ onCerrar, setActualizado, filaSeleccionada }) {
+function EditarAlumno({ alumno, onCerrar, onGuardado }) {
+  const [errores, setErrores] = useState({});
   const [mensaje, setMensaje] = useState(null);
+
   const { formData, setFormData, handleChange } = useFormData(
     USUARIOS.ALUMNO_EDITAR,
   );
-  const { handleSubmit } = editar({
-    filaSeleccionada,
+
+  useEffect(() => {
+    setFormData((prev) => {
+      const nuevo = { ...prev };
+
+      Object.keys(prev).forEach((key) => {
+        if (key in alumno) {
+          nuevo[key] = alumno[key];
+        }
+      });
+
+      return nuevo;
+    });
+  }, []);
+
+  const { handleSubmit } = actualizar(alumno, {
     formData,
-    setActualizado,
+    setErrores,
     setMensaje,
   });
 
-  useEffect(() => {
-    const obtenerDocente = async () => {
-      try {
-        const { id } = filaSeleccionada;
-        const alumno = await verAlumno(id);
-
-        if (alumno.tipo) {
-          setMensaje(alumno);
-          return;
-        }
-
-        setFormData(alumno);
-      } catch (error) {
-        setMensaje(error);
-      }
-    };
-
-    obtenerDocente();
-  }, []);
-
   return (
-    <div className="modal-overlay">
-      <div className="modal form-wrap crear-ejercicio">
-        {mensaje && <Mensaje tipo={mensaje.tipo} mensaje={mensaje.mensaje} />}
-        <h1 className="title">Editar alumno</h1>
-
-        <form
-          className="areas"
-          onSubmit={handleSubmit}
-          style={{ flexDirection: "column" }}
-        >
-          <div className="area">
-            <label htmlFor="nombre">Nombre del alumno</label>
+    <div className="modal-overlay" onClick={onCerrar}>
+      <div
+        className="modal-card modal-card--wide"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <div className="modal-header">
+          <h2>Editar alumno</h2>
+          <button type="button" className="modal-close" onClick={onCerrar}>
+            ✕
+          </button>
+        </div>
+        <form className="modal-form" onSubmit={handleSubmit}>
+          {/* Nombre */}
+          <div className="modal-field">
+            <label>Nombre</label>
             <input
-              type="text"
-              id="nombre"
-              name="nombre"
-              required
-              value={formData.nombre}
+              name="nombres"
+              value={formData.nombres}
               onChange={handleChange}
-              placeholder={filaSeleccionada.nombres}
             />
+            {errores.nombres && (
+              <span className="modal-error">{errores.nombres}</span>
+            )}
           </div>
 
-          <div className="area">
-            <label htmlFor="apellidos">Apellidos del alumno</label>
+          <div className="modal-field">
+            <label>Apellidos</label>
             <input
-              type="text"
-              id="apellidos"
               name="apellidos"
-              required
               value={formData.apellidos}
               onChange={handleChange}
-              placeholder={filaSeleccionada.apellidos}
             />
+            {errores.apellidos && (
+              <span className="modal-error">{errores.apellidos}</span>
+            )}
           </div>
 
-          <div className="modal-botones">
-            <button
-              type="submit"
-              className="guardar-btn"
-              style={{ marginTop: "20px" }}
-            >
-              Guardar alumno
-            </button>
+          <div className="modal-actions">
             <button
               type="button"
-              className="cancelar-btn"
+              className="modal-btn-cancel"
               onClick={onCerrar}
-              style={{ marginTop: "20px" }}
             >
               Cancelar
+            </button>
+            <button type="submit" className="modal-btn-save">
+              Guardar
             </button>
           </div>
         </form>

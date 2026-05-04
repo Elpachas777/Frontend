@@ -1,8 +1,8 @@
 import { useState } from "react";
 import Swal from "sweetalert2";
-import { getEjerciciosMock } from "./Ejercicios";
 import { GRUPOS_MOCK } from "../RolAdmin/mockData";
 import "./Asignar.css";
+import { getEjerciciosMock } from "./Ejercicios";
 
 // { [ejercicioId]: { [grupoId]: { asignado, realizado, porcentaje } } }
 const asignacionesState = {
@@ -13,7 +13,13 @@ const asignacionesState = {
 };
 
 function getEstado(ejId, grupoId) {
-  return asignacionesState[ejId]?.[grupoId] ?? { asignado: false, realizado: false, porcentaje: 0 };
+  return (
+    asignacionesState[ejId]?.[grupoId] ?? {
+      asignado: false,
+      realizado: false,
+      porcentaje: 0,
+    }
+  );
 }
 
 function Asignar() {
@@ -38,7 +44,11 @@ function Asignar() {
     if (!confirm.isConfirmed) return;
 
     if (!asignacionesState[ejercicioId]) asignacionesState[ejercicioId] = {};
-    asignacionesState[ejercicioId][grupo.id] = { asignado: true, realizado: false, porcentaje: 0 };
+    asignacionesState[ejercicioId][grupo.id] = {
+      asignado: true,
+      realizado: false,
+      porcentaje: 0,
+    };
     rerender();
 
     await Swal.fire({
@@ -66,7 +76,11 @@ function Asignar() {
     if (!confirm.isConfirmed) return;
 
     if (!asignacionesState[ejercicioId]) asignacionesState[ejercicioId] = {};
-    asignacionesState[ejercicioId][grupo.id] = { asignado: true, realizado: false, porcentaje: 0 };
+    asignacionesState[ejercicioId][grupo.id] = {
+      asignado: true,
+      realizado: false,
+      porcentaje: 0,
+    };
     rerender();
 
     await Swal.fire({
@@ -193,7 +207,6 @@ function Asignar() {
         </div>
       ) : (
         <div className="asignar-empty">
-        
           <p>Selecciona un ejercicio para ver el estado por grupo.</p>
         </div>
       )}

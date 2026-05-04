@@ -23,6 +23,15 @@ export const eliminarDocente = async (data) => {
 
 export const editarDocente = async (id, data) => {
   const res = await axios.put(`${urlBack}/editarDocente/${id}`, data);
+  return res.data;
+};
 
+export const cambiarHabilitado = async (id, data) => {
+  const res = await axios.put(`${urlBack}/cambiarHabilitado/${id}`, data);
+  return res.data;
+};
+
+export const verificarContraseña = async (id, data) => {
+  const res = await axios.put(`${urlBack}/verificarContra/${id}`, data);
   return res.data;
 };

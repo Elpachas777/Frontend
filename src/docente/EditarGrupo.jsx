@@ -1,68 +1,81 @@
-import useFormData from "../hooks/useFormData";
-import { editar, agregar } from "../utils/editarGrupo";
-import { USUARIOS } from "../enums/tipoUsuarios";
+import { useEffect, useState } from "react";
 import Mensaje from "../components/Mensaje";
-import { useState } from "react";
+import { USUARIOS } from "../enums/tipoUsuarios";
+import useFormData from "../hooks/useFormData";
+import "../RolAdmin/RolAdmin.css";
+import { actualizar, agregar } from "../utils/editarGrupo";
 
-function EditarGrupo({ onCerrar, setActualizado, filaSeleccionada }) {
+function EditarGrupo({ grupo, onCerrar, onGuardado }) {
   const [mensaje, setMensaje] = useState(null);
 
-  const { formData: grupo, handleChange: handleGrupo } = useFormData(
-    USUARIOS.GRUPO
-  );
+  const {
+    formData: grupoData,
+    setFormData,
+    handleChange: handleGrupo,
+  } = useFormData(USUARIOS.GRUPO);
 
   const { formData: alumno, handleChange: handleAlumno } = useFormData(
-    USUARIOS.ALUMNO
+    USUARIOS.ALUMNO,
   );
 
-  const { handleSubmit } = editar({
-    filaSeleccionada,
-    formData: grupo,
-    setActualizado,
+  useEffect(() => {
+    setFormData((prev) => {
+      const nuevo = { ...prev };
+
+      Object.keys(prev).forEach((key) => {
+        if (key in grupo) {
+          nuevo[key] = grupo[key];
+        }
+      });
+
+      return nuevo;
+    });
+  }, []);
+
+  const { handleSubmit } = actualizar(grupo, {
+    formData: grupoData,
     setMensaje,
   });
 
   const { handleClick } = agregar({
-    filaSeleccionada,
+    grupo,
     formData: alumno,
-    setActualizado,
     setMensaje,
   });
 
   return (
-    <div className="modal-overlay">
-      <div className="modal form-wrap crear-ejercicio">
+    <div className="modal-overlay" onClick={onCerrar}>
+      <div className="modal-card" onClick={(e) => e.stopPropagation()}>
+        <div className="modal-header">
+          <h2 className="title">Editar grupo</h2>
+          <button type="button" className="modal-close" onClick={onCerrar}>
+            ✕
+          </button>
+        </div>
         {mensaje && <Mensaje tipo={mensaje.tipo} mensaje={mensaje.mensaje} />}
-        <h1 className="title">Editar grupo</h1>
-
-        <form
-          className="areas"
-          onSubmit={handleSubmit}
-          style={{ flexDirection: "column" }}
-        >
-          <div className="area">
+        <form className="modal-form" onSubmit={handleSubmit}>
+          <div className="modal-field">
             <label htmlFor="nombre">Nombre del grupo</label>
             <input
               type="text"
-              id="nombre"
               name="nombre"
               required
-              placeholder={filaSeleccionada.nombre}
-              value={grupo.nombre}
+              placeholder={grupoData.nombre}
+              value={grupoData.nombre}
               onChange={handleGrupo}
             />
           </div>
 
-          <div className="area">
+          <div className="modal-field">
             <label htmlFor="turno">Turno</label>
             <select
               id="turno"
               name="turno"
               required
-              value={grupo.turno}
+              value={grupoData.turno}
               onChange={handleGrupo}
             >
-              <option value="">{filaSeleccionada.turno}</option>
+              <option value="">{grupo.turno}</option>
               <option value="Matutino">Matutino</option>
               <option value="Vespertino">Vespertino</option>
               <option value="Mixto">Mixto</option>
@@ -73,7 +86,7 @@ function EditarGrupo({ onCerrar, setActualizado, filaSeleccionada }) {
             <span>Agregar alumno</span>
           </div>
 
-          <div className="area">
+          <div className="modal-field">
             <label htmlFor="nombrea">Nombre del alumno</label>
             <input
               type="text"
@@ -85,7 +98,7 @@ function EditarGrupo({ onCerrar, setActualizado, filaSeleccionada }) {
             />
           </div>
 
-          <div className="area">
+          <div className="modal-field">
             <label htmlFor="apellidos">Apellidos del alumno</label>
             <input
               type="text"
@@ -97,28 +110,14 @@ function EditarGrupo({ onCerrar, setActualizado, filaSeleccionada }) {
             />
           </div>
 
-          <button
-            type="button"
-            className="guardar-btn"
-            style={{ marginTop: "20px" }}
-            onClick={handleClick}
-          >
-            Agregar alumno
-          </button>
-
-          <div className="modal-botones">
-            <button
-              type="submit"
-              className="guardar-btn"
-              style={{ marginTop: "20px" }}
-            >
+          <div className="modal-actions">
+            <button type="submit" className="modal-btn-save">
               Guardar grupo
             </button>
             <button
               type="button"
-              className="cancelar-btn"
+              className="modal-btn-cancel"
               onClick={onCerrar}
-              style={{ marginTop: "20px" }}
             >
               Cancelar
             </button>

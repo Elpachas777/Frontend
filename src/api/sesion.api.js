@@ -94,28 +94,3 @@ const PREVIEW_PASSWORDS = {
   director: "Director123$",
   admin: "Admin123$",
 };
-
-export async function verificarContraseña(password) {
-  const previewMode =
-    import.meta.env.DEV || import.meta.env.VITE_PREVIEW_MODE === "true";
-
-  if (previewMode) {
-    try {
-      const stored = JSON.parse(
-        localStorage.getItem("frontend_user") || "null",
-      );
-      return password === PREVIEW_PASSWORDS[stored?.rol];
-    } catch {
-      return false;
-    }
-  }
-
-  try {
-    const res = await axios.post(`${urlBack}/verificarContraseña`, {
-      password,
-    });
-    return res.data?.valido === true;
-  } catch {
-    return false;
-  }
-}

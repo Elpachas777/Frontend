@@ -14,7 +14,7 @@ function registrar({ formData, setErrores, setMensaje }) {
     event.preventDefault();
     const errores = validar(formData);
 
-    if (!errores) {
+    if (Object.keys(errores).length > 0) {
       setErrores(errores);
       return;
     }
@@ -25,11 +25,10 @@ function registrar({ formData, setErrores, setMensaje }) {
         apellidos: formData.apellidos,
         escuela: formData.escuela,
         correo: formData.correo,
-        password: formData.password,
+        contraseña: formData.password,
       };
 
       const respuesta = await registrarDocente(datos);
-
       setMensaje(respuesta);
     } catch (error) {
       setMensaje(error.response.data);

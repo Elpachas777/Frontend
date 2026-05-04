@@ -1,5 +1,7 @@
-import { useState } from "react";
-import { getEscuelas, saveEscuelas } from "./mockData";
+import { useEffect, useState } from "react";
+import { USUARIOS } from "../enums/tipoUsuarios";
+import useFormData from "../hooks/useFormData";
+import { actualizar } from "../utils/escuela";
 import "./RolAdmin.css";
 
 const PHONE_REGEX = /^\+?[\d\s\-\(\)]{7,20}$/;
@@ -7,67 +9,30 @@ const GMAPS_REGEX =
   /^https?:\/\/(www\.)?(google\.[a-z.]+\/maps|maps\.google\.[a-z.]+|goo\.gl\/maps|maps\.app\.goo\.gl)/i;
 
 function EditarEscuela({ escuela, onCerrar, onGuardado }) {
-  const [form, setForm] = useState({
-    nombre: escuela.nombre,
-    logo: escuela.logo || "",
-    ubicacion: escuela.ubicacion || "",
-    director: escuela.director,
-    contacto: escuela.contacto,
-    contacto2: escuela.contacto2 || "",
-  });
   const [errores, setErrores] = useState({});
+  const [mensaje, setMensaje] = useState(null);
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setForm((prev) => ({ ...prev, [name]: value }));
-    setErrores((prev) => ({ ...prev, [name]: "" }));
-  };
+  const { formData, setFormData, handleChange } = useFormData(USUARIOS.ESCUELA);
 
-  const handleLogo = (e) => {
-    const file = e.target.files[0];
-    if (!file) return;
-    const reader = new FileReader();
-    reader.onload = (ev) =>
-      setForm((prev) => ({ ...prev, logo: ev.target.result }));
-    reader.readAsDataURL(file);
-  };
+  useEffect(() => {
+    setFormData((prev) => {
+      const nuevo = { ...prev };
 
-  const validar = () => {
-    const e = {};
-    if (!form.nombre.trim()) e.nombre = "El nombre es obligatorio.";
-    if (!form.ubicacion.trim()) {
-      e.ubicacion = "La URL de Google Maps es obligatoria.";
-    } else if (!GMAPS_REGEX.test(form.ubicacion.trim())) {
-      e.ubicacion = "Debe ser un enlace válido de Google Maps.";
-    }
-    if (!form.director.trim())
-      e.director = "El director a cargo es obligatorio.";
-    if (!form.contacto.trim()) {
-      e.contacto = "El número de contacto es obligatorio.";
-    } else if (!PHONE_REGEX.test(form.contacto.trim())) {
-      e.contacto = "Solo se permiten dígitos, espacios y guiones.";
-    }
-    if (form.contacto2.trim() && !PHONE_REGEX.test(form.contacto2.trim())) {
-      e.contacto2 = "Solo se permiten dígitos, espacios y guiones.";
-    }
-    return e;
-  };
+      Object.keys(prev).forEach((key) => {
+        if (key in escuela) {
+          nuevo[key] = escuela[key];
+        }
+      });
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    const errs = validar();
-    if (Object.keys(errs).length > 0) {
-      setErrores(errs);
-      return;
-    }
+      return nuevo;
+    });
+  }, []);
 
-    const escuelas = getEscuelas();
-    const actualizadas = escuelas.map((es) =>
-      es.id === escuela.id ? { ...es, ...form } : es,
-    );
-    saveEscuelas(actualizadas);
-    onGuardado();
-  };
+  const { handleSubmit } = actualizar(escuela, {
+    formData,
+    setErrores,
+    setMensaje,
+  });
 
   return (
     <div className="modal-overlay" onClick={onCerrar}>
@@ -84,23 +49,36 @@ function EditarEscuela({ escuela, onCerrar, onGuardado }) {
         <form className="modal-form" onSubmit={handleSubmit}>
           <div className="modal-field">
             <label>Nombre *</label>
-            <input name="nombre" value={form.nombre} onChange={handleChange} />
+            <input
+              name="nombre"
+              value={formData.nombre}
+              onChange={handleChange}
+            />
             {errores.nombre && (
               <span className="modal-error">{errores.nombre}</span>
             )}
           </div>
           <div className="modal-field">
             <label>Logo</label>
-            <input type="file" accept="image/*" onChange={handleLogo} />
-            {form.logo && (
-              <img src={form.logo} alt="logo" className="logo-preview" />
+            <input
+              type="file"
+              name="logo"
+              accept="image/*"
+              onChange={handleChange}
+            />
+            {formData.logo_muestra && (
+              <img
+                src={formData.logo_muestra}
+                alt="logo"
+                className="logo-preview"
+              />
             )}
           </div>
           <div className="modal-field">
             <label>Ubicación — URL de Google Maps *</label>
             <input
               name="ubicacion"
-              value={form.ubicacion}
+              value={formData.ubicacion}
               onChange={handleChange}
               placeholder="https://www.google.com/maps/place/..."
             />
@@ -112,7 +90,7 @@ function EditarEscuela({ escuela, onCerrar, onGuardado }) {
             <label>Director a cargo *</label>
             <input
               name="director"
-              value={form.director}
+              value={formData.director}
               onChange={handleChange}
             />
             {errores.director && (
@@ -123,7 +101,7 @@ function EditarEscuela({ escuela, onCerrar, onGuardado }) {
             <label>Número de contacto *</label>
             <input
               name="contacto"
-              value={form.contacto}
+              value={formData.contacto}
               onChange={handleChange}
             />
             {errores.contacto && (
@@ -133,12 +111,12 @@ function EditarEscuela({ escuela, onCerrar, onGuardado }) {
           <div className="modal-field">
             <label>Número adicional</label>
             <input
-              name="contacto2"
-              value={form.contacto2}
+              name="contacto_adicional"
+              value={formData.contacto_adicional}
               onChange={handleChange}
             />
-            {errores.contacto2 && (
-              <span className="modal-error">{errores.contacto2}</span>
+            {errores.contacto_adicional && (
+              <span className="modal-error">{errores.contacto_adicional}</span>
             )}
           </div>
           <div className="modal-actions">

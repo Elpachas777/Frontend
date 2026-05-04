@@ -2,12 +2,21 @@ import * as api from "../api/alumno.api";
 
 function validar(formData) {
   const e = {};
-  if (!formData.nombre) e.nombre = "El nombre es obligatorio.";
+  if (!formData.nombres) e.nombre = "El nombre es obligatorio.";
   if (!formData.apellidos) e.apellidos = "Los apellidos son obligatorios";
   return e;
 }
 
-function crear({ formData, setError, setMensaje }) {
+export async function listar() {
+  try {
+    const alumnos = await api.listar();
+    return alumnos;
+  } catch (error) {
+    return [];
+  }
+}
+
+export function actualizar({ id }, { formData, setErrores, setMensaje }) {
   const handleSubmit = async (event) => {
     event.preventDefault();
     const errores = validar(formData);
@@ -16,9 +25,8 @@ function crear({ formData, setError, setMensaje }) {
       setErrores(errores);
       return;
     }
-
     try {
-      const respuesta = await api.crear(formData);
+      const respuesta = await api.actualizar(id, formData);
       setMensaje(respuesta);
     } catch (error) {
       setMensaje(error.response.data);
@@ -29,5 +37,3 @@ function crear({ formData, setError, setMensaje }) {
     handleSubmit,
   };
 }
-
-export default crear;
