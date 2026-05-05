@@ -1,7 +1,8 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import Canvas from "./Canvas";
 
-function BotonCanvas() {
+function BotonCanvas({ Texto = "__" }) {
+  const canvaRef = useRef();
   const [mostrarCanvas, setCanvas] = useState(false);
   const handleMostrar = () => {
     setCanvas(true);
@@ -10,9 +11,16 @@ function BotonCanvas() {
   return (
     <>
       <button type="button" onClick={handleMostrar}>
-        __
+        {Texto}
       </button>
-      {mostrarCanvas && <Canvas onCerrar={() => setCanvas(false)} />}
+      {mostrarCanvas && (
+        <div>
+          <Canvas ref={canvaRef} />
+          <button type="button" onClick={() => canvaRef.current.clear()}>
+            limpiar
+          </button>
+        </div>
+      )}
     </>
   );
 }

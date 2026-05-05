@@ -1,4 +1,4 @@
-import { guardarEjercicio } from "../api/ejercicio.api";
+import * as api from "../api/ejercicio.api";
 
 function obtenerDatos() {
   const titulo = document.getElementById("titulo").value;
@@ -9,8 +9,6 @@ function obtenerDatos() {
 }
 
 export function crearCuento() {
-  const datos = obtenerDatos();
-
   const cuento = document.getElementById("cuento").value;
   const silaba = document.getElementById("silaba").value;
 
@@ -23,9 +21,6 @@ export function crearCuento() {
   }
 
   const json = JSON.stringify({
-    titulo: datos.titulo,
-    fecha_inicio: datos.fechaInicio,
-    fecha_final: datos.fechaFinal,
     contenido: {
       silaba,
       cuento,
@@ -37,16 +32,26 @@ export function crearCuento() {
   return JSON.parse(json);
 }
 
-export function guardar() {
+export function crear({ formData, setErrores, setMensaje }) {
   const handleSubmit = async (event, json) => {
     event.preventDefault();
+
     try {
       console.log(json);
-      await guardarEjercicio(json);
+      await api.guardarEjercicio(json);
     } catch (error) {
       console.log(error);
     }
   };
 
   return { handleSubmit };
+}
+
+export async function listarTipos() {
+  try {
+    const tipos = await api.listarTipos();
+    return tipos;
+  } catch (error) {
+    return [];
+  }
 }

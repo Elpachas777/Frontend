@@ -46,4 +46,12 @@ export const DATOS = {
     contacto: "",
     contacto_adicional: "",
   },
+  ejercicio: {
+    titulo: "",
+    fecha_inicio: "",
+    fecha_final: "",
+    id_grupo: "",
+    tipo: "",
+    contenido: {},
+  },
 };

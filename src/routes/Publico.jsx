@@ -1,5 +1,6 @@
 import { Navigate, Route, Routes } from "react-router-dom";
 import Registro from "../admin/Registro";
+import Arrastrar from "../ejercicios/Arrastrar";
 import LandingPage from "../LandingPage";
 import Login from "../sesion/Login";
 import Recuperar from "../sesion/Recuperar";
@@ -36,6 +37,7 @@ function Publico({ setAutentificado }) {
           <Route path="/recuperar-contraseña" element={<RecuperarContra />} />
           <Route path="/Recuperar" element={<Recuperar />} />
           <Route path="/recuperar" element={<Recuperar />} />
+          <Route path="/Agarrar" element={<Arrastrar />} />
           <Route path="*" element={<Navigate to="/" />} />
         </Routes>
       </main>

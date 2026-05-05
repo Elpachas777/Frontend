@@ -8,4 +8,5 @@ export const USUARIOS = Object.freeze({
   CONTRASEÑA: "contraseña",
   ALUMNO_EDITAR: "alumno_editar",
   ESCUELA: "escuela",
+  EJERCICIO: "ejercicio",
 });

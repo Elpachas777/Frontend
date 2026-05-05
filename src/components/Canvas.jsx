@@ -1,13 +1,19 @@
 import * as tf from "@tensorflow/tfjs";
 import * as fabric from "fabric";
-import { useEffect, useRef, useState } from "react";
+import {
+  forwardRef,
+  useEffect,
+  useImperativeHandle,
+  useRef,
+  useState,
+} from "react";
 import { dividirCanvas, predecir } from "../utils/modelo";
-import "./Modal.css";
+import "./Canvas.css";
 
-function Canvas({ onCerrar }) {
+const Canvas = forwardRef(({ silaba = "" }, ref) => {
   const [modelo, setModelo] = useState(null);
   const canvaRef = useRef(null);
-  const [canvasState, setCanvas] = useState(null);
+  const fabricRef = useRef(null);
 
   useEffect(() => {
     const cargarModelo = async () => {
@@ -19,9 +25,10 @@ function Canvas({ onCerrar }) {
   }, []);
 
   useEffect(() => {
+    if (!canvaRef.current) return;
+    if (fabricRef.current) return;
+
     const canvas = new fabric.Canvas(canvaRef.current, {
-      height: 200,
-      width: 200,
       isDrawingMode: true,
     });
 
@@ -29,10 +36,11 @@ function Canvas({ onCerrar }) {
     canvas.freeDrawingBrush.width = 10;
     canvas.freeDrawingBrush.color = "black";
 
-    setCanvas(canvas);
+    fabricRef.current = canvas;
 
     return () => {
       canvas.dispose();
+      fabricRef.current = null;
     };
   }, []);
 
@@ -44,33 +52,20 @@ function Canvas({ onCerrar }) {
       resultadoIzq + resultadoDer;
   };
 
+  useImperativeHandle(ref, () => ({
+    clear: () => fabricRef.current.clear(),
+    getImage: () => canvasRef.current,
+  }));
+
   return (
-    <div className="modal-overlay">
-      <div className="modal form-wrap">
-        <canvas ref={canvaRef} style={{ border: "1px solid black" }}></canvas>
-        <canvas
-          id="canvas28"
-          style={{ border: "1px solid black" }}
-          height={28}
-          width={28}
-          hidden
-        ></canvas>
-        <div className="modal-botones">
-          <br />
-          <button type="button" onClick={handlePredecir}>
-            Terminar Ejercicio
-          </button>
-          <button type="button" onClick={() => canvasState.clear()}>
-            Limpíar Canvas
-          </button>
-          <button type="button" onClick={onCerrar}>
-            Cerrar
-          </button>
-        </div>
-        <div id="resultado"></div>
+    <div className="canvas-col">
+      {silaba && <span className="canvas-hint">{silaba}</span>}
+      <div className="canvas-visualizacion">
+        <canvas ref={canvaRef} height={200} width={200}></canvas>
       </div>
+      <canvas id="canvas28" height={28} width={28} hidden></canvas>
     </div>
   );
-}
+});
 
 export default Canvas;

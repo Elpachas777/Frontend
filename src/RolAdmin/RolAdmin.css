@@ -113,6 +113,7 @@
 }
 
 .modal-field input,
+.modal-field textarea,
 .modal-field select {
   padding: 11px 14px;
   border: 1.5px solid #c8dfc8;
@@ -394,7 +395,9 @@
   font-weight: 700;
   font-size: 0.95rem;
   cursor: pointer;
-  transition: background 0.15s, border-color 0.15s;
+  transition:
+    background 0.15s,
+    border-color 0.15s;
   text-align: left;
   width: 100%;
 }

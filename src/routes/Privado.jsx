@@ -7,7 +7,7 @@ import Alumnos from "../docente/Alumnos";
 import Asignar from "../docente/Asignar";
 import Ejercicios from "../docente/Ejercicios";
 import Grupos from "../docente/Grupos";
-import CrearCuentos from "../ejercicios/Cuentos";
+import Cuento from "../ejercicios/Cuento";
 import useCredenciales from "../hooks/useCredenciales";
 import DocentesAdmin from "../RolAdmin/DocentesAdmin";
 import EscuelasAdmin from "../RolAdmin/Escuelas";
@@ -96,7 +96,7 @@ function Privado({ setAutentificado }) {
             <Route path="/Alumnos" element={<Alumnos />} />
             <Route path="/Grupos" element={<Grupos />} />
             <Route path="/Ejercicios" element={<Ejercicios />} />
-            <Route path="/Canvas" element={<CrearCuentos />} />
+            <Route path="/Canvas" element={<Cuento />} />
             <Route path="/Asignar" element={<Asignar />} />
             <Route path="*" element={<Navigate to="/Alumnos" />} />
           </Routes>

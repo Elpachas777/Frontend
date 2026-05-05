@@ -10,3 +10,8 @@ export const guardarEjercicio = async (data) => {
     withCredentials: true,
   });
 };
+
+export const listarTipos = async () => {
+  const res = await axios.get(`${urlBack}/obtenerTipos`);
+  return res.data;
+};

@@ -1,0 +1,37 @@
+.canvas-col {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.canvas-hint {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #8faa88;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.canvas-visualizacion {
+  border: 2px solid #b5e68a;
+  border-radius: 18px;
+  background: #f8fff5;
+  display: block;
+}
+
+.btn-clear {
+  background: #eef8e5;
+  border: 1.5px solid #c5e89a;
+  border-radius: 10px;
+  padding: 6px 18px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #2d5a1e;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.btn-clear:hover {
+  background: #d5f0b8;
+}

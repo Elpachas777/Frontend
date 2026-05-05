@@ -31,10 +31,21 @@ function useFormData(tipo) {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
+  const handleObjectChange = (obj, campo, valor) => {
+    setFormData((prev) => ({
+      ...prev,
+      [obj]: {
+        ...prev[obj],
+        [campo]: valor,
+      },
+    }));
+  };
+
   return {
     formData,
     setFormData,
     handleChange,
+    handleObjectChange,
   };
 }
 
