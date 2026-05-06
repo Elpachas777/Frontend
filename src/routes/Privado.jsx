@@ -13,7 +13,7 @@ import EscuelasAdmin from "../RolAdmin/Escuelas";
 
 function Privado({ setAutentificado }) {
   const [menuAbierto, setMenuAbierto] = useState(false);
-  const { credencial, usuario } = useCredenciales();
+  const {credencial} = useCredenciales();
 
   const handleLogout = async () => {
     const result = await Swal.fire({
@@ -28,20 +28,20 @@ function Privado({ setAutentificado }) {
     if (!result.isConfirmed) return;
     cerrarSesion({ setAutentificado });
   };
-
-  const displayName = usuario?.nombre || "Usuario";
+  
+  const displayName = credencial.nombre;
   const roleLabel =
-    credencial === "director"
+    credencial.rol === "director"
       ? "Director"
-      : credencial === "docente"
+      : credencial.rol === "docente"
         ? "Docente"
-        : credencial === "admin"
+        : credencial.rol === "admin"
           ? "Admin"
           : "Usuario";
 
   return (
     <div className="private-layout">
-      <SideBar credencial={credencial} usuario={usuario} />
+      <SideBar credencial={credencial.rol} usuario={credencial.nombre} />
 
       <div className="private-topbar">
         <div className="private-user-widget">
@@ -51,8 +51,8 @@ function Privado({ setAutentificado }) {
             onClick={() => setMenuAbierto((prev) => !prev)}
           >
             <div className="private-user-avatar">
-              {usuario?.foto ? (
-                <img src={usuario.foto} alt={displayName} />
+              {credencial?.foto ? (
+                <img src={credencial.foto} alt={displayName} />
               ) : (
                 <span>👤</span>
               )}
@@ -82,7 +82,7 @@ function Privado({ setAutentificado }) {
       </div>
 
       <main className="private-main">
-        {credencial === "admin" && (
+        {credencial.rol === "admin" && (
           <Routes>
             <Route path="/admin/docentes" element={<DocentesAdmin />} />
             <Route path="/admin/escuelas" element={<EscuelasAdmin />} />
@@ -90,7 +90,7 @@ function Privado({ setAutentificado }) {
           </Routes>
         )}
 
-        {(credencial === "docente" || credencial === "director") && (
+        {(credencial.rol === "docente" || credencial.rol === "director") && (
           <Routes>
             <Route path="/Alumnos" element={<Alumnos />} />
             <Route path="/Grupos" element={<Grupos />} />

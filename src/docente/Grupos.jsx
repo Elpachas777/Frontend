@@ -9,6 +9,7 @@ import { listar } from "../utils/grupos";
 import CrearGrupos from "./CrearGrupos";
 import EditarGrupo from "./EditarGrupo";
 import VerAlumnoDetalle from "./VerAlumnoDetalle";
+import VerGrupo from "./VerGrupo";
 
 function Grupos() {
   const [grupos, setGrupos] = useState([]);
@@ -120,7 +121,7 @@ function Grupos() {
               const filtradas = grupos.filter(
                 (grupo) =>
                   (!n || grupo.nombre?.toLowerCase().includes(n)) &&
-                  (!t || grupo.turno?.toLowerCase().includes(a)),
+                  (!t || grupo.turno?.toLowerCase().includes(t)),
               );
               return filtradas.length > 0 ? (
                 filtradas.map((grupo) => (
@@ -176,8 +177,8 @@ function Grupos() {
       </div>
 
       {mostrarVer && seleccionada && (
-        <VerAlumnoDetalle
-          alumno={seleccionada}
+        <VerGrupo
+          grupo={seleccionada}
           onCerrar={() => {
             setMostrarVer(false);
             setSeleccionada(null);

@@ -1,28 +1,31 @@
 import axios from "axios";
-const urlBack = import.meta.env.VITE_URL_BACKEND;
 
 export const verEjercicio = async () => {
-  const res = await axios.get(`${urlBack}/verEjercicio`);
+  const res = await axios.get("/verEjercicio");
 };
 
 export const guardarEjercicio = async (data) => {
-  const res = await axios.post(`${urlBack}/crearEjercicio`, data, {
+  const res = await axios.post("/crearEjercicio", data, {
     withCredentials: true,
   });
 };
 
 export const listarTipos = async () => {
-  const res = await axios.get(`${urlBack}/obtenerTipos`);
+  const res = await axios.get("/obtenerTipos");
   return res.data;
 };
 
 export const listar = async () => {
-  const res = await axios.get(`${urlBack}/obtenerEjercicios`);
+  const res = await axios.get("/obtenerEjercicios");
   return res.data;
 };
 
 export const actualizar = async (id, data) => {
-  console.log(id, data);
-  const res = await axios.put(`${urlBack}/editarEjercicio/${id}`, data);
+  const res = await axios.put(`/editarEjercicio/${id}`, data);
   return res.data;
 };
+
+export const eliminar = async (id) => {
+  const res = await axios.delete(`/eliminarEjercicio/${id}`)
+  return res.data
+}

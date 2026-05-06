@@ -42,7 +42,7 @@ function VerAlumnoDetalle({ alumno, onCerrar }) {
 
             <div className="vad-id-block">
               <span>ID:</span>
-              <strong>{alumno.id || "—"}</strong>
+              <strong>{alumno.id_ingreso || "—"}</strong>
             </div>
           </div>
 

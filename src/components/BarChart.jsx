@@ -1,3 +1,5 @@
+import { useState } from "react";
+
 function getBarColor(pct) {
   if (pct >= 80) return "#4caf50";
   if (pct >= 60) return "#ff9800";

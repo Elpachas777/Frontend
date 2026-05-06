@@ -1,7 +1,5 @@
 import axios from "../utils/axios.js";
 
-const urlBack = import.meta.env.VITE_URL_BACKEND;
-
 export function useRegistrarAdmin({ formData }) {
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -13,7 +11,7 @@ export function useRegistrarAdmin({ formData }) {
         contraseña: formData.password,
       };
 
-      await axios.post(`${urlBack}/crearAdmin`, datos);
+      await axios.post("/crearAdmin", datos);
     } catch (error) {
       console.log(error);
     }
@@ -25,9 +23,7 @@ export function useRegistrarAdmin({ formData }) {
 }
 
 export const verificarContraseña = async (data) => {
-  const res = await axios.post(`${urlBack}/verificarPassword`, data, {
-    withCredentials: true,
-  });
+  const res = await axios.post("/verificarPassword", data);
 
   console.log(res.data);
   return res.data;

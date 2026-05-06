@@ -2,17 +2,15 @@ import { useEffect, useState } from "react";
 import axios from "../utils/axios.js";
 
 function useCredenciales() {
-  const [credencial, setCredencial] = useState("");
-  const urlBack = import.meta.env.VITE_URL_BACKEND;
+  const [credencial, setCredencial] = useState({});
 
   useEffect(() => {
     const vertificar = async () => {
       try {
-        const respuesta = await axios.get(`${urlBack}/credenciales`);
-        if (respuesta) setCredencial(respuesta.data.rol);
+        const respuesta = await axios.get("/credenciales");
+        if (respuesta) setCredencial(respuesta.data);
       } catch (error) {
-        console.log(error.response.data);
-        setCredencial("");
+        setCredencial({rol: "" , nombre:""});
       }
     };
 

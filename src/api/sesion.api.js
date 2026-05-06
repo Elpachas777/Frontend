@@ -1,27 +1,13 @@
 import { useNavigate } from "react-router-dom";
 import axios from "../utils/axios.js";
 
-const urlBack = import.meta.env.VITE_URL_BACKEND;
-
 export function useIniciarSesion({ formData, setAutentificado, setMensaje }) {
   const navigate = useNavigate();
-
-  const validarCorreo = (correo) => {
-    const regex = /^[^\s@]+@ipn\.mx$/;
-    return regex.test(correo);
-  };
-
-  const validarContraseña = (password) => {
-    // Al menos 8 caracteres, una mayúscula, una minúscula, un número y un carácter especial
-    const regex =
-      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
-    return regex.test(password);
-  };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {
-      const respuesta = await axios.post(`${urlBack}/iniciarSesion`, formData);
+      const respuesta = await axios.post("/iniciarSesion", formData);
 
       if (respuesta) {
         setAutentificado(true);
@@ -41,7 +27,7 @@ export function useCorreoContraseña({ formData, setMensaje }) {
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {
-      const respuesta = await axios.post(`${urlBack}/recuperar`, formData);
+      const respuesta = await axios.post("/recuperar", formData);
       setMensaje(respuesta.data);
     } catch (error) {
       setMensaje(error.response.data);
@@ -65,7 +51,7 @@ export function useRecuperarContraseña({ formData, setMensaje }, token) {
         return;
       }
 
-      const respuesta = await axios.post(`${urlBack}/recuperarContra`, {
+      const respuesta = await axios.post("/recuperarContra", {
         token,
         password,
       });
@@ -82,7 +68,7 @@ export function useRecuperarContraseña({ formData, setMensaje }, token) {
 
 export async function cerrarSesion({ setAutentificado }) {
   try {
-    const respuesta = await axios.get(`${urlBack}/cerrar`);
+    const respuesta = await axios.get("/cerrar");
     if (respuesta.data === "ok") setAutentificado(false);
   } catch (error) {
     console.log(error);

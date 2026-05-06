@@ -1,22 +1,21 @@
 import axios from "axios";
 
-const urlBack = import.meta.env.VITE_URL_BACKEND;
-
 export const crear = async (data) => {
-  const res = await axios.post(`${urlBack}/registrarEscuela`, data);
+  const res = await axios.post("/registrarEscuela", data);
   return res.data;
 };
 
 export const actualizar = async (id, data) => {
-  const res = await axios.put(`${urlBack}/actualizarEscuela/${id}`, data);
+  const res = await axios.put(`/actualizarEscuela/${id}`, data);
+  return res.data
 };
 
 export const listar = async () => {
-  const res = await axios.get(`${urlBack}/verEscuelas`);
+  const res = await axios.get(`/verEscuelas`);
   return res.data;
 };
 
 export const eliminar = async (id) => {
-  const res = await axios.delete(`${urlBack}/eliminarEscuela/${id}`);
+  const res = await axios.delete(`/eliminarEscuela/${id}`);
   return res.data;
 };

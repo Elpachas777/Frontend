@@ -6,6 +6,8 @@ import CrearEjercicio from "./CrearEjercicio";
 import EditarEjercicio from "./EditarEjercicio";
 import "./Ejercicios.css";
 import VerEjercicio from "./VerEjercicio";
+import { comprobarContraseña } from "../utils/admin";
+import { eliminar } from "../api/ejercicio.api";
 
 let ejerciciosMock = [
   {
@@ -27,19 +29,6 @@ export function getEjerciciosMock() {
 }
 
 function Ejercicios() {
-  const confirmarCancelacion = async (onCerrar) => {
-    const res = await Swal.fire({
-      title: "¿Cancelar?",
-      text: "Se perderán los cambios no guardados.",
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonText: "Sí, cancelar",
-      cancelButtonText: "Seguir editando",
-      reverseButtons: true,
-    });
-    if (res.isConfirmed) onCerrar();
-  };
-
   const [ejercicios, setEjercicios] = useState([]);
   const [filtroNombre, setFiltroNombre] = useState("");
   const [filtroTurno, setFiltroTurno] = useState("");
@@ -57,7 +46,7 @@ function Ejercicios() {
     cargar();
   }, [cargar]);
 
-  const handleEliminar = async (grupo) => {
+  const handleEliminar = async (ejercicio) => {
     const result = await Swal.fire({
       title: "Confirmación requerida",
       html: "Ingresa la contraseña del administrador para eliminar la grupo.",
@@ -87,7 +76,7 @@ function Ejercicios() {
     });
 
     if (!result.isConfirmed) return;
-    await eliminar(grupo.id);
+    await eliminar(ejercicio.id_ejercicio);
 
     await Swal.fire({
       title: "Eliminada",
@@ -148,7 +137,7 @@ function Ejercicios() {
               const filtradas = ejercicios.filter(
                 (grupo) =>
                   (!n || grupo.nombre?.toLowerCase().includes(n)) &&
-                  (!t || grupo.turno?.toLowerCase().includes(a)),
+                  (!t || grupo.turno?.toLowerCase().includes(t)),
               );
               return filtradas.length > 0 ? (
                 filtradas.map((ejercicio) => (

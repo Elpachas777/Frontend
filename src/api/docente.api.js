@@ -1,37 +1,36 @@
 import axios from "axios";
-const urlBack = import.meta.env.VITE_URL_BACKEND;
 
 export const registrarDocente = async (data) => {
-  const res = await axios.post(`${urlBack}/registrarDocente`, data);
+  const res = await axios.post("/registrarDocente", data);
   return res.data;
 };
 
 export const verDocentes = async () => {
-  const res = await axios.get(`${urlBack}/verDocentes`);
+  const res = await axios.get("/verDocentes");
   return res.data;
 };
 
-export const verDocente = async (data) => {
-  const res = await axios.get(`${urlBack}/verDocente/${data}`);
+export const verDocente = async (id) => {
+  const res = await axios.get(`/verDocente/${id}`);
   return res.data;
 };
 
-export const eliminarDocente = async (data) => {
-  const res = await axios.delete(`${urlBack}/eliminarDocente/${data}`);
+export const eliminarDocente = async (id) => {
+  const res = await axios.delete(`/eliminarDocente/${id}`);
   return res.data;
 };
 
 export const editarDocente = async (id, data) => {
-  const res = await axios.put(`${urlBack}/editarDocente/${id}`, data);
+  const res = await axios.put(`/editarDocente/${id}`, data);
   return res.data;
 };
 
 export const cambiarHabilitado = async (id, data) => {
-  const res = await axios.put(`${urlBack}/cambiarHabilitado/${id}`, data);
+  const res = await axios.put(`/cambiarHabilitado/${id}`, data);
   return res.data;
 };
 
 export const verificarContraseña = async (id, data) => {
-  const res = await axios.put(`${urlBack}/verificarContra/${id}`, data);
+  const res = await axios.put(`/verificarContra/${id}`, data);
   return res.data;
 };
