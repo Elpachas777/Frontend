@@ -1,17 +1,6 @@
 import * as api from "../api/ejercicio.api";
 
-function obtenerDatos() {
-  const titulo = document.getElementById("titulo").value;
-  const fechaInicio = document.getElementById("fi").value;
-  const fechaFinal = document.getElementById("ff").value;
-
-  return { titulo, fechaInicio, fechaFinal };
-}
-
-export function crearCuento() {
-  const cuento = document.getElementById("cuento").value;
-  const silaba = document.getElementById("silaba").value;
-
+export function crearCuento(silaba, cuento) {
   let ejercicio = cuento;
 
   if (silaba) {
@@ -19,17 +8,7 @@ export function crearCuento() {
       .toLowerCase()
       .replaceAll(silaba.toLowerCase(), "<Canvas>");
   }
-
-  const json = JSON.stringify({
-    contenido: {
-      silaba,
-      cuento,
-      ejercicio,
-    },
-    tipo: 1,
-  });
-
-  return JSON.parse(json);
+  return ejercicio;
 }
 
 export function crear({ formData, setErrores, setMensaje }) {
@@ -37,8 +16,8 @@ export function crear({ formData, setErrores, setMensaje }) {
     event.preventDefault();
 
     try {
-      console.log(json);
-      await api.guardarEjercicio(json);
+      const res = await api.guardarEjercicio(formData);
+      setMensaje(res);
     } catch (error) {
       console.log(error);
     }
@@ -54,4 +33,33 @@ export async function listarTipos() {
   } catch (error) {
     return [];
   }
+}
+
+export async function listar() {
+  try {
+    const ejercicios = await api.listar();
+    return ejercicios;
+  } catch (error) {
+    return [];
+  }
+}
+
+export function actualizar(
+  { id_ejercicio },
+  { formData, setErrores, setMensaje },
+) {
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+
+    try {
+      const actualizado = await api.actualizar(id_ejercicio, formData);
+      setMensaje(actualizado);
+    } catch (error) {
+      setMensaje(error.data);
+    }
+  };
+
+  return {
+    handleSubmit,
+  };
 }

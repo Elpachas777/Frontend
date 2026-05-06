@@ -25,7 +25,9 @@ function CrearEjercicio({ onCerrar, setActualizado }) {
   const [errores, setErrores] = useState({});
   const [mensaje, setMensaje] = useState(null);
 
-  const { formData, handleChange } = useFormData(USUARIOS.EJERCICIO);
+  const { formData, handleChange, handleObjectChange } = useFormData(
+    USUARIOS.EJERCICIO,
+  );
   const { handleSubmit } = crear({
     formData,
     setErrores,
@@ -52,7 +54,7 @@ function CrearEjercicio({ onCerrar, setActualizado }) {
             ✕
           </button>{" "}
         </div>
-        <form className="modal-form">
+        <form className="modal-form" onSubmit={handleSubmit}>
           <div className="modal-field">
             <label>Título del ejercicio</label>
             <input
@@ -65,18 +67,45 @@ function CrearEjercicio({ onCerrar, setActualizado }) {
           </div>
 
           <div className="modal-field">
+            <label>Fecha de Inicio</label>
+            <input
+              name="fecha_inicio"
+              type="datetime-local"
+              value={formData.fecha_inicio}
+              onChange={handleChange}
+            />
+          </div>
+
+          <div className="modal-field">
+            <label>Fecha de Entrega</label>
+            <input
+              name="fecha_final"
+              type="datetime-local"
+              value={formData.fecha_final}
+              onChange={handleChange}
+            />
+          </div>
+
+          <div className="modal-field">
             <label>Tipo de ejercicio</label>
-            <select name="tipo" value={formData.tipo} onChange={handleChange}>
+            <select
+              name="id_tipo"
+              value={formData.id_tipo}
+              onChange={handleChange}
+            >
               <option value="">Seleccione el tipo de ejercicio</option>
               {tipos.map((tipo) => (
-                <option key={tipo.id} value={tipo.id}>
+                <option key={tipo.id_tipo} value={tipo.id_tipo}>
                   {tipo.nombre}
                 </option>
               ))}
             </select>
           </div>
 
-          <Selector tipo={formData.tipo} ejercicio={formData} />
+          <Selector
+            ejercicio={formData}
+            handleObjectChange={handleObjectChange}
+          />
 
           <div className="modal-field">
             <button type="submit" className="modal-btn-save">

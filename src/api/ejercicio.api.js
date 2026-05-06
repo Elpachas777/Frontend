@@ -15,3 +15,14 @@ export const listarTipos = async () => {
   const res = await axios.get(`${urlBack}/obtenerTipos`);
   return res.data;
 };
+
+export const listar = async () => {
+  const res = await axios.get(`${urlBack}/obtenerEjercicios`);
+  return res.data;
+};
+
+export const actualizar = async (id, data) => {
+  console.log(id, data);
+  const res = await axios.put(`${urlBack}/editarEjercicio/${id}`, data);
+  return res.data;
+};

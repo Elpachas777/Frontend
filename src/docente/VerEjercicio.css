@@ -1,0 +1,48 @@
+.contenido {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.contenedor {
+  background: #f8fafc;
+  border: 1px solid #d9e2ec;
+  border-radius: 14px;
+  padding: 14px 18px;
+}
+
+.contenedor strong {
+  font-size: 0.78rem;
+  color: #64748b;
+  text-transform: uppercase;
+}
+
+.contenedor-oracion {
+  margin-top: 10px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.contenedor-oracion span {
+  background: #eef8e5;
+  border: 1.5px solid #b5e68a;
+  border-radius: 10px;
+  padding: 6px 14px;
+  font-weight: 700;
+  color: #2d5a1e;
+  font-size: 0.9rem;
+}
+
+.contenedor-valor {
+  margin-top: 4px;
+  line-height: 1.6;
+}
+
+.botones {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  flex-wrap: wrap;
+}

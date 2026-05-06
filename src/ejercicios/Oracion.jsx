@@ -1,16 +1,17 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import EjercicioPlayer from "../docente/EjercicioPlayer";
 
 function cleanWord(w) {
   return w.replace(/[.,!?;:"""'']/g, "").toLowerCase();
 }
 
-function Oracion({ ejercicio }) {
+function Oracion({ ejercicio, contenido, handleObjectChange }) {
   const [texto, setTexto] = useState("");
   const [palabrasObj, setPalabrasObj] = useState([]);
   const [previewing, setPreviewing] = useState(false);
 
   const tokens = texto.trim() ? texto.trim().split(/\s+/) : [];
+
   const togglePalabra = (rawWord) => {
     const key = cleanWord(rawWord);
     if (!key) return;
@@ -35,22 +36,43 @@ function Oracion({ ejercicio }) {
     );
   };
 
-  const ejercicioPreview = {
-    id: 0,
-    ejercicio: ejercicio.titulo,
-    texto,
-    palabras: palabrasObj.map(({ palabra, silabas }) => ({ palabra, silabas })),
-  };
+  useEffect(() => {
+    if (!contenido) return;
+
+    setTexto(contenido.texto);
+
+    if (contenido.palabras) {
+      setPalabrasObj(
+        contenido.palabras.map((p) => ({
+          key: p.palabra,
+          palabra: p.palabra,
+          silabas: p.silabas || [p.palabra],
+          raw: p.palabra,
+        })),
+      );
+    }
+  }, []);
+
+  useEffect(() => {
+    const contenido = {
+      texto,
+      palabras: palabrasObj.map(({ palabra, silabas }) => ({
+        palabra,
+        silabas,
+      })),
+    };
+
+    handleObjectChange("contenido", contenido);
+  }, [texto, palabrasObj]);
 
   if (previewing) {
     return (
       <EjercicioPlayer
-        ejercicio={ejercicioPreview}
+        ejercicio={ejercicio}
         onCerrar={() => setPreviewing(false)}
       />
     );
   }
-
   return (
     <>
       <div className="modal-field">

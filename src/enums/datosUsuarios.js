@@ -51,7 +51,7 @@ export const DATOS = {
     fecha_inicio: "",
     fecha_final: "",
     id_grupo: "",
-    tipo: "",
+    id_tipo: "",
     contenido: {},
   },
 };

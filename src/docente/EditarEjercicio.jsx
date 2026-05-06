@@ -1,32 +1,30 @@
 import { useEffect, useState } from "react";
+import Editor from "../ejercicios/Editor";
 import { USUARIOS } from "../enums/tipoUsuarios";
 import useFormData from "../hooks/useFormData";
-import "../RolAdmin/RolAdmin.css";
-import { actualizar } from "../utils/alumnos";
+import { actualizar } from "../utils/ejercicio";
 
-function EditarAlumno({ alumno, onCerrar, onGuardado }) {
+function EditarEjercicio({ ejercicio, onCerrar }) {
   const [errores, setErrores] = useState({});
   const [mensaje, setMensaje] = useState(null);
 
-  const { formData, setFormData, handleChange } = useFormData(
-    USUARIOS.ALUMNO_EDITAR,
-  );
+  const { formData, setFormData, handleChange, handleObjectChange } =
+    useFormData(USUARIOS.EJERCICIO);
 
   useEffect(() => {
     setFormData((prev) => {
       const nuevo = { ...prev };
 
       Object.keys(prev).forEach((key) => {
-        if (key in alumno) {
-          nuevo[key] = alumno[key];
+        if (key in ejercicio) {
+          nuevo[key] = ejercicio[key];
         }
       });
-
       return nuevo;
     });
   }, []);
 
-  const { handleSubmit } = actualizar(alumno, {
+  const { handleSubmit } = actualizar(ejercicio, {
     formData,
     setErrores,
     setMensaje,
@@ -39,35 +37,23 @@ function EditarAlumno({ alumno, onCerrar, onGuardado }) {
         onClick={(e) => e.stopPropagation()}
       >
         <div className="modal-header">
-          <h2>Editar alumno</h2>
+          <h2>Editar ejercicio</h2>
           <button type="button" className="modal-close" onClick={onCerrar}>
             ✕
           </button>
         </div>
+
         <form className="modal-form" onSubmit={handleSubmit}>
           <div className="modal-field">
-            <label>Nombre</label>
+            <label>Nombre del ejercicio</label>
             <input
-              name="nombres"
-              value={formData.nombres}
+              name="titulo"
+              value={formData.titulo}
               onChange={handleChange}
             />
-            {errores.nombres && (
-              <span className="modal-error">{errores.nombres}</span>
-            )}
           </div>
 
-          <div className="modal-field">
-            <label>Apellidos</label>
-            <input
-              name="apellidos"
-              value={formData.apellidos}
-              onChange={handleChange}
-            />
-            {errores.apellidos && (
-              <span className="modal-error">{errores.apellidos}</span>
-            )}
-          </div>
+          <Editor formData={formData} handleObjectChange={handleObjectChange} />
 
           <div className="modal-actions">
             <button
@@ -87,4 +73,4 @@ function EditarAlumno({ alumno, onCerrar, onGuardado }) {
   );
 }
 
-export default EditarAlumno;
+export default EditarEjercicio;

@@ -1,9 +1,9 @@
 import React from "react";
 import BotonCanvas from "../components/BotonCanvas";
 
-export default function MostrarEjercicio(cuento) {
-  const { titulo, contenido } = cuento.ejercicio;
-  const segmentos = contenido.ejercicio.split("<Canvas>");
+export default function MostrarEjercicio({ ejercicio }) {
+  const { titulo, contenido } = ejercicio;
+  const segmentos = contenido.modificado.split("<Canvas>");
 
   return (
     <div>
@@ -12,7 +12,9 @@ export default function MostrarEjercicio(cuento) {
       {segmentos.map((texto, posicion) => (
         <React.Fragment key={posicion}>
           {texto}
-          {posicion < segmentos.length - 1 && <BotonCanvas />}
+          {posicion < segmentos.length - 1 && (
+            <BotonCanvas Texto={contenido.silaba} />
+          )}
         </React.Fragment>
       ))}
     </div>

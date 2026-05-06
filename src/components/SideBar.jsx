@@ -56,13 +56,6 @@ function SideBar({ credencial, basePath = "", onCerrarSesion, usuario }) {
             </NavLink>
 
             <NavLink
-              to="/Canvas"
-              className={({ isActive }) => (isActive ? "active" : "")}
-            >
-              Ejercicio
-            </NavLink>
-
-            <NavLink
               to={rutas.ejercicios}
               className={({ isActive }) => (isActive ? "active" : "")}
             >

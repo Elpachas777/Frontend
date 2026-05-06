@@ -7,7 +7,7 @@ function EjercicioPlayer({ ejercicio, onCerrar }) {
   const [indice, setIndice] = useState(0);
   const [terminado, setTerminado] = useState(false);
 
-  const palabras = ejercicio?.palabras || [];
+  const palabras = ejercicio.contenido.palabras || [];
   const total = palabras.length;
   const actual = palabras[indice];
   const progreso = total > 0 ? (indice / total) * 100 : 0;
@@ -80,8 +80,8 @@ function EjercicioPlayer({ ejercicio, onCerrar }) {
           </span>
         </div>
 
-        <p className="ep-sentence">{ejercicio.texto}</p>
-
+        <p className="ep-sentence">{ejercicio.titulo}</p>
+        <p className="ep-sentence">{ejercicio.contenido.texto}</p>
         <p className="ep-syllable-label">{actual.silabas.join(" - ")}</p>
 
         <div className="ep-canvases">
