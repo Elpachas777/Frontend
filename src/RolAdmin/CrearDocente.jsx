@@ -16,7 +16,12 @@ function CrearDocente({ escuelas, onCerrar, onGuardado }) {
   const [mensaje, setMensaje] = useState(null);
 
   const { formData, handleChange } = useFormData(USUARIOS.DOCENTE);
-  const { handleSubmit } = registrar({ formData, setErrores, setMensaje });
+  const { handleSubmit } = registrar({
+    formData,
+    setErrores,
+    setMensaje,
+    onGuardado,
+  });
 
   const [form, setForm] = useState({
     foto: "",
@@ -32,15 +37,15 @@ function CrearDocente({ escuelas, onCerrar, onGuardado }) {
   };
 
   return (
-    <div className="modal-overlay" onClick={onCerrar}>
+    <div className="modal-overlay">
       <div className="modal-card" onClick={(e) => e.stopPropagation()}>
         <div className="modal-header">
           <h2>Crear docente</h2>
           <button type="button" className="modal-close" onClick={onCerrar}>
             ✕
           </button>
-          {mensaje && <Mensaje tipo={mensaje.tipo} mensaje={mensaje.mensaje} />}
         </div>
+        {mensaje && <Mensaje tipo={mensaje.tipo} mensaje={mensaje.mensaje} />}
         <form className="modal-form" onSubmit={handleSubmit}>
           <div className="modal-field">
             <label>Foto</label>

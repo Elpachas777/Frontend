@@ -22,7 +22,12 @@ function validar(formData) {
   return e;
 }
 
-export function registrarEscuela({ formData, setErrores, setMensaje }) {
+export function registrarEscuela({
+  formData,
+  setErrores,
+  setMensaje,
+  onGuardado,
+}) {
   const handleSubmit = async (event) => {
     event.preventDefault();
     const errores = validar(formData);
@@ -37,6 +42,7 @@ export function registrarEscuela({ formData, setErrores, setMensaje }) {
 
       const respuesta = await api.crear(datos);
       setMensaje(respuesta);
+      onGuardado();
     } catch (error) {
       setMensaje(error.response.data);
     }
@@ -56,7 +62,10 @@ export async function obtenerEscuelas() {
   }
 }
 
-export function actualizar({ id }, { formData, setErrores, setMensaje }) {
+export function actualizar(
+  { id },
+  { formData, setErrores, setMensaje, onGuardado },
+) {
   const handleSubmit = async (event) => {
     event.preventDefault();
     const errores = await validar(formData);
@@ -70,6 +79,7 @@ export function actualizar({ id }, { formData, setErrores, setMensaje }) {
       const { logo_muestra, ...datos } = formData;
       const respuesta = await api.actualizar(id, datos);
       setMensaje(respuesta);
+      onGuardado();
     } catch (error) {
       setMensaje(error.response.data);
     }

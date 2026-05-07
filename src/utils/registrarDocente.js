@@ -1,5 +1,3 @@
-import { registrarDocente } from "../api/docente.api";
-
 function validar(formData) {
   const e = {};
   if (!formData.nombres) e.nombre = "El nombre es obligatorio.";
@@ -9,7 +7,7 @@ function validar(formData) {
   return e;
 }
 
-function registrar({ formData, setErrores, setMensaje }) {
+function registrar({ formData, setErrores, setMensaje, onGuardado }) {
   const handleSubmit = async (event) => {
     event.preventDefault();
     const errores = validar(formData);
@@ -27,9 +25,9 @@ function registrar({ formData, setErrores, setMensaje }) {
         correo: formData.correo,
         contraseña: formData.password,
       };
-
       const respuesta = await registrarDocente(datos);
       setMensaje(respuesta);
+      onGuardado();
     } catch (error) {
       setMensaje(error.response.data);
     }

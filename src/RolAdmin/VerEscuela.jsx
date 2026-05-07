@@ -38,7 +38,7 @@ function VerEscuela({ escuela, onCerrar }) {
   const { docentes } = escuela;
 
   return (
-    <div className="modal-overlay" onClick={onCerrar}>
+    <div className="modal-overlay">
       <div
         className="modal-card modal-card--escuela"
         onClick={(e) => e.stopPropagation()}

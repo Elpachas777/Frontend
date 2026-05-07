@@ -18,7 +18,7 @@ async function validar(formData, id) {
   return e;
 }
 
-function editar({ id }, { formData, setErrores, setMensaje }) {
+function editar({ id }, { formData, setErrores, setMensaje, onGuardado }) {
   const handleSubmit = async (event) => {
     event.preventDefault();
     const errores = await validar(formData, id);
@@ -27,6 +27,8 @@ function editar({ id }, { formData, setErrores, setMensaje }) {
       setErrores(errores);
       return;
     }
+
+    setErrores([]);
 
     try {
       const datos = {
@@ -40,9 +42,10 @@ function editar({ id }, { formData, setErrores, setMensaje }) {
           contraseña: formData.passwordNueva,
         },
       };
-      console.log(datos);
+
       const respuesta = await editarDocente(id, datos);
       setMensaje(respuesta);
+      onGuardado();
     } catch (error) {
       setMensaje(error.response.data);
     }

@@ -34,7 +34,7 @@ function DocentesAdmin() {
       .toLowerCase()
       .includes(filtroNombre.toLowerCase());
     const matchEscuela =
-      filtroEscuela === "" || docente.escuela === filtroEscuela;
+      filtroEscuela === "" || docente.escuela.id === Number(filtroEscuela);
     return matchNombre && matchEscuela;
   });
 
@@ -71,7 +71,7 @@ function DocentesAdmin() {
           >
             <option value="">Todas</option>
             {escuelas.map((escuela) => (
-              <option key={escuela.id} value={escuela.nombre}>
+              <option key={escuela.id} value={escuela.id}>
                 {escuela.nombre}
               </option>
             ))}
@@ -144,6 +144,9 @@ function DocentesAdmin() {
             setMostrarVer(false);
             setSeleccionado(null);
           }}
+          onGuardado={() => {
+            cargar();
+          }}
           onEliminado={() => {
             setMostrarVer(false);
             setSeleccionado(null);
@@ -157,7 +160,6 @@ function DocentesAdmin() {
           escuelas={escuelas}
           onCerrar={() => setMostrarCrear(false)}
           onGuardado={() => {
-            setMostrarCrear(false);
             cargar();
           }}
         />
@@ -172,8 +174,6 @@ function DocentesAdmin() {
             setSeleccionado(null);
           }}
           onGuardado={() => {
-            setMostrarEditar(false);
-            setSeleccionado(null);
             cargar();
           }}
         />

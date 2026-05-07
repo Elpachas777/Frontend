@@ -9,7 +9,7 @@ import { IconEye, IconEyeOff } from "./EyeIcons";
 import "./RolAdmin.css";
 import VerGrupoAdmin from "./VerGrupoAdmin";
 
-function VerDocente({ docente, onCerrar, onEliminado }) {
+function VerDocente({ docente, onCerrar, onGuardado, onEliminado }) {
   const [habilitado, setHabilitado] = useState(docente.habilitado);
   const [grupoViendoId, setGrupoViendoId] = useState(null);
   const [showPassword, setShowPassword] = useState(false);
@@ -46,6 +46,7 @@ function VerDocente({ docente, onCerrar, onEliminado }) {
       await modificarHabilitado(docente.id, true);
       setHabilitado(true);
     }
+    onGuardado();
   };
 
   const handleEliminar = async () => {
@@ -95,7 +96,7 @@ function VerDocente({ docente, onCerrar, onEliminado }) {
 
   return (
     <>
-      <div className="modal-overlay" onClick={onCerrar}>
+      <div className="modal-overlay">
         <div
           className="modal-card modal-card--perfil"
           onClick={(e) => e.stopPropagation()}

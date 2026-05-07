@@ -10,7 +10,7 @@ function useCredenciales() {
         const respuesta = await axios.get("/credenciales");
         if (respuesta) setCredencial(respuesta.data);
       } catch (error) {
-        setCredencial({rol: "" , nombre:""});
+        setCredencial({ rol: "", nombre: "" });
       }
     };
 

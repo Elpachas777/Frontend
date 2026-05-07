@@ -68,6 +68,8 @@ function Escuelas() {
       timer: 1600,
       showConfirmButton: false,
     });
+
+    cargar();
   };
 
   return (
@@ -174,7 +176,7 @@ function Escuelas() {
                 ))
               ) : (
                 <tr>
-                  <td colSpan={4}>
+                  <td colSpan={5}>
                     <div className="tabla-empty">
                       <span className="tabla-empty-icon">🌱</span>
                       <h3>Sin escuelas registradas</h3>
@@ -202,7 +204,6 @@ function Escuelas() {
         <CrearEscuela
           onCerrar={() => setMostrarCrear(false)}
           onGuardado={() => {
-            setMostrarCrear(false);
             cargar();
           }}
         />
@@ -216,8 +217,6 @@ function Escuelas() {
             setSeleccionada(null);
           }}
           onGuardado={() => {
-            setMostrarEditar(false);
-            setSeleccionada(null);
             cargar();
           }}
         />

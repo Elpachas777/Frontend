@@ -13,7 +13,7 @@ import EscuelasAdmin from "../RolAdmin/Escuelas";
 
 function Privado({ setAutentificado }) {
   const [menuAbierto, setMenuAbierto] = useState(false);
-  const {credencial} = useCredenciales();
+  const { credencial } = useCredenciales();
 
   const handleLogout = async () => {
     const result = await Swal.fire({
@@ -28,8 +28,9 @@ function Privado({ setAutentificado }) {
     if (!result.isConfirmed) return;
     cerrarSesion({ setAutentificado });
   };
-  
+
   const displayName = credencial.nombre;
+
   const roleLabel =
     credencial.rol === "director"
       ? "Director"

@@ -1,6 +1,6 @@
-import "./RolAdmin.css";
 import "../components/Tabla.css";
-import { getGrupoById, getAlumnosByGrupo } from "./mockData";
+import { getAlumnosByGrupo, getGrupoById } from "./mockData";
+import "./RolAdmin.css";
 
 function VerGrupoAdmin({ grupoId, onCerrar }) {
   const grupo = getGrupoById(grupoId);
@@ -9,11 +9,16 @@ function VerGrupoAdmin({ grupoId, onCerrar }) {
   if (!grupo) return null;
 
   return (
-    <div className="modal-overlay modal-overlay--top" onClick={onCerrar}>
-      <div className="modal-card modal-card--wide" onClick={(e) => e.stopPropagation()}>
+    <div className="modal-overlay modal-overlay--top">
+      <div
+        className="modal-card modal-card--wide"
+        onClick={(e) => e.stopPropagation()}
+      >
         <div className="modal-header">
           <h2>Grupo {grupo.nombre}</h2>
-          <button type="button" className="modal-close" onClick={onCerrar}>✕</button>
+          <button type="button" className="modal-close" onClick={onCerrar}>
+            ✕
+          </button>
         </div>
 
         <div className="grupo-info-row">
@@ -65,7 +70,9 @@ function VerGrupoAdmin({ grupoId, onCerrar }) {
         </div>
 
         <div className="modal-actions" style={{ marginTop: "20px" }}>
-          <button type="button" className="modal-btn-cancel" onClick={onCerrar}>Cerrar</button>
+          <button type="button" className="modal-btn-cancel" onClick={onCerrar}>
+            Cerrar
+          </button>
         </div>
       </div>
     </div>
