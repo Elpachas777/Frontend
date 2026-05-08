@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import Swal from "sweetalert2";
+import Mensaje from "../components/Mensaje";
 import Selector from "../ejercicios/Selector";
 import { USUARIOS } from "../enums/tipoUsuarios";
 import useFormData from "../hooks/useFormData";
@@ -20,7 +21,7 @@ async function confirmarCancelacion(onCerrar) {
   if (res.isConfirmed) onCerrar();
 }
 
-function CrearEjercicio({ onCerrar, setActualizado }) {
+function CrearEjercicio({ onCerrar, setActualizado, onGuardado }) {
   const [tipos, setTipos] = useState([]);
   const [errores, setErrores] = useState({});
   const [mensaje, setMensaje] = useState(null);
@@ -32,6 +33,7 @@ function CrearEjercicio({ onCerrar, setActualizado }) {
     formData,
     setErrores,
     setMensaje,
+    onGuardado,
   });
 
   const cargar = useCallback(async () => {
@@ -54,6 +56,7 @@ function CrearEjercicio({ onCerrar, setActualizado }) {
             ✕
           </button>{" "}
         </div>
+        {mensaje && <Mensaje tipo={mensaje.tipo} mensaje={mensaje.mensaje} />}
         <form className="modal-form" onSubmit={handleSubmit}>
           <div className="modal-field">
             <label>Título del ejercicio</label>

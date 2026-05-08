@@ -1,6 +1,6 @@
 import axios from "axios";
 
-export const registrarDocente = async (data) => {
+export const crear = async (data) => {
   const res = await axios.post("/registrarDocente", data);
   return res.data;
 };

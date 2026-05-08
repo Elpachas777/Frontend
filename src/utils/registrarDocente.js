@@ -1,3 +1,5 @@
+import * as api from "../api/docente.api";
+
 function validar(formData) {
   const e = {};
   if (!formData.nombres) e.nombre = "El nombre es obligatorio.";
@@ -25,7 +27,7 @@ function registrar({ formData, setErrores, setMensaje, onGuardado }) {
         correo: formData.correo,
         contraseña: formData.password,
       };
-      const respuesta = await registrarDocente(datos);
+      const respuesta = await api.crear(datos);
       setMensaje(respuesta);
       onGuardado();
     } catch (error) {

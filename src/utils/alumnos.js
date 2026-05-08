@@ -16,7 +16,10 @@ export async function listar() {
   }
 }
 
-export function actualizar({ id }, { formData, setErrores, setMensaje }) {
+export function actualizar(
+  { id },
+  { formData, setErrores, setMensaje, onGuardado },
+) {
   const handleSubmit = async (event) => {
     event.preventDefault();
     const errores = validar(formData);
@@ -28,6 +31,7 @@ export function actualizar({ id }, { formData, setErrores, setMensaje }) {
     try {
       const respuesta = await api.actualizar(id, formData);
       setMensaje(respuesta);
+      onGuardado();
     } catch (error) {
       setMensaje(error.response.data);
     }

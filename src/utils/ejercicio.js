@@ -11,15 +11,16 @@ export function crearCuento(silaba, cuento) {
   return ejercicio;
 }
 
-export function crear({ formData, setErrores, setMensaje }) {
+export function crear({ formData, setErrores, setMensaje, onGuardado }) {
   const handleSubmit = async (event, json) => {
     event.preventDefault();
 
     try {
       const res = await api.guardarEjercicio(formData);
       setMensaje(res);
+      onGuardado();
     } catch (error) {
-      console.log(error);
+      setMensaje(error.response.data);
     }
   };
 
@@ -46,7 +47,7 @@ export async function listar() {
 
 export function actualizar(
   { id_ejercicio },
-  { formData, setErrores, setMensaje },
+  { formData, setErrores, setMensaje, onGuardado },
 ) {
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -54,8 +55,9 @@ export function actualizar(
     try {
       const actualizado = await api.actualizar(id_ejercicio, formData);
       setMensaje(actualizado);
+      onGuardado();
     } catch (error) {
-      setMensaje(error.data);
+      setMensaje(error.response.data);
     }
   };
 

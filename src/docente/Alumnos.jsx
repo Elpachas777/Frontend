@@ -68,6 +68,7 @@ function Alumnos() {
       timer: 1600,
       showConfirmButton: false,
     });
+    cargar();
   };
 
   return (

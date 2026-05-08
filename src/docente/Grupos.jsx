@@ -8,7 +8,6 @@ import { comprobarContraseña } from "../utils/admin";
 import { listar } from "../utils/grupos";
 import CrearGrupos from "./CrearGrupos";
 import EditarGrupo from "./EditarGrupo";
-import VerAlumnoDetalle from "./VerAlumnoDetalle";
 import VerGrupo from "./VerGrupo";
 
 function Grupos() {
@@ -183,6 +182,10 @@ function Grupos() {
             setMostrarVer(false);
             setSeleccionada(null);
           }}
+          onGuardado={() => {
+            setSeleccionada(seleccionada);
+            cargar();
+          }}
         />
       )}
 
@@ -190,7 +193,6 @@ function Grupos() {
         <CrearGrupos
           onCerrar={() => setMostrarCrear(false)}
           onGuardado={() => {
-            setMostrarCrear(false);
             cargar();
           }}
         />
@@ -204,8 +206,6 @@ function Grupos() {
             setSeleccionada(null);
           }}
           onGuardado={() => {
-            setMostrarEditar(false);
-            setSeleccionada(null);
             cargar();
           }}
         />

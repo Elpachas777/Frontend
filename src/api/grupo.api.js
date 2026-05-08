@@ -34,3 +34,8 @@ export const verGrupo = async (id) => {
   const respuesta = await axios.get(`/verAlumnosGrupo/${id}`);
   return respuesta.data;
 };
+
+export const agregar = async (id, data) => {
+  const respuesta = await axios.put(`/agregarAlumnos/${id}`, data);
+  return respuesta.data;
+};

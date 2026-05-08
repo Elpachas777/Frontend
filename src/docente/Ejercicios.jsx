@@ -1,13 +1,13 @@
 import { useCallback, useEffect, useState } from "react";
 import Swal from "sweetalert2";
+import { eliminar } from "../api/ejercicio.api";
 import "../RolAdmin/RolAdmin.css";
+import { comprobarContraseña } from "../utils/admin";
 import { listar } from "../utils/ejercicio";
 import CrearEjercicio from "./CrearEjercicio";
 import EditarEjercicio from "./EditarEjercicio";
 import "./Ejercicios.css";
 import VerEjercicio from "./VerEjercicio";
-import { comprobarContraseña } from "../utils/admin";
-import { eliminar } from "../api/ejercicio.api";
 
 let ejerciciosMock = [
   {

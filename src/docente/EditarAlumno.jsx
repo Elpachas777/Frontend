@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import Mensaje from "../components/Mensaje";
 import { USUARIOS } from "../enums/tipoUsuarios";
 import useFormData from "../hooks/useFormData";
 import "../RolAdmin/RolAdmin.css";
@@ -30,6 +31,7 @@ function EditarAlumno({ alumno, onCerrar, onGuardado }) {
     formData,
     setErrores,
     setMensaje,
+    onGuardado,
   });
 
   return (
@@ -44,6 +46,9 @@ function EditarAlumno({ alumno, onCerrar, onGuardado }) {
             ✕
           </button>
         </div>
+
+        {mensaje && <Mensaje tipo={mensaje.tipo} mensaje={mensaje.mensaje} />}
+
         <form className="modal-form" onSubmit={handleSubmit}>
           <div className="modal-field">
             <label>Nombre</label>

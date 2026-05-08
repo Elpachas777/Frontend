@@ -7,7 +7,7 @@ function validar(formData) {
   return e;
 }
 
-function crear({ formData, setError, setMensaje }) {
+function crear({ formData, setError, setMensaje, onGuardado }) {
   const handleSubmit = async (event) => {
     event.preventDefault();
     const errores = validar(formData);
@@ -20,6 +20,7 @@ function crear({ formData, setError, setMensaje }) {
     try {
       const respuesta = await api.crear(formData);
       setMensaje(respuesta);
+      onGuardado();
     } catch (error) {
       setMensaje(error.response.data);
     }

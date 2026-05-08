@@ -5,10 +5,10 @@ import useFormData from "../hooks/useFormData";
 import "../RolAdmin/RolAdmin.css";
 import crear from "../utils/crearGrupo";
 
-function CrearGrupos({ onCerrar, setActualizado }) {
+function CrearGrupos({ onCerrar, onGuardado }) {
   const [mensaje, setMensaje] = useState(null);
   const { formData, handleChange } = useFormData(USUARIOS.GRUPO);
-  const { handleSubmit } = crear({ formData, setMensaje });
+  const { handleSubmit } = crear({ formData, setMensaje, onGuardado });
 
   return (
     <div className="modal-overlay" onClick={onCerrar}>

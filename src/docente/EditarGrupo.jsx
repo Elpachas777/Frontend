@@ -3,20 +3,11 @@ import Mensaje from "../components/Mensaje";
 import { USUARIOS } from "../enums/tipoUsuarios";
 import useFormData from "../hooks/useFormData";
 import "../RolAdmin/RolAdmin.css";
-import { actualizar, agregar } from "../utils/editarGrupo";
+import { actualizar } from "../utils/editarGrupo";
 
 function EditarGrupo({ grupo, onCerrar, onGuardado }) {
   const [mensaje, setMensaje] = useState(null);
-
-  const {
-    formData: grupoData,
-    setFormData,
-    handleChange: handleGrupo,
-  } = useFormData(USUARIOS.GRUPO);
-
-  const { formData: alumno, handleChange: handleAlumno } = useFormData(
-    USUARIOS.ALUMNO,
-  );
+  const { formData, setFormData, handleChange } = useFormData(USUARIOS.GRUPO);
 
   useEffect(() => {
     setFormData((prev) => {
@@ -33,13 +24,7 @@ function EditarGrupo({ grupo, onCerrar, onGuardado }) {
   }, []);
 
   const { handleSubmit } = actualizar(grupo, {
-    formData: grupoData,
-    setMensaje,
-  });
-
-  const { handleClick } = agregar({
-    grupo,
-    formData: alumno,
+    formData,
     setMensaje,
   });
 
@@ -60,9 +45,9 @@ function EditarGrupo({ grupo, onCerrar, onGuardado }) {
               type="text"
               name="nombre"
               required
-              placeholder={grupoData.nombre}
-              value={grupoData.nombre}
-              onChange={handleGrupo}
+              placeholder={formData.nombre}
+              value={formData.nombre}
+              onChange={handleChange}
             />
           </div>
 
@@ -72,42 +57,14 @@ function EditarGrupo({ grupo, onCerrar, onGuardado }) {
               id="turno"
               name="turno"
               required
-              value={grupoData.turno}
-              onChange={handleGrupo}
+              value={formData.turno}
+              onChange={handleChange}
             >
               <option value="">{grupo.turno}</option>
               <option value="Matutino">Matutino</option>
               <option value="Vespertino">Vespertino</option>
               <option value="Mixto">Mixto</option>
             </select>
-          </div>
-
-          <div className="divider">
-            <span>Agregar alumno</span>
-          </div>
-
-          <div className="modal-field">
-            <label htmlFor="nombrea">Nombre del alumno</label>
-            <input
-              type="text"
-              id="nombrea"
-              name="nombre"
-              value={alumno.nombre}
-              onChange={handleAlumno}
-              placeholder="Nombre"
-            />
-          </div>
-
-          <div className="modal-field">
-            <label htmlFor="apellidos">Apellidos del alumno</label>
-            <input
-              type="text"
-              id="apellidos"
-              name="apellidos"
-              value={alumno.apellidos}
-              onChange={handleAlumno}
-              placeholder="Apellidos"
-            />
           </div>
 
           <div className="modal-actions">
