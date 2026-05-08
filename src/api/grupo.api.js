@@ -39,3 +39,8 @@ export const agregar = async (id, data) => {
   const respuesta = await axios.put(`/agregarAlumnos/${id}`, data);
   return respuesta.data;
 };
+
+export const listarAlumnos = async (id) => {
+  const respuesta = await axios.get(`/listarAlumnos/${id}`)
+  return respuesta.data;
+}

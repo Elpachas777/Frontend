@@ -10,14 +10,30 @@ export async function listar() {
 }
 
 export async function agregar(
-  { grupoId, alumnosId },
+  { grupoId, grupoNombre, alumnosSelect },
   { setErrores, onGuardado },
 ) {
   try {
-    const agregado = await api.agregar(grupoId, alumnosId);
+    console.log(alumnosSelect)
+    const data = {
+      grupo : grupoNombre,
+      alumnos : alumnosSelect
+    }
+    
+    const agregado = await api.agregar(grupoId, data);
     console.log(agregado);
     onGuardado();
   } catch (error) {
     console.log(error.response.data);
+  }
+}
+
+export async function listarAlumnos({id}) {
+  try {
+    const lista = await api.listarAlumnos(id)
+    return lista
+  } catch (error) {
+    console.log(error.response.data)
+    return []
   }
 }

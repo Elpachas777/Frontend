@@ -2,7 +2,7 @@ import Swal from "sweetalert2";
 import "./VerAlumnoDetalle.css";
 
 function VerAlumnoDetalle({ alumno, onCerrar }) {
-  console.log(alumno);
+  
   const handlePDF = async () => {
     await Swal.fire({
       icon: "info",

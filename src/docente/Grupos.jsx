@@ -182,10 +182,6 @@ function Grupos() {
             setMostrarVer(false);
             setSeleccionada(null);
           }}
-          onGuardado={() => {
-            setSeleccionada(seleccionada);
-            cargar();
-          }}
         />
       )}
 

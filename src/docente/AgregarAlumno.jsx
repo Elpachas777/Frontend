@@ -5,29 +5,31 @@ import "../RolAdmin/RolAdmin.css";
 import { listar } from "../utils/alumnos";
 import { agregar } from "../utils/grupos";
 
-function AgregarAlumnos({ grupoId, onCerrar, onGuardado }) {
+function AgregarAlumnos({ grupoId, grupoNombre, onCerrar, onGuardado }) {
   const [alumnos, setAlumnos] = useState([]);
   const [errores, setErrores] = useState({});
   const [filtroNombre, setFiltroNombre] = useState("");
   const [filtroApellidos, setFiltroApellidos] = useState("");
-  const [seleccionada, setSeleccionada] = useState(null);
-  const [alumnosId, setAlumnosId] = useState([]);
+  const [alumnosSelect, setAlumnosSelect] = useState([]);
 
   const cargar = useCallback(async () => {
     const alumnosArreglo = await listar();
     setAlumnos(alumnosArreglo);
   }, []);
 
-  const handleChange = (id) => {
-    setAlumnosId((prev) =>
-      prev.includes(id)
-        ? prev.filter((alumnoId) => alumnoId !== id)
-        : [...prev, id],
+  const handleChange = (alumno) => {
+    setAlumnosSelect((prev) =>
+      prev.some((item) => item.id === alumno.id)
+        ? prev.filter((item) => item.id !== alumno.id)
+        : [...prev, { id: alumno.id, apellidos: alumno.apellidos }],
     );
   };
 
   const handleClick = async () => {
-    await agregar({ grupoId, alumnosId }, { setErrores, onGuardado });
+    await agregar(
+      { grupoId, grupoNombre, alumnosSelect },
+      { setErrores, onGuardado },
+    );
   };
 
   useEffect(() => {
@@ -91,8 +93,15 @@ function AgregarAlumnos({ grupoId, onCerrar, onGuardado }) {
                       <td>
                         <input
                           type="checkbox"
-                          checked={alumnosId.includes(alumno.id)}
-                          onChange={() => handleChange(alumno.id)}
+                          checked={alumnosSelect.some(
+                            (item) => item.id === alumno.id,
+                          )}
+                          onChange={() =>
+                            handleChange({
+                              id: alumno.id,
+                              apellidos: alumno.apellidos,
+                            })
+                          }
                         ></input>
                       </td>
                       <td>{alumno.id}</td>

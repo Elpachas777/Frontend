@@ -1,11 +1,21 @@
-import { useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import "../RolAdmin/RolAdmin.css";
 import "../components/Tabla.css";
 import AgregarAlumnos from "./AgregarAlumno";
+import { listarAlumnos } from "../utils/grupos";
 
-function VerGrupo({ grupo, onCerrar, onGuardado }) {
+function VerGrupo({ grupo, onCerrar }) {
+  const [alumnos, setAlumnos] = useState([]);
   const [mostrar, setMostrar] = useState(null);
-  const { alumnos } = grupo;
+
+  const cargar = useCallback(async () => {
+    const alumnosArreglo = await listarAlumnos(grupo);
+    setAlumnos(alumnosArreglo);
+  }, [grupo]);
+
+  useEffect(() => {
+    cargar();
+  }, [cargar]);
 
   return (
     <>
@@ -40,14 +50,16 @@ function VerGrupo({ grupo, onCerrar, onGuardado }) {
                 <tr>
                   <th>id de acceso</th>
                   <th>nombre</th>
+                  <th>apellidos</th>
                 </tr>
               </thead>
               <tbody>
                 {alumnos.length > 0 ? (
-                  alumnos.map((a) => (
-                    <tr key={a.id}>
-                      <td>{a.idUnico}</td>
-                      <td>{a.nombre}</td>
+                  alumnos.map((alumno) => (
+                    <tr key={alumno.id}>
+                      <td>{alumno.id}</td>
+                      <td>{alumno.nombre}</td>
+                      <td>{alumno.apellidos}</td>
                     </tr>
                   ))
                 ) : (
@@ -87,8 +99,9 @@ function VerGrupo({ grupo, onCerrar, onGuardado }) {
       {mostrar && (
         <AgregarAlumnos
           grupoId={grupo.id}
+          grupoNombre = {grupo.nombre}
           onCerrar={() => setMostrar(null)}
-          onGuardado={onGuardado}
+          onGuardado={() => cargar()}
         />
       )}
     </>
