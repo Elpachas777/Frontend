@@ -4,7 +4,7 @@ import Publico from "../routes/Publico";
 
 function AppRouter() {
   const { autentificado, cargando, setAutentificado } = useAuth();
-
+  console.log("API:", import.meta.env.VITE_API_URL);
   if (cargando) {
     return null;
   }
