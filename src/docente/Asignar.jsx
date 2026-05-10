@@ -182,7 +182,7 @@ function Asignar() {
                 </div>
 
                 <div className="asignar-acciones">
-                  {estado.asignado && estado.realizado && (
+                  {grupo.ejercicios && estado.realizado && (
                     <button
                       type="button"
                       className="btn btn-ver"
