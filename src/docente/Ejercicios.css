@@ -1,0 +1,69 @@
+.visualizador-palabras {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 16px;
+  background: #f5fbf2;
+  border-radius: 16px;
+  border: 1.5px solid #c5e89a;
+}
+
+.visualizador-palabras span {
+  padding: 8px 16px;
+  border-radius: 999px;
+  cursor: pointer;
+  background: #e2e8f0;
+  color: #334155;
+  font-weight: 400;
+  font-size: 1rem;
+  user-select: none;
+  transition:
+    background 0.15s,
+    color 0.15s;
+}
+
+.visualizador-palabras span.activo {
+  background: #7bc043;
+  color: #fff;
+  font-weight: 700;
+}
+
+.visualiza-palabras {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.palabra {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.palabra-seleccionada span {
+  min-width: 90px;
+  font-weight: 800;
+  color: #2d5a1e;
+  font-size: 0.98rem;
+}
+
+.palabra-separada {
+  font-size: 0.82rem;
+  color: #8faa88;
+}
+
+.btn-prev {
+  margin-top: 11px;
+  padding: 11px 22px;
+  border: 1.5px solid #7bc043;
+  border-radius: 14px;
+  background: #eef8e5;
+  color: #2d5a1e;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.btn-prev:hover {
+  background: #d9f5d6;
+}

@@ -1,19 +1,26 @@
-import { registrarAlumno } from "../api/alumno.api";
-import { agregarAlumno } from "../api/grupo.api";
+import * as api from "../api/alumno.api";
 
-function crear({ formData, setActualizado, id, setMensaje }) {
+function validar(formData) {
+  const e = {};
+  if (!formData.nombre) e.nombre = "El nombre es obligatorio.";
+  if (!formData.apellidos) e.apellidos = "Los apellidos son obligatorios";
+  return e;
+}
+
+function crear({ formData, setError, setMensaje, onGuardado }) {
   const handleSubmit = async (event) => {
     event.preventDefault();
-    var respuesta;
-    try {
-      if (!id) {
-        respuesta = await registrarAlumno(formData);
-      } else {
-        respuesta = await agregarAlumno(id, formData);
-      }
+    const errores = validar(formData);
 
-      setActualizado((prev) => !prev);
+    if (Object.keys(errores).length > 0) {
+      setErrores(errores);
+      return;
+    }
+
+    try {
+      const respuesta = await api.crear(formData);
       setMensaje(respuesta);
+      onGuardado();
     } catch (error) {
       setMensaje(error.response.data);
     }

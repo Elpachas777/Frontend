@@ -1,12 +1,13 @@
-import { useState, useEffect, useCallback } from "react";
+import { useCallback, useEffect, useState } from "react";
 import Swal from "sweetalert2";
 import "sweetalert2/dist/sweetalert2.min.css";
+import { eliminar } from "../api/escuela.api";
 import "../components/Tabla.css";
-import "./RolAdmin.css";
-import { getEscuelas, saveEscuelas } from "./mockData";
-import { verificarContraseña } from "../api/sesion.api";
+import { comprobarContraseña } from "../utils/admin";
+import { obtenerEscuelas } from "../utils/escuela";
 import CrearEscuela from "./CrearEscuela";
 import EditarEscuela from "./EditarEscuela";
+import "./RolAdmin.css";
 import VerEscuela from "./VerEscuela";
 
 function Escuelas() {
@@ -18,8 +19,9 @@ function Escuelas() {
   const [mostrarVer, setMostrarVer] = useState(false);
   const [seleccionada, setSeleccionada] = useState(null);
 
-  const cargar = useCallback(() => {
-    setEscuelas(getEscuelas());
+  const cargar = useCallback(async () => {
+    const escuelasArreglo = await obtenerEscuelas();
+    setEscuelas(escuelasArreglo);
   }, []);
 
   useEffect(() => {
@@ -44,9 +46,11 @@ function Escuelas() {
           Swal.showValidationMessage("Ingresa tu contraseña para confirmar.");
           return false;
         }
-        const valida = await verificarContraseña(value);
+        const valida = await comprobarContraseña(value);
         if (!valida) {
-          Swal.showValidationMessage("Contraseña incorrecta. Inténtalo de nuevo.");
+          Swal.showValidationMessage(
+            "Contraseña incorrecta. Inténtalo de nuevo.",
+          );
           return false;
         }
         return value;
@@ -55,9 +59,7 @@ function Escuelas() {
 
     if (!result.isConfirmed) return;
 
-    const actualizadas = escuelas.filter((e) => e.id !== escuela.id);
-    saveEscuelas(actualizadas);
-    setEscuelas(actualizadas);
+    await eliminar(escuela.id);
 
     await Swal.fire({
       title: "Eliminada",
@@ -66,6 +68,8 @@ function Escuelas() {
       timer: 1600,
       showConfirmButton: false,
     });
+
+    cargar();
   };
 
   return (
@@ -85,6 +89,7 @@ function Escuelas() {
 
       <div className="tabla-filtros">
         <input
+          name="filtro-escuela"
           className="tabla-filtro-input"
           type="text"
           placeholder="Buscar por escuela..."
@@ -92,6 +97,7 @@ function Escuelas() {
           onChange={(ev) => setFiltroNombre(ev.target.value)}
         />
         <input
+          name="filtro-director"
           className="tabla-filtro-input"
           type="text"
           placeholder="Buscar por director..."
@@ -107,6 +113,7 @@ function Escuelas() {
               <th>id</th>
               <th>logo</th>
               <th>nombre</th>
+              <th>director</th>
               <th>Acciones</th>
             </tr>
           </thead>
@@ -114,46 +121,62 @@ function Escuelas() {
             {(() => {
               const n = filtroNombre.toLowerCase();
               const d = filtroDirector.toLowerCase();
-              const filtradas = escuelas.filter((e) =>
-                (!n || e.nombre?.toLowerCase().includes(n)) &&
-                (!d || e.director?.toLowerCase().includes(d))
+              const filtradas = escuelas.filter(
+                (escuela) =>
+                  (!n || escuela.nombre?.toLowerCase().includes(n)) &&
+                  (!d || escuela.director?.toLowerCase().includes(d)),
               );
-              return filtradas.length > 0 ? filtradas.map((e) => (
-                <tr key={e.id}>
-                  <td>{e.id}</td>
-                  <td>
-                    {e.logo ? (
-                      <img
-                        src={e.logo}
-                        alt={e.nombre}
-                        className="escuela-logo-thumb"
-                      />
-                    ) : (
-                      <span className="escuela-logo-empty">🏫</span>
-                    )}
-                  </td>
-                  <td>{e.nombre}</td>
-                  <td className="acciones">
-                    <button
-                      type="button"
-                      className="btn btn-ver"
-                      onClick={() => { setSeleccionada(e); setMostrarVer(true); }}
-                    >Ver</button>
-                    <button
-                      type="button"
-                      className="btn btn-editar"
-                      onClick={() => { setSeleccionada(e); setMostrarEditar(true); }}
-                    >Editar</button>
-                    <button
-                      type="button"
-                      className="btn btn-eliminar"
-                      onClick={() => handleEliminar(e)}
-                    >Eliminar</button>
-                  </td>
-                </tr>
-              )) : (
+              return filtradas.length > 0 ? (
+                filtradas.map((escuela) => (
+                  <tr key={escuela.id}>
+                    <td>{escuela.id}</td>
+                    <td>
+                      {escuela.logo ? (
+                        <img
+                          src={escuela.logo}
+                          alt={escuela.nombre}
+                          className="escuela-logo-thumb"
+                        />
+                      ) : (
+                        <span className="escuela-logo-empty">🏫</span>
+                      )}
+                    </td>
+                    <td>{escuela.nombre}</td>
+                    <td>{escuela.director}</td>
+                    <td className="acciones">
+                      <button
+                        type="button"
+                        className="btn btn-ver"
+                        onClick={() => {
+                          setSeleccionada(escuela);
+                          setMostrarVer(true);
+                        }}
+                      >
+                        Ver
+                      </button>
+                      <button
+                        type="button"
+                        className="btn btn-editar"
+                        onClick={() => {
+                          setSeleccionada(escuela);
+                          setMostrarEditar(true);
+                        }}
+                      >
+                        Editar
+                      </button>
+                      <button
+                        type="button"
+                        className="btn btn-eliminar"
+                        onClick={() => handleEliminar(escuela)}
+                      >
+                        Eliminar
+                      </button>
+                    </td>
+                  </tr>
+                ))
+              ) : (
                 <tr>
-                  <td colSpan={4}>
+                  <td colSpan={5}>
                     <div className="tabla-empty">
                       <span className="tabla-empty-icon">🌱</span>
                       <h3>Sin escuelas registradas</h3>
@@ -170,22 +193,32 @@ function Escuelas() {
       {mostrarVer && seleccionada && (
         <VerEscuela
           escuela={seleccionada}
-          onCerrar={() => { setMostrarVer(false); setSeleccionada(null); }}
+          onCerrar={() => {
+            setMostrarVer(false);
+            setSeleccionada(null);
+          }}
         />
       )}
 
       {mostrarCrear && (
         <CrearEscuela
           onCerrar={() => setMostrarCrear(false)}
-          onGuardado={() => { setMostrarCrear(false); cargar(); }}
+          onGuardado={() => {
+            cargar();
+          }}
         />
       )}
 
       {mostrarEditar && seleccionada && (
         <EditarEscuela
           escuela={seleccionada}
-          onCerrar={() => { setMostrarEditar(false); setSeleccionada(null); }}
-          onGuardado={() => { setMostrarEditar(false); setSeleccionada(null); cargar(); }}
+          onCerrar={() => {
+            setMostrarEditar(false);
+            setSeleccionada(null);
+          }}
+          onGuardado={() => {
+            cargar();
+          }}
         />
       )}
     </section>

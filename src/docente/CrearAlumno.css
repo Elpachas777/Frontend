@@ -50,7 +50,9 @@
   font-size: 0.95rem;
 
   color: #1e293b;
-  transition: border 0.3s ease, box-shadow 0.3s ease;
+  transition:
+    border 0.3s ease,
+    box-shadow 0.3s ease;
 }
 
 .crear-ejercicio input:focus,

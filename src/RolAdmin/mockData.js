@@ -2,15 +2,69 @@ const ESCUELAS_KEY = "admin_escuelas";
 const DOCENTES_KEY = "admin_docentes";
 
 const escuelasIniciales = [
-  { id: 1, logo: "", nombre: "ESCOM", ubicacion: "Ciudad de México", director: "Dr. Juan García", contacto: "55-1234-5678", contacto2: "55-8765-4321" },
-  { id: 2, logo: "", nombre: "ENCB", ubicacion: "Ciudad de México", director: "Dra. María López", contacto: "55-2345-6789", contacto2: "" },
-  { id: 3, logo: "", nombre: "UPIICSA", ubicacion: "Ciudad de México", director: "Dr. Carlos Ruiz", contacto: "55-3456-7890", contacto2: "" },
+  {
+    id: 1,
+    logo: "",
+    nombre: "ESCOM",
+    ubicacion: "Ciudad de México",
+    director: "Dr. Juan García",
+    contacto: "55-1234-5678",
+    contacto2: "55-8765-4321",
+  },
+  {
+    id: 2,
+    logo: "",
+    nombre: "ENCB",
+    ubicacion: "Ciudad de México",
+    director: "Dra. María López",
+    contacto: "55-2345-6789",
+    contacto2: "",
+  },
+  {
+    id: 3,
+    logo: "",
+    nombre: "UPIICSA",
+    ubicacion: "Ciudad de México",
+    director: "Dr. Carlos Ruiz",
+    contacto: "55-3456-7890",
+    contacto2: "",
+  },
 ];
 
 const docentesIniciales = [
-  { id: 1, nombre: "Ana Martínez", escuela: "ESCOM", correo: "amartinez@ipn.mx", password: "Docente123$", foto: "", habilitado: true, fechaIngreso: "2024-01-15", grupos: [1] },
-  { id: 2, nombre: "Luis Hernández", escuela: "ENCB", correo: "lhernandez@ipn.mx", password: "Docente123$", foto: "", habilitado: true, fechaIngreso: "2024-02-20", grupos: [2] },
-  { id: 3, nombre: "Sofía Ramírez", escuela: "UPIICSA", correo: "sramirez@ipn.mx", password: "Docente123$", foto: "", habilitado: true, fechaIngreso: "2024-03-10", grupos: [1, 3] },
+  {
+    id: 1,
+    nombre: "Ana Martínez",
+    escuela: "ESCOM",
+    correo: "amartinez@ipn.mx",
+    password: "Docente123$",
+    foto: "",
+    habilitado: true,
+    fechaIngreso: "2024-01-15",
+    grupos: [1],
+  },
+  {
+    id: 2,
+    nombre: "Luis Hernández",
+    escuela: "ENCB",
+    correo: "lhernandez@ipn.mx",
+    password: "Docente123$",
+    foto: "",
+    habilitado: true,
+    fechaIngreso: "2024-02-20",
+    grupos: [2],
+  },
+  {
+    id: 3,
+    nombre: "Sofía Ramírez",
+    escuela: "UPIICSA",
+    correo: "sramirez@ipn.mx",
+    password: "Docente123$",
+    foto: "",
+    habilitado: true,
+    fechaIngreso: "2024-03-10",
+    grupos: [1, 3],
+  },
 ];
 
 // Static grupos + alumnos mock — swapped for real API when backend is ready
@@ -29,9 +83,7 @@ export const ALUMNOS_MOCK = {
     { id: 3, nombre: "Diego Torres", idUnico: "DT4CM2-01" },
     { id: 4, nombre: "Sofía Pérez", idUnico: "SP4CM2-02" },
   ],
-  3: [
-    { id: 5, nombre: "Marcos Jiménez", idUnico: "MJ5AV1-01" },
-  ],
+  3: [{ id: 5, nombre: "Marcos Jiménez", idUnico: "MJ5AV1-01" }],
 };
 
 export function getGrupoById(id) {
@@ -48,7 +100,13 @@ function initData(key, initial) {
   }
 }
 
-const DEFAULTS_DOCENTE = { habilitado: true, fechaIngreso: "2024-01-01", grupos: [], foto: "", password: "" };
+const DEFAULTS_DOCENTE = {
+  habilitado: true,
+  fechaIngreso: "2024-01-01",
+  grupos: [],
+  foto: "",
+  password: "",
+};
 
 export function getEscuelas() {
   initData(ESCUELAS_KEY, escuelasIniciales);

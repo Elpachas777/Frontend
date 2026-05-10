@@ -113,6 +113,7 @@
 }
 
 .modal-field input,
+.modal-field textarea,
 .modal-field select {
   padding: 11px 14px;
   border: 1.5px solid #c8dfc8;
@@ -142,6 +143,22 @@
   justify-content: flex-end;
   margin-top: 8px;
 }
+
+.modal-btn-delete {
+  padding: 11px 22px;
+  border: none;
+  border-radius: 14px;
+  background: #c04343;
+  color: #310d0d;
+  font-weight: 800;
+  cursor: pointer;
+  transition: background 0.18s;
+}
+
+.modal-btn-delete:hover {
+  background: #ac3434;
+}
+
 
 .modal-btn-cancel {
   padding: 11px 22px;
@@ -394,7 +411,9 @@
   font-weight: 700;
   font-size: 0.95rem;
   cursor: pointer;
-  transition: background 0.15s, border-color 0.15s;
+  transition:
+    background 0.15s,
+    border-color 0.15s;
   text-align: left;
   width: 100%;
 }

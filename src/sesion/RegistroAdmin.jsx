@@ -1,10 +1,10 @@
 import { Link, useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
-import axios from "../utils/axios.js";
-import useFormData from "../hooks/useFormData";
-import { USUARIOS } from "../enums/tipoUsuarios";
-import "./RegistroAdmin.css";
 import "../components/button.css";
+import { USUARIOS } from "../enums/tipoUsuarios";
+import useFormData from "../hooks/useFormData";
+import axios from "../utils/axios.js";
+import "./RegistroAdmin.css";
 
 function RegistrarAdmin() {
   const navigate = useNavigate();
@@ -13,7 +13,13 @@ function RegistrarAdmin() {
   const handleSubmit = async (event) => {
     event.preventDefault();
 
-    if (!formData.nombres || !formData.apellidos || !formData.correo || !formData.password || !formData.confirmar) {
+    if (
+      !formData.nombres ||
+      !formData.apellidos ||
+      !formData.correo ||
+      !formData.password ||
+      !formData.confirmar
+    ) {
       await Swal.fire({
         title: "Faltan datos",
         text: "Completa todos los campos antes de continuar.",
@@ -75,7 +81,7 @@ function RegistrarAdmin() {
         nombres: formData.nombres,
         apellido: formData.apellidos,
         correo: formData.correo,
-        password: formData.password,
+        contraseña: formData.password,
       };
 
       await axios.post(`${urlBack}/crearAdmin`, datos);
@@ -135,10 +141,13 @@ function RegistrarAdmin() {
 
           <div className="admin-register-body">
             <div className="admin-register-header">
-              <span className="admin-register-badge">🛡️ Cuenta administrativa</span>
+              <span className="admin-register-badge">
+                🛡️ Cuenta administrativa
+              </span>
               <h1>Registrar administrador</h1>
               <p>
-                Completa la información para crear una cuenta con permisos de administración.
+                Completa la información para crear una cuenta con permisos de
+                administración.
               </p>
             </div>
 

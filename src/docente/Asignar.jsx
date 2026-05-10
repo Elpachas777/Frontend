@@ -1,8 +1,9 @@
-import { useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import Swal from "sweetalert2";
-import { getEjerciciosMock } from "./Ejercicios";
 import { GRUPOS_MOCK } from "../RolAdmin/mockData";
 import "./Asignar.css";
+import * as utilsEjercicios from "../utils/ejercicio";
+import * as utilsGrupos from "../utils/grupos";
 
 // { [ejercicioId]: { [grupoId]: { asignado, realizado, porcentaje } } }
 const asignacionesState = {
@@ -13,21 +14,40 @@ const asignacionesState = {
 };
 
 function getEstado(ejId, grupoId) {
-  return asignacionesState[ejId]?.[grupoId] ?? { asignado: false, realizado: false, porcentaje: 0 };
+  return (
+    asignacionesState[ejId]?.[grupoId] ?? {
+      asignado: false,
+      realizado: false,
+      porcentaje: 0,
+    }
+  );
 }
 
 function Asignar() {
+  const [ejercicios, setEjercicios] = useState([]);
+  const [grupos, setGrupos] = useState([]);
   const [ejercicioId, setEjercicioId] = useState("");
-  const [, tick] = useState(0);
-  const rerender = () => tick((n) => n + 1);
 
-  const ejercicios = getEjerciciosMock();
-  const ejercicioActual = ejercicios.find((e) => e.id === Number(ejercicioId));
+  const ejercicioActual = ejercicios.find(
+    (e) => e.id_ejercicio === Number(ejercicioId),
+  );
+
+  const cargar = useCallback(async () => {
+    const ejerciciosArreglo = await utilsEjercicios.listar();
+    const gruposArreglo = await utilsGrupos.listar();
+
+    setGrupos(gruposArreglo);
+    setEjercicios(ejerciciosArreglo);
+  }, []);
+
+  useEffect(() => {
+    cargar();
+  }, [cargar]);
 
   const handleAsignar = async (grupo) => {
     const confirm = await Swal.fire({
       title: "¿Asignar ejercicio?",
-      html: `¿Asignar <strong>${ejercicioActual?.ejercicio}</strong> al grupo <strong>${grupo.nombre}</strong>?`,
+      html: `¿Asignar <strong>${ejercicioActual?.titulo}</strong> al grupo <strong>${grupo.nombre}</strong>?`,
       icon: "question",
       showCancelButton: true,
       confirmButtonText: "Sí, asignar",
@@ -37,14 +57,14 @@ function Asignar() {
     });
     if (!confirm.isConfirmed) return;
 
-    if (!asignacionesState[ejercicioId]) asignacionesState[ejercicioId] = {};
-    asignacionesState[ejercicioId][grupo.id] = { asignado: true, realizado: false, porcentaje: 0 };
-    rerender();
+    await utilsEjercicios.asignarEjercicio(ejercicioActual, grupo);
+
+    cargar();
 
     await Swal.fire({
       icon: "success",
       title: "¡Asignado!",
-      text: `"${ejercicioActual?.ejercicio}" asignado al grupo ${grupo.nombre}.`,
+      text: `"${ejercicioActual?.titulo}" asignado al grupo ${grupo.nombre}.`,
       timer: 1800,
       showConfirmButton: false,
     });
@@ -64,10 +84,6 @@ function Asignar() {
       cancelButtonColor: "#6c757d",
     });
     if (!confirm.isConfirmed) return;
-
-    if (!asignacionesState[ejercicioId]) asignacionesState[ejercicioId] = {};
-    asignacionesState[ejercicioId][grupo.id] = { asignado: true, realizado: false, porcentaje: 0 };
-    rerender();
 
     await Swal.fire({
       icon: "success",
@@ -93,6 +109,12 @@ function Asignar() {
     });
   };
 
+  const asignado = (grupo) => {
+    return grupo.ejercicios.some(
+      (ejercicio) => ejercicio.id === Number(ejercicioId),
+    );
+  };
+
   return (
     <section className="asignar-container">
       <div className="asignar-decor asignar-decor--one" />
@@ -114,9 +136,9 @@ function Asignar() {
           onChange={(e) => setEjercicioId(e.target.value)}
         >
           <option value="">— Selecciona un ejercicio —</option>
-          {ejercicios.map((ej) => (
-            <option key={ej.id} value={ej.id}>
-              Ejercicio {ej.id}: "{ej.ejercicio}"
+          {ejercicios.map((ejercicio) => (
+            <option key={ejercicio.id_ejercicio} value={ejercicio.id_ejercicio}>
+              Ejercicio {ejercicio.id_ejercicio}: "{ejercicio.titulo}"
             </option>
           ))}
         </select>
@@ -130,14 +152,14 @@ function Asignar() {
             <span>Acciones</span>
           </div>
 
-          {GRUPOS_MOCK.map((grupo) => {
+          {grupos.map((grupo) => {
             const estado = getEstado(Number(ejercicioId), grupo.id);
             return (
               <div key={grupo.id} className="asignar-row">
                 <span className="asignar-grupo-nombre">{grupo.nombre}</span>
 
                 <div className="asignar-status-cell">
-                  {estado.asignado && estado.realizado ? (
+                  {grupo.ejercicios && estado.realizado ? (
                     <div className="asignar-status asignar-status--realizado">
                       <span>Realizado</span>
                       <div className="asignar-progress">
@@ -148,7 +170,7 @@ function Asignar() {
                       </div>
                       <span className="asignar-pct">{estado.porcentaje}%</span>
                     </div>
-                  ) : estado.asignado ? (
+                  ) : asignado(grupo) ? (
                     <div className="asignar-status asignar-status--pendiente">
                       <span>Asignado · pendiente</span>
                     </div>
@@ -160,7 +182,7 @@ function Asignar() {
                 </div>
 
                 <div className="asignar-acciones">
-                  {estado.asignado && estado.realizado && (
+                  {grupo.ejercicios && estado.realizado && (
                     <button
                       type="button"
                       className="btn btn-ver"
@@ -169,7 +191,7 @@ function Asignar() {
                       Ver resultados
                     </button>
                   )}
-                  {estado.asignado ? (
+                  {asignado(grupo) ? (
                     <button
                       type="button"
                       className="btn btn-eliminar"
@@ -193,7 +215,6 @@ function Asignar() {
         </div>
       ) : (
         <div className="asignar-empty">
-        
           <p>Selecciona un ejercicio para ver el estado por grupo.</p>
         </div>
       )}

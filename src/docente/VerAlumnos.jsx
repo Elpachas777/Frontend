@@ -1,10 +1,10 @@
-import "./Alumnos.css";
+import { eliminar } from "../api/alumno.api";
+import { verGrupo } from "../api/grupo.api";
 import Tabla from "../components/Tabla";
-import { borrarAlumno } from "../api/alumno.api";
+import "./Alumnos.css";
 import CrearAlumno from "./CrearAlumno";
 import EditarAlumno from "./EditarAlumno";
 import VerAlumnoDetalle from "./VerAlumnoDetalle";
-import { verGrupo } from "../api/grupo.api";
 
 function VerAlumnos({ onCerrar, id, filaSeleccionada }) {
   const grupoId = filaSeleccionada?.id ?? id;
@@ -33,7 +33,7 @@ function VerAlumnos({ onCerrar, id, filaSeleccionada }) {
             Crear={CrearAlumno}
             obtenerDatos={verGrupo}
             titulo="alumnos"
-            Borrar={borrarAlumno}
+            Borrar={eliminar}
             Editar={EditarAlumno}
             Ver={VerAlumnoDetalle}
             id={grupoId}

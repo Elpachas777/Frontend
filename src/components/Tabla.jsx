@@ -1,8 +1,8 @@
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState } from "react";
 import Swal from "sweetalert2";
 import "sweetalert2/dist/sweetalert2.min.css";
+import { verificarContraseña } from "../api/docente.api";
 import "./Tabla.css";
-import { verificarContraseña } from "../api/sesion.api";
 
 function Tabla({
   children,
@@ -106,7 +106,7 @@ function Tabla({
       preConfirm: async (value) => {
         if (!value) {
           Swal.showValidationMessage(
-            "Debes ingresar tu contraseña para confirmar."
+            "Debes ingresar tu contraseña para confirmar.",
           );
           return false;
         }
@@ -114,7 +114,7 @@ function Tabla({
         const esValida = await verificarContraseña(value);
         if (!esValida) {
           Swal.showValidationMessage(
-            "Esa no es la contraseña correcta. Inténtalo de nuevo."
+            "Esa no es la contraseña correcta. Inténtalo de nuevo.",
           );
           return false;
         }
@@ -164,7 +164,7 @@ function Tabla({
 
         if (datosRespuesta.length > 0) {
           const columnas = Object.keys(datosRespuesta[0]).filter(
-            (columna) => !ocultarColumnas.includes(columna)
+            (columna) => !ocultarColumnas.includes(columna),
           );
 
           setEncabezados(columnas);
@@ -290,11 +290,7 @@ function Tabla({
       )}
 
       {mostrarModal && Crear && (
-        <Crear
-          setActualizado={setActualizado}
-          onCerrar={cerrarCrear}
-          id={id}
-        />
+        <Crear setActualizado={setActualizado} onCerrar={cerrarCrear} id={id} />
       )}
 
       {mostrarEditar && filaSeleccionada && Editar && (

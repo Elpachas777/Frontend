@@ -1,21 +1,20 @@
 import { useState } from "react";
 import Swal from "sweetalert2";
 import "sweetalert2/dist/sweetalert2.min.css";
-import "./RolAdmin.css";
+import { eliminarDocente } from "../api/docente.api";
 import "../components/Tabla.css";
-import { getDocentes, saveDocentes, GRUPOS_MOCK } from "./mockData";
-import { verificarContraseña } from "../api/sesion.api";
-import VerGrupoAdmin from "./VerGrupoAdmin";
+import { comprobarContraseña } from "../utils/admin";
+import { modificarHabilitado } from "../utils/docentes";
 import { IconEye, IconEyeOff } from "./EyeIcons";
+import "./RolAdmin.css";
+import VerGrupoAdmin from "./VerGrupoAdmin";
 
-function VerDocente({ docente, onCerrar, onEliminado }) {
-  const [habilitado, setHabilitado] = useState(docente.habilitado ?? true);
+function VerDocente({ docente, onCerrar, onGuardado, onEliminado }) {
+  const [habilitado, setHabilitado] = useState(docente.habilitado);
   const [grupoViendoId, setGrupoViendoId] = useState(null);
   const [showPassword, setShowPassword] = useState(false);
 
-  const gruposDocente = (docente.grupos ?? [])
-    .map((id) => GRUPOS_MOCK.find((g) => g.id === id))
-    .filter(Boolean);
+  const gruposDocente = docente.grupos ?? [];
 
   const handleToggleHabilitado = async () => {
     if (habilitado) {
@@ -30,7 +29,7 @@ function VerDocente({ docente, onCerrar, onEliminado }) {
         reverseButtons: true,
       });
       if (!result.isConfirmed) return;
-      guardarHabilitado(false);
+      await modificarHabilitado(docente.id, false);
       setHabilitado(false);
     } else {
       const result = await Swal.fire({
@@ -44,17 +43,10 @@ function VerDocente({ docente, onCerrar, onEliminado }) {
         reverseButtons: true,
       });
       if (!result.isConfirmed) return;
-      guardarHabilitado(true);
+      await modificarHabilitado(docente.id, true);
       setHabilitado(true);
     }
-  };
-
-  const guardarHabilitado = (valor) => {
-    const docentes = getDocentes();
-    const actualizados = docentes.map((d) =>
-      d.id === docente.id ? { ...d, habilitado: valor } : d
-    );
-    saveDocentes(actualizados);
+    onGuardado();
   };
 
   const handleEliminar = async () => {
@@ -76,9 +68,11 @@ function VerDocente({ docente, onCerrar, onEliminado }) {
           Swal.showValidationMessage("Ingresa la contraseña para confirmar.");
           return false;
         }
-        const valida = await verificarContraseña(value);
+        const valida = await comprobarContraseña(value);
         if (!valida) {
-          Swal.showValidationMessage("Contraseña incorrecta. Inténtalo de nuevo.");
+          Swal.showValidationMessage(
+            "Contraseña incorrecta. Inténtalo de nuevo.",
+          );
           return false;
         }
         return value;
@@ -87,8 +81,7 @@ function VerDocente({ docente, onCerrar, onEliminado }) {
 
     if (!result.isConfirmed) return;
 
-    const docentes = getDocentes();
-    saveDocentes(docentes.filter((d) => d.id !== docente.id));
+    await eliminarDocente(docente.id);
 
     await Swal.fire({
       title: "Eliminado",
@@ -103,7 +96,7 @@ function VerDocente({ docente, onCerrar, onEliminado }) {
 
   return (
     <>
-      <div className="modal-overlay" onClick={onCerrar}>
+      <div className="modal-overlay">
         <div
           className="modal-card modal-card--perfil"
           onClick={(e) => e.stopPropagation()}
@@ -111,22 +104,27 @@ function VerDocente({ docente, onCerrar, onEliminado }) {
           {/* Header */}
           <div className="modal-header">
             <h2>Perfil del docente</h2>
-            <button type="button" className="modal-close" onClick={onCerrar}>✕</button>
+            <button type="button" className="modal-close" onClick={onCerrar}>
+              ✕
+            </button>
           </div>
 
           {/* Top: foto + info + grupos */}
           <div className="docente-panel-top">
             <div className="docente-panel-left">
               <div className="docente-foto">
-                {docente.foto
-                  ? <img src={docente.foto} alt={docente.nombre} />
-                  : <span>👤</span>
-                }
+                {docente.foto ? (
+                  <img src={docente.foto} alt={docente.nombre} />
+                ) : (
+                  <span>👤</span>
+                )}
               </div>
             </div>
 
             <div className="docente-panel-info">
-              <span className="docente-info-escuela">{docente.escuela}</span>
+              <span className="docente-info-escuela">
+                {docente.escuela.nombre}
+              </span>
               <span className="docente-info-nombre">{docente.nombre}</span>
               <span className="docente-info-correo">{docente.correo}</span>
             </div>
@@ -145,7 +143,9 @@ function VerDocente({ docente, onCerrar, onEliminado }) {
                   </button>
                 ))
               ) : (
-                <span className="docente-grupo-btn-empty">Sin grupos asignados</span>
+                <span className="docente-grupo-btn-empty">
+                  Sin grupos asignados
+                </span>
               )}
             </div>
           </div>
@@ -157,8 +157,10 @@ function VerDocente({ docente, onCerrar, onEliminado }) {
               <div className="docente-password-row">
                 <span className="docente-mid-value">
                   {showPassword
-                    ? (docente.password || "—")
-                    : (docente.password ? "••••••••" : "—")}
+                    ? docente.password || "—"
+                    : docente.password
+                      ? "••••••••"
+                      : "—"}
                 </span>
                 {docente.password && (
                   <button
@@ -173,7 +175,10 @@ function VerDocente({ docente, onCerrar, onEliminado }) {
             </div>
             <div className="docente-mid-item">
               <span className="docente-mid-label">Ingresado desde el</span>
-              <span className="docente-mid-value">{docente.fechaIngreso || "—"}</span>
+              <span className="docente-mid-value">
+                {new Date(docente.fechaIngreso).toLocaleDateString("es-MX") ||
+                  "—"}
+              </span>
             </div>
             <div className="docente-mid-item">
               <span className="docente-mid-label">Estado</span>

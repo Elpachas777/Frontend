@@ -1,8 +1,8 @@
 import { useState } from "react";
 import Swal from "sweetalert2";
 import "sweetalert2/dist/sweetalert2.min.css";
+import { verificarContraseña } from "../api/docente.api";
 import Tabla from "../components/Tabla";
-import { verificarContraseña } from "../api/sesion.api";
 import VerAlumnoDetalle from "../docente/VerAlumnoDetalle";
 
 const docentesMock = [
@@ -30,46 +30,40 @@ const docentesMock = [
 ];
 
 let alumnosMock = [
-  { id: 1, nombre: "Carlos Ruiz",    idUnico: "CR3CV1-01", grupo: "3CV1" },
-  { id: 2, nombre: "Fernanda Díaz",  idUnico: "FD3CV1-02", grupo: "3CV1" },
-  { id: 3, nombre: "Diego Torres",   idUnico: "DT4CM2-01", grupo: "4CM2" },
-  { id: 4, nombre: "Sofía Pérez",    idUnico: "SP4CM2-02", grupo: "4CM2" },
+  { id: 1, nombre: "Carlos Ruiz", idUnico: "CR3CV1-01", grupo: "3CV1" },
+  { id: 2, nombre: "Fernanda Díaz", idUnico: "FD3CV1-02", grupo: "3CV1" },
+  { id: 3, nombre: "Diego Torres", idUnico: "DT4CM2-01", grupo: "4CM2" },
+  { id: 4, nombre: "Sofía Pérez", idUnico: "SP4CM2-02", grupo: "4CM2" },
   { id: 5, nombre: "Miguel Herrera", idUnico: "MH5AV1-01", grupo: "5AV1" },
 ];
 
 let gruposMock = [
-  { id: 1, nombre: "3CV1", turno: "Matutino",   materia: "Matemáticas" },
-  { id: 2, nombre: "4CM2", turno: "Vespertino",  materia: "Física" },
-  { id: 3, nombre: "5AV1", turno: "Mixto",       materia: "Programación" },
+  { id: 1, nombre: "3CV1", turno: "Matutino", materia: "Matemáticas" },
+  { id: 2, nombre: "4CM2", turno: "Vespertino", materia: "Física" },
+  { id: 3, nombre: "5AV1", turno: "Mixto", materia: "Programación" },
 ];
 let nextGrupoId = 4;
 
 let alumnosPorGrupo = {
   1: [
-    { id: 1, nombre: "Carlos Ruiz",    idUnico: "CR3CV1-01" },
-    { id: 2, nombre: "Fernanda Díaz",  idUnico: "FD3CV1-02" },
+    { id: 1, nombre: "Carlos Ruiz", idUnico: "CR3CV1-01" },
+    { id: 2, nombre: "Fernanda Díaz", idUnico: "FD3CV1-02" },
   ],
   2: [
-    { id: 3, nombre: "Diego Torres",   idUnico: "DT4CM2-01" },
-    { id: 4, nombre: "Sofía Pérez",    idUnico: "SP4CM2-02" },
+    { id: 3, nombre: "Diego Torres", idUnico: "DT4CM2-01" },
+    { id: 4, nombre: "Sofía Pérez", idUnico: "SP4CM2-02" },
   ],
-  3: [
-    { id: 5, nombre: "Miguel Herrera", idUnico: "MH5AV1-01" },
-  ],
+  3: [{ id: 5, nombre: "Miguel Herrera", idUnico: "MH5AV1-01" }],
 };
 let nextAlumnoId = 6;
 
 const obtenerDocentesMock = async () => docentesMock;
-const obtenerAlumnosMock  = async () => [...alumnosMock];
-const obtenerGruposMock   = async () => [...gruposMock];
-const borrarMock          = async () => ({ ok: true });
+const obtenerAlumnosMock = async () => [...alumnosMock];
+const obtenerGruposMock = async () => [...gruposMock];
+const borrarMock = async () => ({ ok: true });
 
 function normalizarTexto(texto) {
-  return texto
-    .normalize("NFD")
-    .replace(/[̀-ͯ]/g, "")
-    .trim()
-    .toUpperCase();
+  return texto.normalize("NFD").replace(/[̀-ͯ]/g, "").trim().toUpperCase();
 }
 
 function generarIniciales(nombreCompleto) {
@@ -81,8 +75,8 @@ function generarIniciales(nombreCompleto) {
 }
 
 function generarCodigoBase(nombreCompleto, grupo) {
-  const iniciales    = generarIniciales(nombreCompleto);
-  const grupoLimpio  = normalizarTexto(grupo).replace(/\s/g, "");
+  const iniciales = generarIniciales(nombreCompleto);
+  const grupoLimpio = normalizarTexto(grupo).replace(/\s/g, "");
   return `${iniciales}${grupoLimpio}`;
 }
 
@@ -252,11 +246,7 @@ function PreviewCrearGrupo({ onCerrar, setActualizado }) {
             >
               Cancelar
             </button>
-            <button
-              type="submit"
-              className="guardar-btn"
-              disabled={cargando}
-            >
+            <button type="submit" className="guardar-btn" disabled={cargando}>
               {cargando ? "Guardando..." : "Guardar grupo"}
             </button>
           </div>
@@ -324,12 +314,12 @@ function PreviewEditarGrupo({ onCerrar, filaSeleccionada }) {
 }
 
 function PreviewVerGrupo({ onCerrar, id, filaSeleccionada }) {
-  const nombre  = filaSeleccionada?.nombre  ?? "";
-  const turno   = filaSeleccionada?.turno   ?? "";
+  const nombre = filaSeleccionada?.nombre ?? "";
+  const turno = filaSeleccionada?.turno ?? "";
   const materia = filaSeleccionada?.materia ?? "";
 
-  const [listaAlumnos, setListaAlumnos] = useState(
-    () => alumnosPorGrupo[id] ? [...alumnosPorGrupo[id]] : []
+  const [listaAlumnos, setListaAlumnos] = useState(() =>
+    alumnosPorGrupo[id] ? [...alumnosPorGrupo[id]] : [],
   );
   const [alumnoSeleccionado, setAlumnoSeleccionado] = useState(null);
   const [mostrarCrear, setMostrarCrear] = useState(false);
@@ -386,7 +376,6 @@ function PreviewVerGrupo({ onCerrar, id, filaSeleccionada }) {
               >
                 Detalle del grupo
               </h2>
-
             </div>
 
             <button
@@ -453,7 +442,6 @@ function PreviewVerGrupo({ onCerrar, id, filaSeleccionada }) {
               </strong>
               <div>{materia}</div>
             </div>
-
           </div>
 
           <div
@@ -485,8 +473,6 @@ function PreviewVerGrupo({ onCerrar, id, filaSeleccionada }) {
                 {listaAlumnos.length} inscritos
               </span>
             </div>
-
-            
           </div>
 
           {/* ===== NUEVO: filtros ===== */}
@@ -498,7 +484,9 @@ function PreviewVerGrupo({ onCerrar, id, filaSeleccionada }) {
               marginBottom: "20px",
             }}
           >
-            <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
+            <div
+              style={{ display: "flex", flexDirection: "column", gap: "6px" }}
+            >
               <label style={{ fontWeight: 600, color: "#334155" }}>
                 Filtrar por nombre
               </label>
@@ -516,7 +504,9 @@ function PreviewVerGrupo({ onCerrar, id, filaSeleccionada }) {
                 }}
               />
             </div>
-            <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
+            <div
+              style={{ display: "flex", flexDirection: "column", gap: "6px" }}
+            >
               <label style={{ fontWeight: 600, color: "#334155" }}>
                 Filtrar por ID Único
               </label>
@@ -559,7 +549,14 @@ function PreviewVerGrupo({ onCerrar, id, filaSeleccionada }) {
                   <th style={headerCellStyle(true, false)}>ID</th>
                   <th style={headerCellStyle(false, false)}>NOMBRE</th>
                   <th style={headerCellStyle(false, false)}>ID ÚNICO</th>
-                  <th style={{ ...headerCellStyle(false, true), textAlign: "center" }}>ACCIÓN</th>
+                  <th
+                    style={{
+                      ...headerCellStyle(false, true),
+                      textAlign: "center",
+                    }}
+                  >
+                    ACCIÓN
+                  </th>
                 </tr>
               </thead>
 
@@ -573,7 +570,15 @@ function PreviewVerGrupo({ onCerrar, id, filaSeleccionada }) {
                   >
                     <td style={bodyCellStyle()}>{alumno.id}</td>
                     <td style={bodyCellStyle()}>{alumno.nombre}</td>
-                    <td style={{ ...bodyCellStyle(), fontFamily: "monospace", fontSize: "0.88rem" }}>{alumno.idUnico}</td>
+                    <td
+                      style={{
+                        ...bodyCellStyle(),
+                        fontFamily: "monospace",
+                        fontSize: "0.88rem",
+                      }}
+                    >
+                      {alumno.idUnico}
+                    </td>
 
                     {/* ===== NUEVO: botón Ver ===== */}
                     <td style={{ ...bodyCellStyle(), textAlign: "center" }}>
@@ -695,7 +700,7 @@ function PreviewCrearAlumno({
     let idUnico = "Sin asignar";
     if (gId != null) {
       const consecutivo = (alumnosPorGrupo[gId]?.length ?? 0) + 1;
-      const codigoBase  = generarCodigoBase(nombre, gNombre);
+      const codigoBase = generarCodigoBase(nombre, gNombre);
       idUnico = generarCodigoVisible(codigoBase, consecutivo);
     }
 
@@ -731,7 +736,9 @@ function PreviewCrearAlumno({
         <h2 style={titleStyle()}>Crear nuevo alumno</h2>
 
         <form onSubmit={handleSubmit}>
-          <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+          <div
+            style={{ display: "flex", flexDirection: "column", gap: "16px" }}
+          >
             <div style={fieldStyle()}>
               <label>Nombre completo</label>
               <input
@@ -747,7 +754,11 @@ function PreviewCrearAlumno({
               <label>Grupo</label>
               {esPreFilled ? (
                 <input
-                  style={{ ...inputStyle(), background: "#f1f5f9", color: "#64748b" }}
+                  style={{
+                    ...inputStyle(),
+                    background: "#f1f5f9",
+                    color: "#64748b",
+                  }}
                   value={grupoInicial}
                   readOnly
                 />
@@ -823,7 +834,7 @@ function PreviewEditarAlumno({ onCerrar, filaSeleccionada, onGuardado }) {
     if (!grupoObj) return "Sin asignar";
 
     const existentes = (alumnosPorGrupo[grupoObj.id] ?? []).filter(
-      (a) => a.id !== filaSeleccionada?.id
+      (a) => a.id !== filaSeleccionada?.id,
     ).length;
     const codigoBase = generarCodigoBase(nombre, grupo);
     return generarCodigoVisible(codigoBase, existentes + 1);
@@ -837,7 +848,7 @@ function PreviewEditarAlumno({ onCerrar, filaSeleccionada, onGuardado }) {
       const oldObj = gruposMock.find((g) => g.nombre === grupoAnterior);
       if (oldObj && alumnosPorGrupo[oldObj.id]) {
         alumnosPorGrupo[oldObj.id] = alumnosPorGrupo[oldObj.id].filter(
-          (a) => a.id !== filaSeleccionada.id
+          (a) => a.id !== filaSeleccionada.id,
         );
       }
     }
@@ -848,7 +859,7 @@ function PreviewEditarAlumno({ onCerrar, filaSeleccionada, onGuardado }) {
       if (newObj) {
         if (!alumnosPorGrupo[newObj.id]) alumnosPorGrupo[newObj.id] = [];
         const yaExiste = alumnosPorGrupo[newObj.id].some(
-          (a) => a.id === filaSeleccionada.id
+          (a) => a.id === filaSeleccionada.id,
         );
         if (!yaExiste) {
           alumnosPorGrupo[newObj.id].push({
@@ -899,7 +910,9 @@ function PreviewEditarAlumno({ onCerrar, filaSeleccionada, onGuardado }) {
             >
               <option value="Sin asignar">Sin asignar</option>
               {gruposMock.map((g) => (
-                <option key={g.id} value={g.nombre}>{g.nombre}</option>
+                <option key={g.id} value={g.nombre}>
+                  {g.nombre}
+                </option>
               ))}
             </select>
           </div>
@@ -934,9 +947,9 @@ function PreviewEditarAlumno({ onCerrar, filaSeleccionada, onGuardado }) {
 }
 
 function PreviewVerAlumno({ onCerrar, filaSeleccionada }) {
-  const nombre  = filaSeleccionada?.nombre  ?? "";
+  const nombre = filaSeleccionada?.nombre ?? "";
   const idUnico = filaSeleccionada?.idUnico ?? "Sin asignar";
-  const grupo   = filaSeleccionada?.grupo   ?? "Sin asignar";
+  const grupo = filaSeleccionada?.grupo ?? "Sin asignar";
 
   const card = (label, value, mono = false) => (
     <div
@@ -947,10 +960,18 @@ function PreviewVerAlumno({ onCerrar, filaSeleccionada }) {
         padding: "14px",
       }}
     >
-      <strong style={{ fontSize: "0.82rem", color: "#64748b", textTransform: "uppercase" }}>
+      <strong
+        style={{
+          fontSize: "0.82rem",
+          color: "#64748b",
+          textTransform: "uppercase",
+        }}
+      >
         {label}
       </strong>
-      <div style={{ marginTop: "6px", fontFamily: mono ? "monospace" : "inherit" }}>
+      <div
+        style={{ marginTop: "6px", fontFamily: mono ? "monospace" : "inherit" }}
+      >
         {value}
       </div>
     </div>
@@ -1006,10 +1027,13 @@ export function PreviewAlumnos() {
 
   const listaFiltrada = lista
     .filter((a) => {
-      const matchNombre = a.nombre.toLowerCase().includes(filtroNombre.toLowerCase());
-      const matchId = (a.idUnico ?? "").toLowerCase().includes(filtroId.toLowerCase());
-      const matchGrupo =
-        filtroGrupo === "Todos" || a.grupo === filtroGrupo;
+      const matchNombre = a.nombre
+        .toLowerCase()
+        .includes(filtroNombre.toLowerCase());
+      const matchId = (a.idUnico ?? "")
+        .toLowerCase()
+        .includes(filtroId.toLowerCase());
+      const matchGrupo = filtroGrupo === "Todos" || a.grupo === filtroGrupo;
       return matchNombre && matchId && matchGrupo;
     })
     .sort((a, b) => {
@@ -1033,12 +1057,16 @@ export function PreviewAlumnos() {
       focusCancel: true,
       preConfirm: async (value) => {
         if (!value) {
-          Swal.showValidationMessage("Debes ingresar tu contraseña para confirmar.");
+          Swal.showValidationMessage(
+            "Debes ingresar tu contraseña para confirmar.",
+          );
           return false;
         }
         const esValida = await verificarContraseña(value);
         if (!esValida) {
-          Swal.showValidationMessage("Esa no es la contraseña correcta. Inténtalo de nuevo.");
+          Swal.showValidationMessage(
+            "Esa no es la contraseña correcta. Inténtalo de nuevo.",
+          );
           return false;
         }
         return value;
@@ -1052,7 +1080,10 @@ export function PreviewAlumnos() {
 
     for (const gId of Object.keys(alumnosPorGrupo)) {
       const aIdx = alumnosPorGrupo[gId].findIndex((a) => a.id === alumno.id);
-      if (aIdx !== -1) { alumnosPorGrupo[gId].splice(aIdx, 1); break; }
+      if (aIdx !== -1) {
+        alumnosPorGrupo[gId].splice(aIdx, 1);
+        break;
+      }
     }
 
     refrescar();
@@ -1083,9 +1114,18 @@ export function PreviewAlumnos() {
         </div>
       </div>
 
-      <div style={{ padding: "0 32px 24px", display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: "16px" }}>
+      <div
+        style={{
+          padding: "0 32px 24px",
+          display: "grid",
+          gridTemplateColumns: "1fr 1fr 1fr",
+          gap: "16px",
+        }}
+      >
         <div style={fieldStyle()}>
-          <label style={{ fontWeight: 600, color: "#334155" }}>Filtrar por nombre</label>
+          <label style={{ fontWeight: 600, color: "#334155" }}>
+            Filtrar por nombre
+          </label>
           <input
             type="text"
             placeholder="Escribe el nombre..."
@@ -1095,7 +1135,9 @@ export function PreviewAlumnos() {
           />
         </div>
         <div style={fieldStyle()}>
-          <label style={{ fontWeight: 600, color: "#334155" }}>Filtrar por ID Único</label>
+          <label style={{ fontWeight: 600, color: "#334155" }}>
+            Filtrar por ID Único
+          </label>
           <input
             type="text"
             placeholder="Escribe el ID..."
@@ -1105,7 +1147,9 @@ export function PreviewAlumnos() {
           />
         </div>
         <div style={fieldStyle()}>
-          <label style={{ fontWeight: 600, color: "#334155" }}>Filtrar por grupo</label>
+          <label style={{ fontWeight: 600, color: "#334155" }}>
+            Filtrar por grupo
+          </label>
           <select
             value={filtroGrupo}
             onChange={(e) => setFiltroGrupo(e.target.value)}
@@ -1114,7 +1158,9 @@ export function PreviewAlumnos() {
             <option value="Todos">Todos</option>
             <option value="Sin asignar">Sin asignar</option>
             {gruposMock.map((g) => (
-              <option key={g.id} value={g.nombre}>{g.nombre}</option>
+              <option key={g.id} value={g.nombre}>
+                {g.nombre}
+              </option>
             ))}
           </select>
         </div>
@@ -1135,12 +1181,32 @@ export function PreviewAlumnos() {
               listaFiltrada.map((alumno) => (
                 <tr key={alumno.id}>
                   <td>{alumno.nombre}</td>
-                  <td style={{ fontFamily: "monospace", fontSize: "0.9rem" }}>{alumno.idUnico}</td>
+                  <td style={{ fontFamily: "monospace", fontSize: "0.9rem" }}>
+                    {alumno.idUnico}
+                  </td>
                   <td>{alumno.grupo}</td>
                   <td className="acciones">
-                    <button type="button" className="btn btn-ver" onClick={() => setAlumnoVer(alumno)}>Ver</button>
-                    <button type="button" className="btn btn-editar" onClick={() => setAlumnoEditar(alumno)}>Editar</button>
-                    <button type="button" className="btn btn-eliminar" onClick={() => handleEliminar(alumno)}>Eliminar</button>
+                    <button
+                      type="button"
+                      className="btn btn-ver"
+                      onClick={() => setAlumnoVer(alumno)}
+                    >
+                      Ver
+                    </button>
+                    <button
+                      type="button"
+                      className="btn btn-editar"
+                      onClick={() => setAlumnoEditar(alumno)}
+                    >
+                      Editar
+                    </button>
+                    <button
+                      type="button"
+                      className="btn btn-eliminar"
+                      onClick={() => handleEliminar(alumno)}
+                    >
+                      Eliminar
+                    </button>
                   </td>
                 </tr>
               ))
@@ -1207,7 +1273,8 @@ export function PreviewGrupos() {
           }}
         >
           <span style={{ fontSize: "1.2rem" }}>⚠️</span>
-          Hay {sinGrupo} alumno{sinGrupo > 1 ? "s" : ""} sin grupo. Asígnales uno desde el panel de alumnos.
+          Hay {sinGrupo} alumno{sinGrupo > 1 ? "s" : ""} sin grupo. Asígnales
+          uno desde el panel de alumnos.
         </div>
       )}
       <Tabla

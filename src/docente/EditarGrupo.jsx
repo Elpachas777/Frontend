@@ -1,124 +1,81 @@
-import useFormData from "../hooks/useFormData";
-import { editar, agregar } from "../utils/editarGrupo";
-import { USUARIOS } from "../enums/tipoUsuarios";
+import { useEffect, useState } from "react";
 import Mensaje from "../components/Mensaje";
-import { useState } from "react";
+import { USUARIOS } from "../enums/tipoUsuarios";
+import useFormData from "../hooks/useFormData";
+import "../RolAdmin/RolAdmin.css";
+import { actualizar } from "../utils/editarGrupo";
 
-function EditarGrupo({ onCerrar, setActualizado, filaSeleccionada }) {
+function EditarGrupo({ grupo, onCerrar, onGuardado }) {
   const [mensaje, setMensaje] = useState(null);
+  const { formData, setFormData, handleChange } = useFormData(USUARIOS.GRUPO);
 
-  const { formData: grupo, handleChange: handleGrupo } = useFormData(
-    USUARIOS.GRUPO
-  );
+  useEffect(() => {
+    setFormData((prev) => {
+      const nuevo = { ...prev };
 
-  const { formData: alumno, handleChange: handleAlumno } = useFormData(
-    USUARIOS.ALUMNO
-  );
+      Object.keys(prev).forEach((key) => {
+        if (key in grupo) {
+          nuevo[key] = grupo[key];
+        }
+      });
 
-  const { handleSubmit } = editar({
-    filaSeleccionada,
-    formData: grupo,
-    setActualizado,
+      return nuevo;
+    });
+  }, []);
+
+  const { handleSubmit } = actualizar(grupo, {
+    formData,
     setMensaje,
-  });
-
-  const { handleClick } = agregar({
-    filaSeleccionada,
-    formData: alumno,
-    setActualizado,
-    setMensaje,
+    onGuardado
   });
 
   return (
-    <div className="modal-overlay">
-      <div className="modal form-wrap crear-ejercicio">
+    <div className="modal-overlay" onClick={onCerrar}>
+      <div className="modal-card" onClick={(e) => e.stopPropagation()}>
+        <div className="modal-header">
+          <h2 className="title">Editar grupo</h2>
+          <button type="button" className="modal-close" onClick={onCerrar}>
+            ✕
+          </button>
+        </div>
         {mensaje && <Mensaje tipo={mensaje.tipo} mensaje={mensaje.mensaje} />}
-        <h1 className="title">Editar grupo</h1>
-
-        <form
-          className="areas"
-          onSubmit={handleSubmit}
-          style={{ flexDirection: "column" }}
-        >
-          <div className="area">
+        <form className="modal-form" onSubmit={handleSubmit}>
+          <div className="modal-field">
             <label htmlFor="nombre">Nombre del grupo</label>
             <input
               type="text"
-              id="nombre"
               name="nombre"
               required
-              placeholder={filaSeleccionada.nombre}
-              value={grupo.nombre}
-              onChange={handleGrupo}
+              placeholder={formData.nombre}
+              value={formData.nombre}
+              onChange={handleChange}
             />
           </div>
 
-          <div className="area">
+          <div className="modal-field">
             <label htmlFor="turno">Turno</label>
             <select
               id="turno"
               name="turno"
               required
-              value={grupo.turno}
-              onChange={handleGrupo}
+              value={formData.turno}
+              onChange={handleChange}
             >
-              <option value="">{filaSeleccionada.turno}</option>
+              <option value="">{grupo.turno}</option>
               <option value="Matutino">Matutino</option>
               <option value="Vespertino">Vespertino</option>
               <option value="Mixto">Mixto</option>
             </select>
           </div>
 
-          <div className="divider">
-            <span>Agregar alumno</span>
-          </div>
-
-          <div className="area">
-            <label htmlFor="nombrea">Nombre del alumno</label>
-            <input
-              type="text"
-              id="nombrea"
-              name="nombre"
-              value={alumno.nombre}
-              onChange={handleAlumno}
-              placeholder="Nombre"
-            />
-          </div>
-
-          <div className="area">
-            <label htmlFor="apellidos">Apellidos del alumno</label>
-            <input
-              type="text"
-              id="apellidos"
-              name="apellidos"
-              value={alumno.apellidos}
-              onChange={handleAlumno}
-              placeholder="Apellidos"
-            />
-          </div>
-
-          <button
-            type="button"
-            className="guardar-btn"
-            style={{ marginTop: "20px" }}
-            onClick={handleClick}
-          >
-            Agregar alumno
-          </button>
-
-          <div className="modal-botones">
-            <button
-              type="submit"
-              className="guardar-btn"
-              style={{ marginTop: "20px" }}
-            >
+          <div className="modal-actions">
+            <button type="submit" className="modal-btn-save">
               Guardar grupo
             </button>
             <button
               type="button"
-              className="cancelar-btn"
+              className="modal-btn-cancel"
               onClick={onCerrar}
-              style={{ marginTop: "20px" }}
             >
               Cancelar
             </button>

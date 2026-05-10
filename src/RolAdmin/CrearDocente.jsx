@@ -1,74 +1,61 @@
 import { useState } from "react";
-import { getDocentes, saveDocentes, nextId } from "./mockData";
-import "./RolAdmin.css";
+import Mensaje from "../components/Mensaje";
+import { USUARIOS } from "../enums/tipoUsuarios";
+import useFormData from "../hooks/useFormData";
+import registrar from "../utils/registrarDocente";
 import { IconEye, IconEyeOff } from "./EyeIcons";
+import "./RolAdmin.css";
 
 const CORREO_REGEX = /^[^\s@]+@ipn\.mx$/;
-const PASSWORD_REGEX = /^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+const PASSWORD_REGEX =
+  /^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
 
 function CrearDocente({ escuelas, onCerrar, onGuardado }) {
-  const [form, setForm] = useState({ nombre: "", escuela: "", correo: "", password: "", foto: "" });
   const [errores, setErrores] = useState({});
   const [showPassword, setShowPassword] = useState(false);
+  const [mensaje, setMensaje] = useState(null);
+
+  const { formData, handleChange } = useFormData(USUARIOS.DOCENTE);
+  const { handleSubmit } = registrar({
+    formData,
+    setErrores,
+    setMensaje,
+    onGuardado,
+  });
+
+  const [form, setForm] = useState({
+    foto: "",
+  });
 
   const handleFoto = (e) => {
     const file = e.target.files[0];
     if (!file) return;
     const reader = new FileReader();
-    reader.onload = (ev) => setForm((prev) => ({ ...prev, foto: ev.target.result }));
+    reader.onload = (ev) =>
+      setForm((prev) => ({ ...prev, foto: ev.target.result }));
     reader.readAsDataURL(file);
   };
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setForm((prev) => ({ ...prev, [name]: value }));
-    setErrores((prev) => ({ ...prev, [name]: "" }));
-  };
-
-  const validar = () => {
-    const e = {};
-    if (!form.nombre.trim()) e.nombre = "El nombre es obligatorio.";
-    if (!form.escuela) e.escuela = "Selecciona una escuela.";
-    if (!CORREO_REGEX.test(form.correo)) e.correo = "El correo debe terminar en @ipn.mx";
-    if (!PASSWORD_REGEX.test(form.password))
-      e.password = "Mínimo 8 caracteres, una mayúscula, un número y un carácter especial (@$!%*?&).";
-    return e;
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    const errs = validar();
-    if (Object.keys(errs).length > 0) { setErrores(errs); return; }
-
-    const docentes = getDocentes();
-    const nuevo = {
-      id: nextId(docentes),
-      nombre: form.nombre,
-      escuela: form.escuela,
-      correo: form.correo,
-      password: form.password,
-      foto: form.foto,
-      habilitado: true,
-      fechaIngreso: new Date().toISOString().split("T")[0],
-      grupos: [],
-    };
-    saveDocentes([...docentes, nuevo]);
-    onGuardado();
-  };
-
   return (
-    <div className="modal-overlay" onClick={onCerrar}>
+    <div className="modal-overlay">
       <div className="modal-card" onClick={(e) => e.stopPropagation()}>
         <div className="modal-header">
           <h2>Crear docente</h2>
-          <button type="button" className="modal-close" onClick={onCerrar}>✕</button>
+          <button type="button" className="modal-close" onClick={onCerrar}>
+            ✕
+          </button>
         </div>
+        {mensaje && <Mensaje tipo={mensaje.tipo} mensaje={mensaje.mensaje} />}
         <form className="modal-form" onSubmit={handleSubmit}>
           <div className="modal-field">
             <label>Foto</label>
             <div className="foto-upload-row">
               {form.foto && (
-                <img src={form.foto} alt="preview" className="foto-upload-preview" />
+                <img
+                  src={form.foto}
+                  alt="preview"
+                  className="foto-upload-preview"
+                />
               )}
               <input type="file" accept="image/*" onChange={handleFoto} />
             </div>
@@ -76,40 +63,64 @@ function CrearDocente({ escuelas, onCerrar, onGuardado }) {
           <div className="modal-field">
             <label>Nombre</label>
             <input
-              name="nombre"
-              value={form.nombre}
+              name="nombres"
+              value={formData.nombres}
               onChange={handleChange}
               placeholder="Nombre completo"
             />
-            {errores.nombre && <span className="modal-error">{errores.nombre}</span>}
+            {errores.nombre && (
+              <span className="modal-error">{errores.nombre}</span>
+            )}
+          </div>
+          <div className="modal-field">
+            <label>Apellidos</label>
+            <input
+              name="apellidos"
+              value={formData.apellidos}
+              onChange={handleChange}
+              placeholder="Apellidos completos"
+            />
+            {errores.nombre && (
+              <span className="modal-error">{errores.apellidos}</span>
+            )}
           </div>
           <div className="modal-field">
             <label>Escuela</label>
-            <select name="escuela" value={form.escuela} onChange={handleChange}>
+            <select
+              name="escuela"
+              value={formData.escuela}
+              onChange={handleChange}
+            >
               <option value="">Selecciona una escuela</option>
               {escuelas.map((e) => (
-                <option key={e.id} value={e.nombre}>{e.nombre}</option>
+                <option key={e.id} value={e.id}>
+                  {e.nombre}
+                </option>
               ))}
             </select>
-            {errores.escuela && <span className="modal-error">{errores.escuela}</span>}
+            {errores.escuela && (
+              <span className="modal-error">{errores.escuela}</span>
+            )}
           </div>
           <div className="modal-field">
             <label>Correo</label>
             <input
               name="correo"
-              value={form.correo}
+              value={formData.correo}
               onChange={handleChange}
               placeholder="nombre@ipn.mx"
               type="email"
             />
-            {errores.correo && <span className="modal-error">{errores.correo}</span>}
+            {errores.correo && (
+              <span className="modal-error">{errores.correo}</span>
+            )}
           </div>
           <div className="modal-field">
             <label>Contraseña</label>
             <div className="password-input-wrap">
               <input
                 name="password"
-                value={form.password}
+                value={formData.password}
                 onChange={handleChange}
                 placeholder="••••••••"
                 type={showPassword ? "text" : "password"}
@@ -118,16 +129,28 @@ function CrearDocente({ escuelas, onCerrar, onGuardado }) {
                 type="button"
                 className="password-eye"
                 onClick={() => setShowPassword((p) => !p)}
-                aria-label={showPassword ? "Ocultar contraseña" : "Mostrar contraseña"}
+                aria-label={
+                  showPassword ? "Ocultar contraseña" : "Mostrar contraseña"
+                }
               >
                 {showPassword ? <IconEyeOff /> : <IconEye />}
               </button>
             </div>
-            {errores.password && <span className="modal-error">{errores.password}</span>}
+            {errores.password && (
+              <span className="modal-error">{errores.password}</span>
+            )}
           </div>
           <div className="modal-actions">
-            <button type="button" className="modal-btn-cancel" onClick={onCerrar}>Cancelar</button>
-            <button type="submit" className="modal-btn-save">Guardar</button>
+            <button
+              type="button"
+              className="modal-btn-cancel"
+              onClick={onCerrar}
+            >
+              Cancelar
+            </button>
+            <button type="submit" className="modal-btn-save">
+              Guardar
+            </button>
           </div>
         </form>
       </div>

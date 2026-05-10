@@ -1,18 +1,13 @@
 import { agregarAlumno, editarGrupo } from "../api/grupo.api";
 
-export function editar({
-  filaSeleccionada,
-  formData,
-  setActualizado,
-  setMensaje,
-}) {
+export function actualizar({ id }, { formData, setMensaje, onGuardado }) {
   const handleSubmit = async (event) => {
     event.preventDefault();
 
     try {
-      const respuesta = await editarGrupo(filaSeleccionada.id, formData);
-      setActualizado((prev) => !prev);
+      const respuesta = await editarGrupo(id, formData);
       setMensaje(respuesta);
+      onGuardado();
     } catch (error) {
       setMensaje(error.response.data);
     }
