@@ -12,7 +12,7 @@ export function crearCuento(silaba, cuento) {
 }
 
 export function crear({ formData, setErrores, setMensaje, onGuardado }) {
-  const handleSubmit = async (event, json) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
 
     try {
@@ -64,4 +64,13 @@ export function actualizar(
   return {
     handleSubmit,
   };
+}
+
+export async function asignarEjercicio({ id_ejercicio }, { id }) {
+  try {
+    const data = { id }
+    await api.asignarEjercicio(id_ejercicio, data)
+  } catch (error) {
+    console.log(error.response.data)
+  }
 }

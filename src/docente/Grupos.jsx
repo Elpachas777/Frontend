@@ -67,6 +67,7 @@ function Grupos() {
       timer: 1600,
       showConfirmButton: false,
     });
+    cargar()
   };
 
   return (
@@ -181,6 +182,9 @@ function Grupos() {
           onCerrar={() => {
             setMostrarVer(false);
             setSeleccionada(null);
+          }}
+          onGuardado={() => {
+            cargar();
           }}
         />
       )}

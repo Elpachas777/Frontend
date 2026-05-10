@@ -25,7 +25,7 @@ function EditarAlumno({ alumno, onCerrar, onGuardado }) {
 
       return nuevo;
     });
-  }, []);
+  }, [alumno, setFormData]);
 
   const { handleSubmit } = actualizar(alumno, {
     formData,

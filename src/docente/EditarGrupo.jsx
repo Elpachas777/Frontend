@@ -26,6 +26,7 @@ function EditarGrupo({ grupo, onCerrar, onGuardado }) {
   const { handleSubmit } = actualizar(grupo, {
     formData,
     setMensaje,
+    onGuardado
   });
 
   return (

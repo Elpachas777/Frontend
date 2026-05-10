@@ -21,7 +21,7 @@ async function confirmarCancelacion(onCerrar) {
   if (res.isConfirmed) onCerrar();
 }
 
-function CrearEjercicio({ onCerrar, setActualizado, onGuardado }) {
+function CrearEjercicio({ onCerrar, onGuardado }) {
   const [tipos, setTipos] = useState([]);
   const [errores, setErrores] = useState({});
   const [mensaje, setMensaje] = useState(null);
@@ -46,15 +46,16 @@ function CrearEjercicio({ onCerrar, setActualizado, onGuardado }) {
   }, [cargar]);
 
   return (
-    <div className="modal-overlay" onClick={onCerrar}>
+    <div className="modal-overlay">
       <div
         className="modal-card modal-card--wide"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="modal-header">
+          <h2>Crear Ejercicio</h2>
           <button type="button" className="modal-close" onClick={onCerrar}>
             ✕
-          </button>{" "}
+          </button>
         </div>
         {mensaje && <Mensaje tipo={mensaje.tipo} mensaje={mensaje.mensaje} />}
         <form className="modal-form" onSubmit={handleSubmit}>

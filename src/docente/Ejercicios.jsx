@@ -9,28 +9,9 @@ import EditarEjercicio from "./EditarEjercicio";
 import "./Ejercicios.css";
 import VerEjercicio from "./VerEjercicio";
 
-let ejerciciosMock = [
-  {
-    id: 1,
-    ejercicio: "Memoria visual",
-    texto: "El perro estaba por el parque con un gato jugando con una pelota",
-    palabras: [
-      { palabra: "perro", silabas: ["pe", "rro"] },
-      { palabra: "gato", silabas: ["ga", "to"] },
-      { palabra: "pelota", silabas: ["pe", "lo", "ta"] },
-    ],
-  },
-  { id: 2, ejercicio: "Encuentra la palabra", texto: "", palabras: [] },
-  { id: 3, ejercicio: "Ordena la secuencia", texto: "", palabras: [] },
-];
-
-export function getEjerciciosMock() {
-  return [...ejerciciosMock];
-}
-
 function Ejercicios() {
   const [ejercicios, setEjercicios] = useState([]);
-  const [filtroNombre, setFiltroNombre] = useState("");
+  const [filtroTitulo, setFiltroTItulo] = useState("");
   const [filtroTurno, setFiltroTurno] = useState("");
   const [mostrarCrear, setMostrarCrear] = useState(false);
   const [mostrarEditar, setMostrarEditar] = useState(false);
@@ -85,6 +66,8 @@ function Ejercicios() {
       timer: 1600,
       showConfirmButton: false,
     });
+
+    cargar()
   };
 
   return (
@@ -107,9 +90,9 @@ function Ejercicios() {
           name="filtro-grupo"
           className="tabla-filtro-input"
           type="text"
-          placeholder="Buscar por nombre..."
-          value={filtroNombre}
-          onChange={(ev) => setFiltroNombre(ev.target.value)}
+          placeholder="Buscar por titulo..."
+          value={filtroTitulo}
+          onChange={(ev) => setFiltroTItulo(ev.target.value)}
         />
         <input
           name="filtro-apellido"
@@ -126,18 +109,18 @@ function Ejercicios() {
           <thead>
             <tr>
               <th>id</th>
-              <th>nombre</th>
+              <th>Titulo</th>
               <th>Acciones</th>
             </tr>
           </thead>
           <tbody>
             {(() => {
-              const n = filtroNombre.toLowerCase();
+              const n = filtroTitulo.toLowerCase();
               const t = filtroTurno.toLowerCase();
               const filtradas = ejercicios.filter(
-                (grupo) =>
-                  (!n || grupo.nombre?.toLowerCase().includes(n)) &&
-                  (!t || grupo.turno?.toLowerCase().includes(t)),
+                (ejercicio) =>
+                  (!n || ejercicio.titulo?.toLowerCase().includes(n)) &&
+                  (!t || ejercicio.turno?.toLowerCase().includes(t)),
               );
               return filtradas.length > 0 ? (
                 filtradas.map((ejercicio) => (
@@ -205,7 +188,6 @@ function Ejercicios() {
         <CrearEjercicio
           onCerrar={() => setMostrarCrear(false)}
           onGuardado={() => {
-            setMostrarCrear(false);
             cargar();
           }}
         />
@@ -218,6 +200,7 @@ function Ejercicios() {
             setMostrarEditar(false);
             setSeleccionada(null);
           }}
+          onGuardado={() => cargar()}
         />
       )}
     </section>

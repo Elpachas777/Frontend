@@ -144,6 +144,22 @@
   margin-top: 8px;
 }
 
+.modal-btn-delete {
+  padding: 11px 22px;
+  border: none;
+  border-radius: 14px;
+  background: #c04343;
+  color: #310d0d;
+  font-weight: 800;
+  cursor: pointer;
+  transition: background 0.18s;
+}
+
+.modal-btn-delete:hover {
+  background: #ac3434;
+}
+
+
 .modal-btn-cancel {
   padding: 11px 22px;
   border: 1.5px solid #c8dfc8;

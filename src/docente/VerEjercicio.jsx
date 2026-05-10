@@ -4,8 +4,16 @@ import "./VerEjercicio.css";
 function VerEjercicio({ ejercicio, onCerrar }) {
   return (
     <div className="modal-overlay">
-      <div className="modal">
-        <h2>Detalle del ejercicio</h2>
+      <div
+        className="modal-card modal-card--wide"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <div className="modal-header">
+          <h2>Ver ejercicio</h2>
+          <button type="button" className="modal-close" onClick={onCerrar}>
+            ✕
+          </button>
+        </div>
 
         <div className="contenido">
           <div className="contenedor">
@@ -18,11 +26,7 @@ function VerEjercicio({ ejercicio, onCerrar }) {
             <div className="contenedor-valor">{ejercicio.titulo}</div>
           </div>
 
-          <Visualizador
-            tipo={ejercicio.id_tipo}
-            ejercicio={ejercicio}
-            onCerrar={onCerrar}
-          />
+          <Visualizador tipo={ejercicio.id_tipo} ejercicio={ejercicio} onCerrar={onCerrar} />
         </div>
       </div>
     </div>

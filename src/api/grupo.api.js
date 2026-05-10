@@ -44,3 +44,8 @@ export const listarAlumnos = async (id) => {
   const respuesta = await axios.get(`/listarAlumnos/${id}`)
   return respuesta.data;
 }
+
+export const eliminarAlumno = async (id, data) => {
+  const respuesta = await axios.put(`/eliminarDelGrupo/${id}`, data)
+  return respuesta.data
+}

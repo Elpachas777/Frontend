@@ -3,8 +3,9 @@ import Editor from "../ejercicios/Editor";
 import { USUARIOS } from "../enums/tipoUsuarios";
 import useFormData from "../hooks/useFormData";
 import { actualizar } from "../utils/ejercicio";
+import Mensaje from "../components/Mensaje";
 
-function EditarEjercicio({ ejercicio, onCerrar }) {
+function EditarEjercicio({ ejercicio, onCerrar, onGuardado }) {
   const [errores, setErrores] = useState({});
   const [mensaje, setMensaje] = useState(null);
 
@@ -22,12 +23,13 @@ function EditarEjercicio({ ejercicio, onCerrar }) {
       });
       return nuevo;
     });
-  }, []);
+  }, [ejercicio, setFormData]);
 
   const { handleSubmit } = actualizar(ejercicio, {
     formData,
     setErrores,
     setMensaje,
+    onGuardado,
   });
 
   return (
@@ -42,7 +44,7 @@ function EditarEjercicio({ ejercicio, onCerrar }) {
             ✕
           </button>
         </div>
-
+        {mensaje && <Mensaje tipo={mensaje.tipo} mensaje={mensaje.mensaje} />}
         <form className="modal-form" onSubmit={handleSubmit}>
           <div className="modal-field">
             <label>Nombre del ejercicio</label>

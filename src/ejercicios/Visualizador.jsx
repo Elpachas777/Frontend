@@ -17,7 +17,7 @@ function Visualizador({ tipo, ejercicio, onCerrar }) {
     switch (Number(tipo)) {
       case 1:
         return (
-          <Previsualizar onCerrar={onCerrar}>
+          <Previsualizar onCerrar={() => setPreviewing(false)}>
             <MostrarEjercicio ejercicio={ejercicio} />
           </Previsualizar>
         );
@@ -25,7 +25,7 @@ function Visualizador({ tipo, ejercicio, onCerrar }) {
         return (
           <EjercicioPlayer
             ejercicio={ejercicio}
-            onCerrar={onCerrar}
+            onCerrar={() => setPreviewing(false)}
           ></EjercicioPlayer>
         );
     }
@@ -34,11 +34,11 @@ function Visualizador({ tipo, ejercicio, onCerrar }) {
   return (
     <>
       {ejercicios[tipo]}
-      <div className="botones">
-        <button className="cancelar-btn" onClick={onCerrar}>
+      <div className="modal-field">
+        <button type="button" className="modal-btn-cancel" onClick={onCerrar}>
           Cerrar
         </button>
-        <button className="guardar-btn" onClick={() => setPreviewing(true)}>
+        <button className="modal-btn-save" onClick={() => setPreviewing(true)}>
           Vista previa del ejercicio
         </button>
       </div>

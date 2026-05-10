@@ -4,9 +4,10 @@ import "../components/Tabla.css";
 import AgregarAlumnos from "./AgregarAlumno";
 import { listarAlumnos } from "../utils/grupos";
 
-function VerGrupo({ grupo, onCerrar }) {
+function VerGrupo({ grupo, onCerrar, onGuardado }) {
   const [alumnos, setAlumnos] = useState([]);
   const [mostrar, setMostrar] = useState(null);
+  const [eliminar, setEliminar] = useState(null);
 
   const cargar = useCallback(async () => {
     const alumnosArreglo = await listarAlumnos(grupo);
@@ -15,6 +16,7 @@ function VerGrupo({ grupo, onCerrar }) {
 
   useEffect(() => {
     cargar();
+    onGuardado();
   }, [cargar]);
 
   return (
@@ -58,7 +60,7 @@ function VerGrupo({ grupo, onCerrar }) {
                   alumnos.map((alumno) => (
                     <tr key={alumno.id}>
                       <td>{alumno.id}</td>
-                      <td>{alumno.nombre}</td>
+                      <td>{alumno.nombres}</td>
                       <td>{alumno.apellidos}</td>
                     </tr>
                   ))
@@ -83,14 +85,14 @@ function VerGrupo({ grupo, onCerrar }) {
               className="modal-btn-save"
               onClick={() => setMostrar(true)}
             >
-              Agregar Alumno
+              Agregar Alumnos
             </button>
             <button
               type="button"
-              className="modal-btn-cancel"
-              onClick={onCerrar}
+              className="modal-btn-delete"
+              onClick={() => setEliminar(true)}
             >
-              Cerrar
+              Eliminar Alumnos
             </button>
           </div>
         </div>
@@ -99,9 +101,19 @@ function VerGrupo({ grupo, onCerrar }) {
       {mostrar && (
         <AgregarAlumnos
           grupoId={grupo.id}
-          grupoNombre = {grupo.nombre}
+          grupoNombre={grupo.nombre}
           onCerrar={() => setMostrar(null)}
           onGuardado={() => cargar()}
+        />
+      )}
+
+      {eliminar && (
+        <AgregarAlumnos
+          grupoId={grupo.id}
+          grupoNombre={grupo.nombre}
+          onCerrar={() => setEliminar(null)}
+          onGuardado={() => cargar()}
+          guardar = {false}
         />
       )}
     </>

@@ -3,9 +3,15 @@ import "sweetalert2/dist/sweetalert2.min.css";
 import "../components/Tabla.css";
 import "../RolAdmin/RolAdmin.css";
 import { listar } from "../utils/alumnos";
-import { agregar } from "../utils/grupos";
+import { agregar, eliminarAlumno, listarAlumnos } from "../utils/grupos";
 
-function AgregarAlumnos({ grupoId, grupoNombre, onCerrar, onGuardado }) {
+function AgregarAlumnos({
+  grupoId,
+  grupoNombre,
+  onCerrar,
+  onGuardado,
+  guardar = true,
+}) {
   const [alumnos, setAlumnos] = useState([]);
   const [errores, setErrores] = useState({});
   const [filtroNombre, setFiltroNombre] = useState("");
@@ -14,8 +20,21 @@ function AgregarAlumnos({ grupoId, grupoNombre, onCerrar, onGuardado }) {
 
   const cargar = useCallback(async () => {
     const alumnosArreglo = await listar();
-    setAlumnos(alumnosArreglo);
-  }, []);
+    const alumnosGrupo = await listarAlumnos({ id: grupoId });
+    const arregloFinal = alumnosArreglo.filter(
+      (general) =>
+        !alumnosGrupo.some(
+          (registrado) => registrado.id === general.id_ingreso,
+        ),
+    );
+
+    setAlumnos(arregloFinal);
+  }, [grupoId]);
+
+  const eliminar = useCallback(async () => {
+    const alumnosGrupo = await listarAlumnos({ id: grupoId });
+    setAlumnos(alumnosGrupo);
+  }, [grupoId]);
 
   const handleChange = (alumno) => {
     setAlumnosSelect((prev) =>
@@ -30,11 +49,21 @@ function AgregarAlumnos({ grupoId, grupoNombre, onCerrar, onGuardado }) {
       { grupoId, grupoNombre, alumnosSelect },
       { setErrores, onGuardado },
     );
+    cargar();
+  };
+
+  const handleEliminar = async () => {
+    await eliminarAlumno(grupoId, { alumnosSelect, setErrores, onGuardado });
+    eliminar();
   };
 
   useEffect(() => {
-    cargar();
-  }, [cargar]);
+    if (guardar) {
+      cargar();
+    } else {
+      eliminar();
+    }
+  }, [guardar, cargar, eliminar]);
 
   return (
     <div className="modal-overlay modal-overlay--top">
@@ -45,7 +74,7 @@ function AgregarAlumnos({ grupoId, grupoNombre, onCerrar, onGuardado }) {
         <div className="tabla-hero">
           <div className="tabla-hero-copy">
             <h1>Lista de alumnos</h1>
-            <p>Gestiona los alumnos registrados en el sistema.</p>
+            <p>Agrega los alumnos que desees al grupo</p>
           </div>
         </div>
 
@@ -76,6 +105,7 @@ function AgregarAlumnos({ grupoId, grupoNombre, onCerrar, onGuardado }) {
                 <th>id</th>
                 <th>nombre</th>
                 <th>apellidos</th>
+                {guardar && <th>grupo</th>}
               </tr>
             </thead>
             <tbody>
@@ -107,6 +137,7 @@ function AgregarAlumnos({ grupoId, grupoNombre, onCerrar, onGuardado }) {
                       <td>{alumno.id}</td>
                       <td>{alumno.nombres}</td>
                       <td>{alumno.apellidos}</td>
+                      {guardar && <td>{alumno.grupo || ""}</td>}
                     </tr>
                   ))
                 ) : (
@@ -114,8 +145,8 @@ function AgregarAlumnos({ grupoId, grupoNombre, onCerrar, onGuardado }) {
                     <td colSpan={4}>
                       <div className="tabla-empty">
                         <span className="tabla-empty-icon">🌱</span>
-                        <h3>Sin alumnos registradas</h3>
-                        <p>Crea el primer alumno para comenzar.</p>
+                        <h3>Sin alumnos disponibles</h3>
+                        <p>Crea otros alumnos para agregar.</p>
                       </div>
                     </td>
                   </tr>
@@ -125,13 +156,23 @@ function AgregarAlumnos({ grupoId, grupoNombre, onCerrar, onGuardado }) {
           </table>
         </div>
         <div className="modal-actions" style={{ marginTop: "20px" }}>
-          <button
-            type="button"
-            className="modal-btn-save"
-            onClick={handleClick}
-          >
-            Agregar Alumno
-          </button>
+          {guardar ? (
+            <button
+              type="button"
+              className="modal-btn-save"
+              onClick={handleClick}
+            >
+              Agregar Alumno
+            </button>
+          ) : (
+            <button
+              type="button"
+              className="modal-btn-delete"
+              onClick={handleEliminar}
+            >
+              Eliminar Alumno
+            </button>
+          )}
           <button type="button" className="modal-btn-cancel" onClick={onCerrar}>
             Cerrar
           </button>
