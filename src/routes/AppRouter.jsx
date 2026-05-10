@@ -1,12 +1,10 @@
-import { useLocation } from "react-router-dom";
 import useAuth from "../hooks/useAuth";
 import Privado from "../routes/Privado";
 import Publico from "../routes/Publico";
 
 function AppRouter() {
   const { autentificado, cargando, setAutentificado } = useAuth();
-  const { pathname } = useLocation();
-
+  console.log("API:", import.meta.env.VITE_API_URL);
   if (cargando) {
     return null;
   }
