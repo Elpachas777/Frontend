@@ -24,7 +24,5 @@ export function useRegistrarAdmin({ formData }) {
 
 export const verificarContraseña = async (data) => {
   const res = await axios.post("/verificarPassword", data);
-
-  console.log(res.data);
   return res.data;
 };
