@@ -3,7 +3,7 @@ import BotonCanvas from "../components/BotonCanvas";
 
 function Arrastrar() {
   const [elementos, setElementos] = useState(["Man", "za", "na"]);
-  const [indice, setIndice] = useState(null);
+  const [indice, setIndice] = useState(null); 
 
   const handleDrop = (index) => {
     const reOrden = [...elementos];
