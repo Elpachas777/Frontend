@@ -19,14 +19,26 @@ function BotonCanvas({ Texto = "__" }) {
     cargarModelo();
   }, []);
 
-  const handlePredecir = async (canvas) => {
+  const handlePredecir = (canvas) => {
     const letras = dividirCanvas(canvas);
     const resultadoIzq = predecir(modelo, letras[0]);
     const resultadoDer = predecir(modelo, letras[1]);
-    mensaje("Resultado: " + resultadoIzq + resultadoDer, {
-      tipo: "info",
-      mensaje: "Sigue asi",
-    });
+
+    const procentajeTotal =
+      (resultadoIzq.porcentaje + resultadoDer.porcentaje) / 2;
+
+    mensaje(
+      "Resultado: " +
+        resultadoIzq.letra +
+        resultadoDer.letra +
+        "- " +
+        procentajeTotal +
+        "%",
+      {
+        tipo: "info",
+        mensaje: "Sigue asi",
+      },
+    );
   };
 
   return (
