@@ -1,24 +1,74 @@
-import { useRef, useState } from "react";
+import * as tf from "@tensorflow/tfjs";
+import { useEffect, useRef, useState } from "react";
 import Canvas from "./Canvas";
+import { dividirCanvas, predecir } from "../utils/modelo";
+import "../RolAdmin/RolAdmin.css";
+import mensaje from "../utils/mensajes";
 
 function BotonCanvas({ Texto = "__" }) {
+  const [modelo, setModelo] = useState();
   const canvaRef = useRef();
   const [mostrarCanvas, setCanvas] = useState(false);
-  const handleMostrar = () => {
-    setCanvas(true);
+
+  useEffect(() => {
+    const cargarModelo = async () => {
+      const modeloCargado = await tf.loadGraphModel("/model/model.json");
+      setModelo(modeloCargado);
+    };
+
+    cargarModelo();
+  }, []);
+
+  const handlePredecir = async (canvas) => {
+    const letras = dividirCanvas(canvas);
+    const resultadoIzq = predecir(modelo, letras[0]);
+    const resultadoDer = predecir(modelo, letras[1]);
+    mensaje("Resultado: " + resultadoIzq + resultadoDer, {
+      tipo: "info",
+      mensaje: "Sigue asi",
+    });
   };
 
   return (
     <>
-      <button type="button" onClick={handleMostrar}>
+      <button type="button" onClick={() => setCanvas(true)}>
         {Texto}
       </button>
       {mostrarCanvas && (
-        <div>
-          <Canvas ref={canvaRef} />
-          <button type="button" onClick={() => canvaRef.current.clear()}>
-            limpiar
-          </button>
+        <div className="modal-overlay">
+          <div
+            className="modal-card modal-card--wide"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="modal-header">
+              <h2>Escribe la silaba</h2>
+              <button
+                type="button"
+                className="modal-close"
+                onClick={() => setCanvas(false)}
+              >
+                ✕
+              </button>
+            </div>
+
+            <Canvas ref={canvaRef} />
+            <div className="modal-actions">
+              <button
+                type="button"
+                className="modal-btn-save"
+                onClick={() => handlePredecir(canvaRef.current.getImage())}
+              >
+                Predecir
+              </button>
+              <button
+                type="button"
+                className="modal-btn-cancel"
+                onClick={() => canvaRef.current.clear()}
+              >
+                limpiar
+              </button>
+            </div>
+          </div>
         </div>
       )}
     </>

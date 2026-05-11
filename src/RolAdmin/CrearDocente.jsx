@@ -13,13 +13,11 @@ const PASSWORD_REGEX =
 function CrearDocente({ escuelas, onCerrar, onGuardado }) {
   const [errores, setErrores] = useState({});
   const [showPassword, setShowPassword] = useState(false);
-  const [mensaje, setMensaje] = useState(null);
 
   const { formData, handleChange } = useFormData(USUARIOS.DOCENTE);
   const { handleSubmit } = registrar({
     formData,
     setErrores,
-    setMensaje,
     onGuardado,
   });
 
@@ -45,7 +43,6 @@ function CrearDocente({ escuelas, onCerrar, onGuardado }) {
             ✕
           </button>
         </div>
-        {mensaje && <Mensaje tipo={mensaje.tipo} mensaje={mensaje.mensaje} />}
         <form className="modal-form" onSubmit={handleSubmit}>
           <div className="modal-field">
             <label>Foto</label>

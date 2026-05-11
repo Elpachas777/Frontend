@@ -1,16 +1,33 @@
-import { useRef, useState } from "react";
+import * as tf from "@tensorflow/tfjs";
+import { useEffect, useRef, useState } from "react";
 import Canvas from "../components/Canvas";
 import "./EjercicioPlayer.css";
+import { dividirCanvas, predecir } from "../utils/modelo";
+import mensaje from "../utils/mensajes";
 
 function EjercicioPlayer({ ejercicio, onCerrar }) {
   const canvaRef = useRef([]);
   const [indice, setIndice] = useState(0);
   const [terminado, setTerminado] = useState(false);
+  const [modelo, setModelo] = useState();
 
   const palabras = ejercicio.contenido.palabras || [];
   const total = palabras.length;
   const actual = palabras[indice];
   const progreso = total > 0 ? (indice / total) * 100 : 0;
+
+  useEffect(() => {
+    const cargarModelo = async () => {
+      const modeloCargado = await tf.loadGraphModel("/model/model.json");
+      setModelo(modeloCargado);
+    };
+
+    cargarModelo();
+  }, []);
+
+  useEffect(() => {
+    canvaRef.current = [];
+  }, [indice]);
 
   const handleSiguiente = () => {
     if (indice + 1 >= total) {
@@ -18,6 +35,16 @@ function EjercicioPlayer({ ejercicio, onCerrar }) {
     } else {
       setIndice((i) => i + 1);
     }
+  };
+
+  const handlePredecir = async (canvas) => {
+    const letras = dividirCanvas(canvas);
+    const resultadoIzq = predecir(modelo, letras[0]);
+    const resultadoDer = predecir(modelo, letras[1]);
+    mensaje("Resultado: " + resultadoIzq + resultadoDer, {
+      tipo: "info",
+      mensaje: "Sigue asi",
+    });
   };
 
   if (!ejercicio || total === 0) {
@@ -55,7 +82,6 @@ function EjercicioPlayer({ ejercicio, onCerrar }) {
       </div>
     );
   }
-
   return (
     <div
       className="ep-overlay"
@@ -86,11 +112,24 @@ function EjercicioPlayer({ ejercicio, onCerrar }) {
 
         <div className="ep-canvases">
           {actual.silabas.map((sil, i) => (
-            <div key={i}>
+            <div key={`${indice}-${i}`}>
               <Canvas silaba={sil} ref={(cr) => (canvaRef.current[i] = cr)} />
-              <button type="button" onClick={() => canvaRef.current[i].clear()}>
-                limpiar
-              </button>
+              <div className="modal-actions">
+                <button
+                  type="button"
+                  className="modal-btn-save"
+                  onClick={() => handlePredecir(canvaRef.current[i].getImage())}
+                >
+                  Predecir
+                </button>
+                <button
+                  type="button"
+                  className="modal-btn-cancel"
+                  onClick={() => canvaRef.current[i].clear()}
+                >
+                  limpiar
+                </button>
+              </div>
             </div>
           ))}
           <span className="ep-arrow">→</span>

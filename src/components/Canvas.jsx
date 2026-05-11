@@ -1,28 +1,10 @@
-import * as tf from "@tensorflow/tfjs";
 import * as fabric from "fabric";
-import {
-  forwardRef,
-  useEffect,
-  useImperativeHandle,
-  useRef,
-  useState,
-} from "react";
-import { dividirCanvas, predecir } from "../utils/modelo";
+import { forwardRef, useEffect, useImperativeHandle, useRef } from "react";
 import "./Canvas.css";
 
 const Canvas = forwardRef(({ silaba = "" }, ref) => {
-  const [modelo, setModelo] = useState(null);
   const canvaRef = useRef(null);
   const fabricRef = useRef(null);
-
-  useEffect(() => {
-    const cargarModelo = async () => {
-      const modeloCargado = await tf.loadGraphModel("/model/model.json");
-      setModelo(modeloCargado);
-    };
-
-    cargarModelo();
-  }, []);
 
   useEffect(() => {
     if (!canvaRef.current) return;
@@ -44,17 +26,9 @@ const Canvas = forwardRef(({ silaba = "" }, ref) => {
     };
   }, []);
 
-  const handlePredecir = async () => {
-    const letras = dividirCanvas(canvaRef.current);
-    const resultadoIzq = predecir(modelo, letras[0]);
-    const resultadoDer = predecir(modelo, letras[1]);
-    document.getElementById("resultado").innerHTML =
-      resultadoIzq + resultadoDer;
-  };
-
   useImperativeHandle(ref, () => ({
     clear: () => fabricRef.current.clear(),
-    getImage: () => canvasRef.current,
+    getImage: () => canvaRef.current,
   }));
 
   return (
