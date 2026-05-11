@@ -1,4 +1,6 @@
 import * as api from "../api/docente.api";
+import Swal from "sweetalert2";
+import mensaje from "./mensajes";
 
 function validar(formData) {
   const e = {};
@@ -9,7 +11,7 @@ function validar(formData) {
   return e;
 }
 
-function registrar({ formData, setErrores, setMensaje, onGuardado }) {
+function registrar({ formData, setErrores, onGuardado }) {
   const handleSubmit = async (event) => {
     event.preventDefault();
     const errores = validar(formData);
@@ -28,10 +30,10 @@ function registrar({ formData, setErrores, setMensaje, onGuardado }) {
         contraseña: formData.password,
       };
       const respuesta = await api.crear(datos);
-      setMensaje(respuesta);
+      await mensaje("Docente creado", respuesta)
       onGuardado();
     } catch (error) {
-      setMensaje(error.response.data);
+      mensaje("Error", error.response.data);
     }
   };
 

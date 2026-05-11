@@ -1,5 +1,6 @@
 import { editarDocente } from "../api/docente.api";
 import { comprobarContraseña } from "./docentes";
+import mensaje from "./mensajes";
 
 async function validar(formData, id) {
   const e = {};
@@ -18,7 +19,7 @@ async function validar(formData, id) {
   return e;
 }
 
-function editar({ id }, { formData, setErrores, setMensaje, onGuardado }) {
+function editar({ id }, { formData, setErrores, onGuardado }) {
   const handleSubmit = async (event) => {
     event.preventDefault();
     const errores = await validar(formData, id);
@@ -44,10 +45,10 @@ function editar({ id }, { formData, setErrores, setMensaje, onGuardado }) {
       };
 
       const respuesta = await editarDocente(id, datos);
-      setMensaje(respuesta);
+      mensaje("Docente editado", respuesta);
       onGuardado();
     } catch (error) {
-      setMensaje(error.response.data);
+      mensaje("Error", error.response.data);
     }
   };
 

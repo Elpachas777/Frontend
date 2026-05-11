@@ -14,7 +14,6 @@ function EditarDocente({ docente, escuelas, onCerrar, onGuardado }) {
   const [showNueva, setShowNueva] = useState(false);
 
   const [errores, setErrores] = useState({});
-  const [mensaje, setMensaje] = useState(null);
 
   const { formData, setFormData, handleChange } = useFormData(
     USUARIOS.DOCENTE_EDITAR,
@@ -37,7 +36,6 @@ function EditarDocente({ docente, escuelas, onCerrar, onGuardado }) {
   const { handleSubmit } = editar(docente, {
     formData,
     setErrores,
-    setMensaje,
     onGuardado,
   });
 
@@ -68,7 +66,6 @@ function EditarDocente({ docente, escuelas, onCerrar, onGuardado }) {
             ✕
           </button>
         </div>
-        {mensaje && <Mensaje tipo={mensaje.tipo} mensaje={mensaje.mensaje} />}
         <form className="modal-form" onSubmit={handleSubmit}>
           {/* Foto */}
           <div className="modal-field">

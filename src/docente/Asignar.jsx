@@ -5,24 +5,6 @@ import "./Asignar.css";
 import * as utilsEjercicios from "../utils/ejercicio";
 import * as utilsGrupos from "../utils/grupos";
 
-// { [ejercicioId]: { [grupoId]: { asignado, realizado, porcentaje } } }
-const asignacionesState = {
-  1: {
-    1: { asignado: true, realizado: true, porcentaje: 80 },
-    3: { asignado: true, realizado: true, porcentaje: 65 },
-  },
-};
-
-function getEstado(ejId, grupoId) {
-  return (
-    asignacionesState[ejId]?.[grupoId] ?? {
-      asignado: false,
-      realizado: false,
-      porcentaje: 0,
-    }
-  );
-}
-
 function Asignar() {
   const [ejercicios, setEjercicios] = useState([]);
   const [grupos, setGrupos] = useState([]);
@@ -42,7 +24,7 @@ function Asignar() {
 
   useEffect(() => {
     cargar();
-  }, [cargar]);
+  }, []);
 
   const handleAsignar = async (grupo) => {
     const confirm = await Swal.fire({
@@ -153,13 +135,14 @@ function Asignar() {
           </div>
 
           {grupos.map((grupo) => {
-            const estado = getEstado(Number(ejercicioId), grupo.id);
+            const pertenece = asignado(grupo);
+            const estado = grupo.respuestas || "";
             return (
               <div key={grupo.id} className="asignar-row">
                 <span className="asignar-grupo-nombre">{grupo.nombre}</span>
 
                 <div className="asignar-status-cell">
-                  {grupo.ejercicios && estado.realizado ? (
+                  {pertenece && estado.realizado ? (
                     <div className="asignar-status asignar-status--realizado">
                       <span>Realizado</span>
                       <div className="asignar-progress">
@@ -170,7 +153,7 @@ function Asignar() {
                       </div>
                       <span className="asignar-pct">{estado.porcentaje}%</span>
                     </div>
-                  ) : asignado(grupo) ? (
+                  ) : pertenece ? (
                     <div className="asignar-status asignar-status--pendiente">
                       <span>Asignado · pendiente</span>
                     </div>
@@ -182,7 +165,7 @@ function Asignar() {
                 </div>
 
                 <div className="asignar-acciones">
-                  {grupo.ejercicios && estado.realizado && (
+                  {pertenece && estado.realizado && (
                     <button
                       type="button"
                       className="btn btn-ver"
@@ -191,7 +174,7 @@ function Asignar() {
                       Ver resultados
                     </button>
                   )}
-                  {asignado(grupo) ? (
+                  {pertenece ? (
                     <button
                       type="button"
                       className="btn btn-eliminar"

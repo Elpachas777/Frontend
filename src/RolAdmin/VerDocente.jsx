@@ -8,12 +8,11 @@ import { modificarHabilitado } from "../utils/docentes";
 import { IconEye, IconEyeOff } from "./EyeIcons";
 import "./RolAdmin.css";
 import VerGrupoAdmin from "./VerGrupoAdmin";
+import VerGrupo from "../docente/VerGrupo";
 
 function VerDocente({ docente, onCerrar, onGuardado, onEliminado }) {
   const [habilitado, setHabilitado] = useState(docente.habilitado);
   const [grupoViendoId, setGrupoViendoId] = useState(null);
-  const [showPassword, setShowPassword] = useState(false);
-
   const gruposDocente = docente.grupos ?? [];
 
   const handleToggleHabilitado = async () => {
@@ -132,14 +131,14 @@ function VerDocente({ docente, onCerrar, onGuardado, onEliminado }) {
             <div className="docente-panel-grupos">
               <p className="docente-grupos-title">Grupos asignados:</p>
               {gruposDocente.length > 0 ? (
-                gruposDocente.map((g) => (
+                gruposDocente.map((grupo) => (
                   <button
-                    key={g.id}
+                    key={grupo.id}
                     type="button"
                     className="docente-grupo-btn"
-                    onClick={() => setGrupoViendoId(g.id)}
+                    onClick={() => setGrupoViendoId(grupo)}
                   >
-                    📚 {g.nombre}
+                    📚 {grupo.nombre}
                   </button>
                 ))
               ) : (
@@ -152,27 +151,6 @@ function VerDocente({ docente, onCerrar, onGuardado, onEliminado }) {
 
           {/* Mid: contraseña, fecha, estado */}
           <div className="docente-panel-mid">
-            <div className="docente-mid-item">
-              <span className="docente-mid-label">Contraseña</span>
-              <div className="docente-password-row">
-                <span className="docente-mid-value">
-                  {showPassword
-                    ? docente.password || "—"
-                    : docente.password
-                      ? "••••••••"
-                      : "—"}
-                </span>
-                {docente.password && (
-                  <button
-                    type="button"
-                    className="password-eye password-eye--inline"
-                    onClick={() => setShowPassword((p) => !p)}
-                  >
-                    {showPassword ? <IconEyeOff /> : <IconEye />}
-                  </button>
-                )}
-              </div>
-            </div>
             <div className="docente-mid-item">
               <span className="docente-mid-label">Ingresado desde el</span>
               <span className="docente-mid-value">
@@ -221,9 +199,10 @@ function VerDocente({ docente, onCerrar, onGuardado, onEliminado }) {
       </div>
 
       {grupoViendoId !== null && (
-        <VerGrupoAdmin
-          grupoId={grupoViendoId}
+        <VerGrupo
+          grupo={grupoViendoId}
           onCerrar={() => setGrupoViendoId(null)}
+          vista={true}
         />
       )}
     </>

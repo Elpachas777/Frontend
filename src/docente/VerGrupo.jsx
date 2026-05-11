@@ -4,7 +4,7 @@ import "../components/Tabla.css";
 import AgregarAlumnos from "./AgregarAlumno";
 import { listarAlumnos } from "../utils/grupos";
 
-function VerGrupo({ grupo, onCerrar, onGuardado }) {
+function VerGrupo({ grupo, onCerrar, onGuardado, vista = false }) {
   const [alumnos, setAlumnos] = useState([]);
   const [mostrar, setMostrar] = useState(null);
   const [eliminar, setEliminar] = useState(null);
@@ -16,7 +16,6 @@ function VerGrupo({ grupo, onCerrar, onGuardado }) {
 
   useEffect(() => {
     cargar();
-    onGuardado();
   }, [cargar]);
 
   return (
@@ -79,22 +78,24 @@ function VerGrupo({ grupo, onCerrar, onGuardado }) {
             </table>
           </div>
 
-          <div className="modal-actions" style={{ marginTop: "20px" }}>
-            <button
-              type="button"
-              className="modal-btn-save"
-              onClick={() => setMostrar(true)}
-            >
-              Agregar Alumnos
-            </button>
-            <button
-              type="button"
-              className="modal-btn-delete"
-              onClick={() => setEliminar(true)}
-            >
-              Eliminar Alumnos
-            </button>
-          </div>
+          {!vista && (
+            <div className="modal-actions" style={{ marginTop: "20px" }}>
+              <button
+                type="button"
+                className="modal-btn-save"
+                onClick={() => setMostrar(true)}
+              >
+                Agregar Alumnos
+              </button>
+              <button
+                type="button"
+                className="modal-btn-delete"
+                onClick={() => setEliminar(true)}
+              >
+                Eliminar Alumnos
+              </button>
+            </div>
+          )}
         </div>
       </div>
 
@@ -103,7 +104,10 @@ function VerGrupo({ grupo, onCerrar, onGuardado }) {
           grupoId={grupo.id}
           grupoNombre={grupo.nombre}
           onCerrar={() => setMostrar(null)}
-          onGuardado={() => cargar()}
+          onGuardado={() => {
+            cargar();
+            onGuardado();
+          }}
         />
       )}
 
@@ -112,8 +116,11 @@ function VerGrupo({ grupo, onCerrar, onGuardado }) {
           grupoId={grupo.id}
           grupoNombre={grupo.nombre}
           onCerrar={() => setEliminar(null)}
-          onGuardado={() => cargar()}
-          guardar = {false}
+          onGuardado={() => {
+            cargar();
+            onGuardado();
+          }}
+          guardar={false}
         />
       )}
     </>
