@@ -205,8 +205,18 @@ function generarTensor(canvas) {
 
 export function predecir(modelo, tensor) {
   return tf.tidy(() => {
-    const resultados = modelo.predict(tensor).dataSync();
-    var mayorIndice = resultados.indexOf(Math.max.apply(null, resultados));
-    return String.fromCharCode(97 + mayorIndice);
+    const prediccion = modelo.predict(tensor);
+    const probabilidades = Array.from(prediccion.dataSync());
+
+    const mayorIndice = probabilidades.indexOf(Math.max(...probabilidades));
+
+    const letra = String.fromCharCode(97 + mayorIndice);
+    const porcentaje = probabilidades[mayorIndice] * 100;
+
+
+    return {
+      letra,
+      porcentaje,
+    };
   });
 }
