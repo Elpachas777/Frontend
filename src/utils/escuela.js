@@ -9,6 +9,8 @@ function validar(formData) {
   if (!formData.nombre) e.nombre = "El nombre es obligatorio.";
   if (!formData.ubicacion) {
     e.ubicacion = "La URL de Google Maps es obligatoria.";
+  } else if (!URL_REGEX.test(formData.ubicacion)) {
+    e.ubicacion = "La URL debe empezar con https://";
   }
   if (!formData.director) e.director = "El director a cargo es obligatorio.";
   if (!formData.contacto) {
