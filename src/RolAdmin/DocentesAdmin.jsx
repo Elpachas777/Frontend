@@ -142,8 +142,6 @@ function DocentesAdmin() {
           <tbody>
             {docentesFiltrados.length > 0 ? (
               docentesFiltrados.map((docente) => {
-                // Compatibilidad: si por algún motivo no llega 'estado',
-                // lo derivamos del booleano 'habilitado'.
                 const estado =
                   docente.estado ||
                   (docente.habilitado ? "Verificado" : "Pendiente");
@@ -155,9 +153,15 @@ function DocentesAdmin() {
                     <td>
                       {(() => {
                         const src = docente.foto || getDocFoto(docente.correo);
-                        return src
-                          ? <img src={src} alt={docente.nombre} className="escuela-logo-thumb" />
-                          : <span className="tabla-sin-foto">Sin foto</span>;
+                        return src ? (
+                          <img
+                            src={src}
+                            alt={docente.nombre}
+                            className="escuela-logo-thumb"
+                          />
+                        ) : (
+                          <span className="tabla-sin-foto">Sin foto</span>
+                        );
                       })()}
                     </td>
                     <td>{docente.nombre}</td>

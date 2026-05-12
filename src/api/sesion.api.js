@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
-import Swal from "sweetalert2";
 import axios from "../utils/axios.js";
+import mensaje from "../utils/mensajes.js";
 
 const mensajeError = (error, mensajeDefault) => {
   return (
@@ -25,30 +25,8 @@ export function useIniciarSesion({ formData, setAutentificado, setMensaje }) {
         navigate("/inicio");
       }
     } catch (error) {
-      console.log("Error al iniciar sesión:", error);
-
-      // Caso especial: cuenta no verificada (403). Usamos Swal con un
-      // mensaje más prominente porque es algo que el usuario debe atender.
-      if (error?.response?.status === 403) {
-        const datos = error.response.data || {};
-        await Swal.fire({
-          icon: "warning",
-          title: "Cuenta no verificada",
-          text:
-            datos.mensaje ||
-            "Tu cuenta aún no ha sido verificada. Habla con tu técnico para habilitarla.",
-          confirmButtonText: "Entendido",
-          confirmButtonColor: "#7bc043",
-        });
-        return;
-      }
-
-      setMensaje(
-        mensajeError(
-          error,
-          "No se pudo conectar con el backend. Contacta a tu técnico que revise CORS o Railway.",
-        ),
-      );
+      const { data } = error.response;
+      await mensaje("Error al iniciar sesión", data);
     }
   };
 
@@ -66,10 +44,7 @@ export function useCorreoContraseña({ formData, setMensaje }) {
       setMensaje(respuesta.data);
     } catch (error) {
       setMensaje(
-        mensajeError(
-          error,
-          "No se pudo enviar el correo de recuperación.",
-        ),
+        mensajeError(error, "No se pudo enviar el correo de recuperación."),
       );
     }
   };
@@ -102,12 +77,7 @@ export function useRecuperarContraseña({ formData, setMensaje }, token) {
 
       setMensaje(respuesta.data);
     } catch (error) {
-      setMensaje(
-        mensajeError(
-          error,
-          "No se pudo recuperar la contraseña.",
-        ),
-      );
+      setMensaje(mensajeError(error, "No se pudo recuperar la contraseña."));
     }
   };
 

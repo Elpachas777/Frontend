@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import Swal from "sweetalert2";
 import {
   Bar,
   BarChart,
@@ -10,8 +9,9 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
+import Swal from "sweetalert2";
 import * as respuestaApi from "../api/respuesta.api";
-import { generarReporteAlumno } from "./pdfReporteAlumno";
+import { generarReporteAlumno } from "../utils/Pdfreportealumno";
 import "./VerAlumnoDetalle.css";
 
 function colorPorPuntaje(p) {

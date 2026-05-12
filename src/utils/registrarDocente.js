@@ -1,8 +1,9 @@
 import * as api from "../api/docente.api";
-import mensaje from "./mensajes";
 import { saveDocFoto } from "./logoCache";
+import mensaje from "./mensajes";
 
-const PASSWORD_REGEX = /^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&_#\-])[A-Za-z\d@$!%*?&_#\-]{8,}$/;
+const PASSWORD_REGEX =
+  /^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&_#\-])[A-Za-z\d@$!%*?&_#\-]{8,}$/;
 
 function validar(formData) {
   const e = {};
@@ -13,7 +14,8 @@ function validar(formData) {
   if (!formData.password) {
     e.password = "La contraseña es obligatoria.";
   } else if (!PASSWORD_REGEX.test(formData.password)) {
-    e.password = "Mínimo 8 caracteres, una mayúscula, un número y un carácter especial (@$!%*?&_#-).";
+    e.password =
+      "Mínimo 8 caracteres, una mayúscula, un número y un carácter especial (@$!%*?&_#-).";
   }
   return e;
 }
@@ -41,7 +43,7 @@ function registrar({ formData, foto, setErrores, onGuardado }) {
       await mensaje("Docente creado", respuesta);
       onGuardado();
     } catch (error) {
-      mensaje("Error", error.response.data);
+      mensaje("Error al registrar el docente", error.response.data);
     }
   };
 

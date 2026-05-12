@@ -1,4 +1,5 @@
 import { agregarAlumno, editarGrupo } from "../api/grupo.api";
+import mensaje from "./mensajes";
 
 export function actualizar({ id }, { formData, setMensaje, onGuardado }) {
   const handleSubmit = async (event) => {
@@ -6,10 +7,11 @@ export function actualizar({ id }, { formData, setMensaje, onGuardado }) {
 
     try {
       const respuesta = await editarGrupo(id, formData);
-      setMensaje(respuesta);
+      await mensaje("Grupo editado con exito", respuesta);
       onGuardado();
     } catch (error) {
-      setMensaje(error.response.data);
+      const { data } = error.response;
+      await mensaje("Error al editar el grupo", data);
     }
   };
 

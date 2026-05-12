@@ -1,5 +1,5 @@
-import Swal from "sweetalert2";
 import * as api from "../api/alumno.api";
+import mensaje from "./mensajes";
 
 function validar(formData) {
   const e = {};
@@ -19,23 +19,12 @@ function crear({ formData, setErrores, onGuardado }) {
     }
 
     try {
-      await api.crear(formData);
-      await Swal.fire({
-        title: "¡Alumno creado!",
-        text: "El alumno fue registrado correctamente.",
-        icon: "success",
-        timer: 1800,
-        showConfirmButton: false,
-        confirmButtonColor: "#7bc043",
-      });
+      const respuesta = await api.crear(formData);
+      await mensaje("Alumno creado", respuesta);
       onGuardado();
     } catch (error) {
-      Swal.fire({
-        title: "Error",
-        text: error?.response?.data?.mensaje ?? "No se pudo crear el alumno.",
-        icon: "error",
-        confirmButtonColor: "#7bc043",
-      });
+      const { data } = error.response;
+      await mensaje("Error al registrar al alumno", data);
     }
   };
 

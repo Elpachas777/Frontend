@@ -1,4 +1,5 @@
 import * as api from "../api/grupo.api";
+import mensaje from "./mensajes";
 
 export async function listar() {
   try {
@@ -11,7 +12,7 @@ export async function listar() {
 
 export async function agregar(
   { grupoId, grupoNombre, alumnosSelect },
-  { setErrores, onGuardado },
+  { onGuardado },
 ) {
   try {
     const data = {
@@ -21,11 +22,8 @@ export async function agregar(
 
     const respuesta = await api.agregar(grupoId, data);
 
-    if (onGuardado) {
-      await onGuardado();
-    }
-
-    return respuesta;
+    await mensaje("Alumnos agregados con exito", respuesta);
+    onGuardado();
   } catch (error) {
     console.log(error?.response?.data || error.message);
 
@@ -37,26 +35,30 @@ export async function agregar(
   }
 }
 
-export async function eliminarAlumno(id, { alumnosSelect, setErrores, onGuardado }) {
+export async function eliminarAlumno(
+  id,
+  { alumnosSelect, setErrores, onGuardado },
+) {
   try {
     const data = alumnosSelect.map((alumno) => ({
-      id_ingreso: alumno.id
-    }))
+      id_ingreso: alumno.id,
+    }));
 
-    await api.eliminarAlumno(id, data)
-    onGuardado()
+    const respuesta = await api.eliminarAlumno(id, data);
+    await mensaje("Alumno eliminado del grupo con exito", respuesta);
+    onGuardado();
   } catch (error) {
-    console.log(error.response.data)
+    const { data } = error.response;
+    await mensaje("Error al eliminar al alumno del grupo", data);
   }
-
 }
 
 export async function listarAlumnos({ id }) {
   try {
-    const lista = await api.listarAlumnos(id)
-    return lista
+    const lista = await api.listarAlumnos(id);
+    return lista;
   } catch (error) {
-    console.log(error.response.data)
-    return []
+    console.log(error.response.data);
+    return [];
   }
 }

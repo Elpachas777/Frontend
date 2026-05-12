@@ -1,4 +1,5 @@
 import * as api from "../api/ejercicio.api";
+import mensaje from "./mensajes";
 
 export function crearCuento(silaba, cuento) {
   let ejercicio = cuento;
@@ -12,25 +13,17 @@ export function crearCuento(silaba, cuento) {
   return ejercicio;
 }
 
-export function crear({ formData, setErrores, setMensaje, onGuardado }) {
+export function crear({ formData, setErrores, onGuardado }) {
   const handleSubmit = async (event) => {
     event.preventDefault();
 
     try {
       const res = await api.guardarEjercicio(formData);
-
-      setMensaje(res);
-
-      if (onGuardado) {
-        await onGuardado();
-      }
+      await mensaje("Ejercicio creado con exito", res);
+      onGuardado();
     } catch (error) {
-      setMensaje(
-        error?.response?.data || {
-          tipo: "error",
-          mensaje: "No se pudo crear el ejercicio",
-        },
-      );
+      const { data } = error.response;
+      await mensaje("Error al crear el ejercicio", data);
     }
   };
 
@@ -72,19 +65,11 @@ export function actualizar(
       };
 
       const actualizado = await api.actualizar(id_ejercicio, dataActualizar);
-
-      setMensaje(actualizado);
-
-      if (onGuardado) {
-        await onGuardado();
-      }
+      await mensaje("Ejercicio editado con exito", actualizado);
+      onGuardado();
     } catch (error) {
-      setMensaje(
-        error?.response?.data || {
-          tipo: "error",
-          mensaje: "No se pudo actualizar el ejercicio",
-        },
-      );
+      const { data } = error.response;
+      await mensaje("Error al editar el ejercicio", data);
     }
   };
 

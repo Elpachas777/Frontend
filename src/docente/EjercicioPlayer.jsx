@@ -1,10 +1,10 @@
 import * as tf from "@tensorflow/tfjs";
 import { useEffect, useRef, useState } from "react";
-import Canvas from "../components/Canvas";
-import "./EjercicioPlayer.css";
-import { dividirCanvas, predecir } from "../utils/modelo";
-import mensaje from "../utils/mensajes";
 import * as respuestaApi from "../api/respuesta.api";
+import Canvas from "../components/Canvas";
+import mensaje from "../utils/mensajes";
+import { dividirCanvas, predecir } from "../utils/modelo";
+import "./EjercicioPlayer.css";
 
 function EjercicioPlayer({ ejercicio, idIngreso, onCerrar }) {
   const canvaRef = useRef([]);
@@ -87,7 +87,9 @@ function EjercicioPlayer({ ejercicio, idIngreso, onCerrar }) {
     }
 
     if (!canvasTieneTrazo(canvas)) {
-      throw new Error(`Dibuja la sílaba ${silaba.toUpperCase()} antes de avanzar.`);
+      throw new Error(
+        `Dibuja la sílaba ${silaba.toUpperCase()} antes de avanzar.`,
+      );
     }
 
     const letras = dividirCanvas(canvas);
@@ -113,16 +115,19 @@ function EjercicioPlayer({ ejercicio, idIngreso, onCerrar }) {
     };
   };
 
-  const handlePredecir = (canvas, silaba, indiceSilaba) => {
+  const handlePredecir = async (canvas, silaba, indiceSilaba) => {
     try {
       const resultado = predecirSilaba(canvas, silaba, indiceSilaba);
 
-      mensaje(`Resultado: ${resultado.texto} - ${resultado.porcentaje.toFixed(2)}%`, {
-        tipo: "info",
-        mensaje: "Sigue así",
-      });
+      await mensaje(
+        `Resultado: ${resultado.texto} - ${resultado.porcentaje.toFixed(2)}%`,
+        {
+          tipo: "info",
+          mensaje: "Sigue así",
+        },
+      );
     } catch (error) {
-      mensaje("No se pudo predecir", {
+      await mensaje("No se pudo predecir", {
         tipo: "error",
         mensaje: error.message || "Intenta de nuevo.",
       });
@@ -137,7 +142,11 @@ function EjercicioPlayer({ ejercicio, idIngreso, onCerrar }) {
       const yaExiste = intentoRef.current.some((r) => r.clave === clave);
 
       if (!yaExiste) {
-        predecirSilaba(canvaRef.current[indiceSilaba]?.getImage(), silaba, indiceSilaba);
+        predecirSilaba(
+          canvaRef.current[indiceSilaba]?.getImage(),
+          silaba,
+          indiceSilaba,
+        );
       }
     });
   };
@@ -185,7 +194,8 @@ function EjercicioPlayer({ ejercicio, idIngreso, onCerrar }) {
     } catch (error) {
       mensaje("No se puede avanzar", {
         tipo: "error",
-        mensaje: error.message || "Revisa que todas las sílabas estén dibujadas.",
+        mensaje:
+          error.message || "Revisa que todas las sílabas estén dibujadas.",
       });
     } finally {
       setGuardando(false);
@@ -306,10 +316,10 @@ function EjercicioPlayer({ ejercicio, idIngreso, onCerrar }) {
             {!modelo
               ? "Cargando modelo..."
               : guardando
-              ? "Procesando..."
-              : indice + 1 >= total
-              ? "Finalizar"
-              : "Siguiente →"}
+                ? "Procesando..."
+                : indice + 1 >= total
+                  ? "Finalizar"
+                  : "Siguiente →"}
           </button>
         </div>
       </div>

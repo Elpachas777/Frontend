@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import Mensaje from "../components/Mensaje";
 import { USUARIOS } from "../enums/tipoUsuarios";
 import useFormData from "../hooks/useFormData";
 import "../RolAdmin/RolAdmin.css";
@@ -26,7 +25,7 @@ function EditarGrupo({ grupo, onCerrar, onGuardado }) {
   const { handleSubmit } = actualizar(grupo, {
     formData,
     setMensaje,
-    onGuardado
+    onGuardado,
   });
 
   return (
@@ -38,7 +37,6 @@ function EditarGrupo({ grupo, onCerrar, onGuardado }) {
             ✕
           </button>
         </div>
-        {mensaje && <Mensaje tipo={mensaje.tipo} mensaje={mensaje.mensaje} />}
         <form className="modal-form" onSubmit={handleSubmit}>
           <div className="modal-field">
             <label htmlFor="nombre">Nombre del grupo</label>
