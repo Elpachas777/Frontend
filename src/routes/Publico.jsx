@@ -1,5 +1,6 @@
 import { Navigate, Route, Routes } from "react-router-dom";
 import Registro from "../admin/Registro";
+import EjercicioAlumno from "../alumno/EjercicioAlumno";
 import Arrastrar from "../ejercicios/Arrastrar";
 import LandingPage from "../LandingPage";
 import Login from "../sesion/Login";
@@ -38,6 +39,7 @@ function Publico({ setAutentificado }) {
           <Route path="/Recuperar" element={<Recuperar />} />
           <Route path="/recuperar" element={<Recuperar />} />
           <Route path="/Agarrar" element={<Arrastrar />} />
+          <Route path="/alumno/:idAlumno" element={<EjercicioAlumno />} />
           <Route path="*" element={<Navigate to="/" />} />
         </Routes>
       </main>

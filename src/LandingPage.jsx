@@ -1,11 +1,20 @@
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./LandingPage.css";
 
 function LandingPage() {
   const navigate = useNavigate();
+  const [idAlumno, setIdAlumno] = useState("");
 
-  const handleClick = () => {
+  const handleDocente = () => {
     navigate("/Login", { replace: true });
+  };
+
+  const handleComenzar = (e) => {
+    e.preventDefault();
+    const id = idAlumno.trim();
+    if (!id) return;
+    navigate(`/alumno/${id}`);
   };
 
   return (
@@ -26,9 +35,8 @@ function LandingPage() {
       <div className="landing-decor" />
       <div className="landing-decor small" />
 
-      {/* Topbar con btn esquina superior derecha */}
       <div className="landing-topbar">
-        <button className="landing-button" onClick={handleClick}>
+        <button className="landing-button" onClick={handleDocente}>
           ¿Eres docente?
         </button>
       </div>
@@ -42,7 +50,7 @@ function LandingPage() {
             Para comenzar, ingresa el ID del estudiante que realizará el ejercicio.
           </p>
 
-          <div className="landing-card">
+          <form className="landing-card" onSubmit={handleComenzar}>
             <label htmlFor="id">ID de clase</label>
             <div className="landing-input-row">
               <input
@@ -50,9 +58,15 @@ function LandingPage() {
                 type="text"
                 id="id"
                 placeholder="CR3CV4-09"
+                value={idAlumno}
+                onChange={(e) => setIdAlumno(e.target.value)}
+                autoComplete="off"
               />
+              <button type="submit" className="landing-button landing-submit-btn">
+                Comenzar
+              </button>
             </div>
-          </div>
+          </form>
         </div>
       </div>
     </div>
