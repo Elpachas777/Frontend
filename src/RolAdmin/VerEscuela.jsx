@@ -67,7 +67,7 @@ function VerEscuela({ escuela, onCerrar }) {
                 const src = escuela.logo || getLogo(escuela.nombre);
                 return src
                   ? <img src={src} alt={escuela.nombre} />
-                  : <span className="escuela-logo-placeholder">🏫</span>;
+                  : <span className="tabla-sin-foto">Sin logo</span>;
               })()}
             </div>
 

@@ -22,7 +22,7 @@ function VerGrupo({ grupo, onCerrar, onGuardado, vista = false }) {
     <>
       <div className="modal-overlay modal-overlay--top">
         <div
-          className="modal-card modal-card--wide"
+          className="modal-card modal-card--grupo"
           onClick={(e) => e.stopPropagation()}
         >
           <div className="modal-header">

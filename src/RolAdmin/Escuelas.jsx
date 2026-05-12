@@ -111,10 +111,10 @@ function Escuelas() {
         <table className="tabla">
           <thead>
             <tr>
-              <th>id</th>
-              <th>logo</th>
-              <th>nombre</th>
-              <th>director</th>
+              <th>ID</th>
+              <th>Logo</th>
+              <th>Nombre</th>
+              <th>Director</th>
               <th>Acciones</th>
             </tr>
           </thead>
@@ -136,7 +136,7 @@ function Escuelas() {
                         const src = escuela.logo || getLogo(escuela.nombre);
                         return src
                           ? <img src={src} alt={escuela.nombre} className="escuela-logo-thumb" />
-                          : <span className="escuela-logo-empty">🏫</span>;
+                          : <span className="tabla-sin-foto">Sin logo</span>;
                       })()}
                     </td>
                     <td>{escuela.nombre}</td>
@@ -202,6 +202,7 @@ function Escuelas() {
         <CrearEscuela
           onCerrar={() => setMostrarCrear(false)}
           onGuardado={() => {
+            setMostrarCrear(false);
             cargar();
           }}
         />
@@ -215,6 +216,8 @@ function Escuelas() {
             setSeleccionada(null);
           }}
           onGuardado={() => {
+            setMostrarEditar(false);
+            setSeleccionada(null);
             cargar();
           }}
         />

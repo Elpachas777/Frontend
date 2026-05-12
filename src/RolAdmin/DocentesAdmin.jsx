@@ -84,11 +84,11 @@ function DocentesAdmin() {
         <table className="tabla">
           <thead>
             <tr>
-              <th>id</th>
-              <th>foto</th>
-              <th>nombre</th>
-              <th>escuela</th>
-              <th>correo</th>
+              <th>ID</th>
+              <th>Foto</th>
+              <th>Nombre</th>
+              <th>Escuela</th>
+              <th>Correo</th>
               <th>Acciones</th>
             </tr>
           </thead>
@@ -185,6 +185,8 @@ function DocentesAdmin() {
             setSeleccionado(null);
           }}
           onGuardado={() => {
+            setMostrarEditar(false);
+            setSeleccionado(null);
             cargar();
           }}
         />

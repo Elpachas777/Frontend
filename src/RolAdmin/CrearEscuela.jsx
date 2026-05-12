@@ -1,5 +1,4 @@
 import { useState } from "react";
-import Mensaje from "../components/Mensaje";
 import { USUARIOS } from "../enums/tipoUsuarios";
 import useFormData from "../hooks/useFormData";
 import { registrarEscuela } from "../utils/escuela";
@@ -7,13 +6,11 @@ import "./RolAdmin.css";
 
 function CrearEscuela({ onCerrar, onGuardado }) {
   const [errores, setErrores] = useState({});
-  const [mensaje, setMensaje] = useState(null);
 
   const { formData, handleChange } = useFormData(USUARIOS.ESCUELA);
   const { handleSubmit } = registrarEscuela({
     formData,
     setErrores,
-    setMensaje,
     onGuardado,
   });
 
@@ -29,7 +26,6 @@ function CrearEscuela({ onCerrar, onGuardado }) {
             ✕
           </button>
         </div>
-        {mensaje && <Mensaje tipo={mensaje.tipo} mensaje={mensaje.mensaje} />}
         <form className="modal-form" onSubmit={handleSubmit}>
           <div className="modal-field">
             <label>Nombre *</label>

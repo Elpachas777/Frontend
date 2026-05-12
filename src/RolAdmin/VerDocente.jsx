@@ -1,26 +1,17 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Swal from "sweetalert2";
 import "sweetalert2/dist/sweetalert2.min.css";
-import { eliminarDocente, verDocente as fetchDocente } from "../api/docente.api";
+import { eliminarDocente } from "../api/docente.api";
 import "../components/Tabla.css";
 import { comprobarContraseña } from "../utils/admin";
 import { modificarHabilitado } from "../utils/docentes";
 import { getDocFoto } from "../utils/logoCache";
-import { IconEye, IconEyeOff } from "./EyeIcons";
 import "./RolAdmin.css";
 import VerGrupo from "../docente/VerGrupo";
 
 function VerDocente({ docente, onCerrar, onGuardado, onEliminado }) {
   const [habilitado, setHabilitado] = useState(docente.habilitado);
   const [grupoViendoId, setGrupoViendoId] = useState(null);
-  const [showPassword, setShowPassword] = useState(false);
-  const [password, setPassword] = useState(null);
-
-  useEffect(() => {
-    fetchDocente(docente.id)
-      .then((d) => setPassword(d?.contraseña ?? d?.password ?? null))
-      .catch(() => {});
-  }, [docente.id]);
   const gruposDocente = docente.grupos ?? [];
 
   const handleToggleHabilitado = async () => {
@@ -177,24 +168,6 @@ function VerDocente({ docente, onCerrar, onGuardado, onEliminado }) {
               >
                 {habilitado ? "● Activo" : "● Inactivo"}
               </span>
-            </div>
-            <div className="docente-mid-item">
-              <span className="docente-mid-label">Contraseña</span>
-              <div className="docente-password-wrap">
-                <span className="docente-mid-value docente-password-value">
-                  {showPassword
-                    ? (password ?? "No disponible")
-                    : "••••••••"}
-                </span>
-                <button
-                  type="button"
-                  className="password-eye docente-password-eye"
-                  onClick={() => setShowPassword((p) => !p)}
-                  aria-label={showPassword ? "Ocultar" : "Mostrar"}
-                >
-                  {showPassword ? <IconEyeOff /> : <IconEye />}
-                </button>
-              </div>
             </div>
           </div>
 

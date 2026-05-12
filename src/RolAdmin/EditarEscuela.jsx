@@ -1,30 +1,20 @@
 import { useEffect, useState } from "react";
-import Mensaje from "../components/Mensaje";
 import { USUARIOS } from "../enums/tipoUsuarios";
 import useFormData from "../hooks/useFormData";
 import { actualizar } from "../utils/escuela";
 import "./RolAdmin.css";
 
-const PHONE_REGEX = /^\+?[\d\s\-\(\)]{7,20}$/;
-const GMAPS_REGEX =
-  /^https?:\/\/(www\.)?(google\.[a-z.]+\/maps|maps\.google\.[a-z.]+|goo\.gl\/maps|maps\.app\.goo\.gl)/i;
-
 function EditarEscuela({ escuela, onCerrar, onGuardado }) {
   const [errores, setErrores] = useState({});
-  const [mensaje, setMensaje] = useState(null);
 
   const { formData, setFormData, handleChange } = useFormData(USUARIOS.ESCUELA);
 
   useEffect(() => {
     setFormData((prev) => {
       const nuevo = { ...prev };
-
       Object.keys(prev).forEach((key) => {
-        if (key in escuela) {
-          nuevo[key] = escuela[key];
-        }
+        if (key in escuela) nuevo[key] = escuela[key];
       });
-
       return nuevo;
     });
   }, []);
@@ -32,7 +22,6 @@ function EditarEscuela({ escuela, onCerrar, onGuardado }) {
   const { handleSubmit } = actualizar(escuela, {
     formData,
     setErrores,
-    setMensaje,
     onGuardado,
   });
 
@@ -48,7 +37,6 @@ function EditarEscuela({ escuela, onCerrar, onGuardado }) {
             ✕
           </button>
         </div>
-        {mensaje && <Mensaje tipo={mensaje.tipo} mensaje={mensaje.mensaje} />}
         <form className="modal-form" onSubmit={handleSubmit}>
           <div className="modal-field">
             <label>Nombre *</label>

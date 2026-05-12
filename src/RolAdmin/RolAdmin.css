@@ -64,6 +64,11 @@
   max-width: 600px;
 }
 
+.modal-card--grupo {
+  max-width: 860px;
+  width: 95vw;
+}
+
 .modal-header {
   display: flex;
   align-items: center;
