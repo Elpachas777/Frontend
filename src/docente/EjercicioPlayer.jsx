@@ -1,12 +1,26 @@
 import * as tf from "@tensorflow/tfjs";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import Canvas from "../components/Canvas";
 import "./EjercicioPlayer.css";
-import { dividirCanvas, predecir } from "../utils/modelo";
+import { dividirCanvasPorCantidad, predecir } from "../utils/modelo";
 import mensaje from "../utils/mensajes";
 import * as respuestaApi from "../api/respuesta.api";
 
-function EjercicioPlayer({ ejercicio, idIngreso, onCerrar }) {
+function limpiarSilaba(valor) {
+  return String(valor || "")
+    .trim()
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[^a-z]/g, "");
+}
+
+function EjercicioPlayer({
+  ejercicio,
+  idIngreso,
+  onCerrar,
+  soloVistaPrevia = false,
+}) {
   const canvaRef = useRef([]);
   const intentoRef = useRef([]);
 
@@ -16,10 +30,24 @@ function EjercicioPlayer({ ejercicio, idIngreso, onCerrar }) {
   const [guardando, setGuardando] = useState(false);
   const [resumen, setResumen] = useState(null);
 
-  const palabras = ejercicio?.contenido?.palabras || [];
-  const total = palabras.length;
-  const actual = palabras[indice];
-  const progreso = total > 0 ? (indice / total) * 100 : 0;
+  const contenido = ejercicio?.contenido || {};
+  const esCuento = Array.isArray(contenido.segmentos);
+
+  const palabras = contenido?.palabras || [];
+  const total = esCuento ? 1 : palabras.length;
+  const actual = esCuento ? null : palabras[indice];
+  const progreso = esCuento ? 100 : total > 0 ? (indice / total) * 100 : 0;
+
+  const huecosCuento = useMemo(() => {
+    if (!esCuento) return [];
+
+    return contenido.segmentos
+      .filter((segmento) => segmento.tipo === "silaba")
+      .map((segmento, index) => ({
+        ...segmento,
+        index,
+      }));
+  }, [esCuento, contenido.segmentos]);
 
   useEffect(() => {
     const cargarModelo = async () => {
@@ -28,6 +56,7 @@ function EjercicioPlayer({ ejercicio, idIngreso, onCerrar }) {
         setModelo(modeloCargado);
       } catch (error) {
         console.error("Error al cargar modelo:", error);
+
         mensaje("No se pudo cargar el modelo", {
           tipo: "error",
           mensaje: "Recarga la página e intenta de nuevo.",
@@ -40,10 +69,10 @@ function EjercicioPlayer({ ejercicio, idIngreso, onCerrar }) {
 
   useEffect(() => {
     canvaRef.current = [];
-  }, [indice]);
+  }, [indice, ejercicio?.id_ejercicio]);
 
-  const crearClave = (indicePalabra, indiceSilaba, silaba) => {
-    return `${indicePalabra}-${indiceSilaba}-${silaba}`;
+  const crearClave = (origen, indiceSilaba, silaba) => {
+    return `${origen}-${indiceSilaba}-${limpiarSilaba(silaba)}`;
   };
 
   const canvasTieneTrazo = (canvas) => {
@@ -61,13 +90,14 @@ function EjercicioPlayer({ ejercicio, idIngreso, onCerrar }) {
     return false;
   };
 
-  const guardarPrediccion = ({ clave, silaba, puntaje }) => {
+  const guardarPrediccion = ({ clave, silaba, puntaje, prediccion }) => {
     const index = intentoRef.current.findIndex((r) => r.clave === clave);
 
     const nueva = {
       clave,
       silaba,
       puntaje,
+      prediccion,
     };
 
     if (index >= 0) {
@@ -77,9 +107,15 @@ function EjercicioPlayer({ ejercicio, idIngreso, onCerrar }) {
     }
   };
 
-  const predecirSilaba = (canvas, silaba, indiceSilaba) => {
+  const predecirSilaba = ({ canvas, silaba, clave }) => {
     if (!modelo) {
       throw new Error("El modelo aún está cargando.");
+    }
+
+    const silabaLimpia = limpiarSilaba(silaba);
+
+    if (!silabaLimpia) {
+      throw new Error("La sílaba esperada está vacía.");
     }
 
     if (!canvas) {
@@ -87,40 +123,60 @@ function EjercicioPlayer({ ejercicio, idIngreso, onCerrar }) {
     }
 
     if (!canvasTieneTrazo(canvas)) {
-      throw new Error(`Dibuja la sílaba ${silaba.toUpperCase()} antes de avanzar.`);
+      throw new Error(
+        `Dibuja la sílaba ${silaba.toUpperCase()} antes de avanzar.`,
+      );
     }
 
-    const letras = dividirCanvas(canvas);
-    const resultadoIzq = predecir(modelo, letras[0]);
-    const resultadoDer = predecir(modelo, letras[1]);
+    const tensores = dividirCanvasPorCantidad(canvas, silabaLimpia.length);
 
-    const porcentajeTotal =
-      (Number(resultadoIzq.porcentaje || 0) +
-        Number(resultadoDer.porcentaje || 0)) /
-      2;
+    if (!tensores.length) {
+      throw new Error(`No se pudo leer el trazo de ${silaba.toUpperCase()}.`);
+    }
 
-    const clave = crearClave(indice, indiceSilaba, silaba);
+    const predicciones = tensores.map((tensor) => predecir(modelo, tensor));
+    const textoPredicho = predicciones.map((p) => p.letra).join("");
+
+    const letrasEsperadas = silabaLimpia.split("");
+
+    const puntaje =
+      letrasEsperadas.reduce((acc, letra, index) => {
+        const prediccion = predicciones[index];
+
+        if (!prediccion) return acc;
+
+        return (
+          acc +
+          (prediccion.letra === letra ? Number(prediccion.porcentaje || 0) : 0)
+        );
+      }, 0) / letrasEsperadas.length;
 
     guardarPrediccion({
       clave,
-      silaba,
-      puntaje: porcentajeTotal,
+      silaba: silabaLimpia,
+      puntaje,
+      prediccion: textoPredicho,
     });
 
     return {
-      texto: `${resultadoIzq.letra}${resultadoDer.letra}`,
-      porcentaje: porcentajeTotal,
+      texto: textoPredicho,
+      porcentaje: puntaje,
     };
   };
 
-  const handlePredecir = (canvas, silaba, indiceSilaba) => {
+  const handlePredecir = ({ canvas, silaba, clave }) => {
     try {
-      const resultado = predecirSilaba(canvas, silaba, indiceSilaba);
+      const resultado = predecirSilaba({ canvas, silaba, clave });
 
-      mensaje(`Resultado: ${resultado.texto} - ${resultado.porcentaje.toFixed(2)}%`, {
-        tipo: "info",
-        mensaje: "Sigue así",
-      });
+      mensaje(
+        `Resultado: ${resultado.texto} - similitud ${resultado.porcentaje.toFixed(
+          2,
+        )}%`,
+        {
+          tipo: "info",
+          mensaje: "Sigue así",
+        },
+      );
     } catch (error) {
       mensaje("No se pudo predecir", {
         tipo: "error",
@@ -129,31 +185,65 @@ function EjercicioPlayer({ ejercicio, idIngreso, onCerrar }) {
     }
   };
 
-  const predecirFaltantesActuales = () => {
+  const predecirFaltantesOracion = () => {
     const silabasActuales = actual?.silabas || [];
 
     silabasActuales.forEach((silaba, indiceSilaba) => {
-      const clave = crearClave(indice, indiceSilaba, silaba);
+      const clave = crearClave(`oracion-${indice}`, indiceSilaba, silaba);
       const yaExiste = intentoRef.current.some((r) => r.clave === clave);
 
       if (!yaExiste) {
-        predecirSilaba(canvaRef.current[indiceSilaba]?.getImage(), silaba, indiceSilaba);
+        predecirSilaba({
+          canvas: canvaRef.current[indiceSilaba]?.getImage(),
+          silaba,
+          clave,
+        });
+      }
+    });
+  };
+
+  const predecirFaltantesCuento = () => {
+    huecosCuento.forEach((hueco, indiceHueco) => {
+      const clave = crearClave("cuento", indiceHueco, hueco.silaba);
+      const yaExiste = intentoRef.current.some((r) => r.clave === clave);
+
+      if (!yaExiste) {
+        predecirSilaba({
+          canvas: canvaRef.current[indiceHueco]?.getImage(),
+          silaba: hueco.silaba,
+          clave,
+        });
       }
     });
   };
 
   const guardarIntento = async () => {
-    if (!idIngreso || !ejercicio?.id_ejercicio) {
-      throw new Error("Falta el ID del alumno o del ejercicio.");
-    }
-
     const respuestas = intentoRef.current.map((r) => ({
       silaba: r.silaba,
       puntaje: r.puntaje,
+      prediccion: r.prediccion,
     }));
 
     if (respuestas.length === 0) {
       throw new Error("No hay respuestas para guardar.");
+    }
+
+    if (soloVistaPrevia) {
+      const promedio =
+        respuestas.reduce((acc, item) => acc + Number(item.puntaje || 0), 0) /
+        respuestas.length;
+
+      setResumen({
+        promedio,
+        guardadas: respuestas.length,
+      });
+
+      setTerminado(true);
+      return;
+    }
+
+    if (!idIngreso || !ejercicio?.id_ejercicio) {
+      throw new Error("Falta el ID del alumno o del ejercicio.");
     }
 
     const res = await respuestaApi.registrarIntento({
@@ -174,8 +264,13 @@ function EjercicioPlayer({ ejercicio, idIngreso, onCerrar }) {
     try {
       setGuardando(true);
 
-      // Predice automáticamente lo que falte antes de avanzar.
-      predecirFaltantesActuales();
+      if (esCuento) {
+        predecirFaltantesCuento();
+        await guardarIntento();
+        return;
+      }
+
+      predecirFaltantesOracion();
 
       if (indice + 1 >= total) {
         await guardarIntento();
@@ -185,7 +280,8 @@ function EjercicioPlayer({ ejercicio, idIngreso, onCerrar }) {
     } catch (error) {
       mensaje("No se puede avanzar", {
         tipo: "error",
-        mensaje: error.message || "Revisa que todas las sílabas estén dibujadas.",
+        mensaje:
+          error.message || "Revisa que todas las sílabas estén dibujadas.",
       });
     } finally {
       setGuardando(false);
@@ -202,8 +298,9 @@ function EjercicioPlayer({ ejercicio, idIngreso, onCerrar }) {
       >
         <div className="ep-card ep-card--center">
           <p className="ep-empty-msg">
-            Este ejercicio no tiene palabras configuradas aún.
+            Este ejercicio no tiene sílabas configuradas aún.
           </p>
+
           <button className="ep-btn-secondary" onClick={onCerrar}>
             Cerrar
           </button>
@@ -217,6 +314,7 @@ function EjercicioPlayer({ ejercicio, idIngreso, onCerrar }) {
       <div className="ep-overlay">
         <div className="ep-card ep-card--center ep-card--done">
           <h2 className="ep-done-title">¡Muchas gracias por jugar!</h2>
+
           <p className="ep-done-sub">
             Has completado todas las sílabas del ejercicio.
           </p>
@@ -243,7 +341,7 @@ function EjercicioPlayer({ ejercicio, idIngreso, onCerrar }) {
         if (e.target === e.currentTarget) onCerrar();
       }}
     >
-      <div className="ep-card">
+      <div className={esCuento ? "ep-card ep-card--story" : "ep-card"}>
         <button className="ep-close" onClick={onCerrar} aria-label="Cerrar">
           ✕
         </button>
@@ -255,46 +353,120 @@ function EjercicioPlayer({ ejercicio, idIngreso, onCerrar }) {
               style={{ width: `${progreso}%` }}
             />
           </div>
+
           <span className="ep-progress-label">
-            {indice + 1} / {total}
+            {esCuento ? "Cuento" : `${indice + 1} / ${total}`}
           </span>
         </div>
 
         <p className="ep-sentence">{ejercicio.titulo}</p>
-        <p className="ep-sentence">{ejercicio.contenido.texto}</p>
-        <p className="ep-syllable-label">{actual.silabas.join(" - ")}</p>
 
-        <div className="ep-canvases">
-          {actual.silabas.map((sil, i) => (
-            <div key={`${indice}-${i}-${sil}`}>
-              <Canvas silaba={sil} ref={(cr) => (canvaRef.current[i] = cr)} />
+        {esCuento ? (
+          <div className="ep-story">
+            {contenido.segmentos.map((segmento, index) => {
+              if (segmento.tipo === "texto") {
+                return (
+                  <span className="ep-story-text" key={`texto-${index}`}>
+                    {segmento.texto}
+                  </span>
+                );
+              }
 
-              <div className="modal-actions">
-                <button
-                  type="button"
-                  className="modal-btn-save"
-                  disabled={!modelo || guardando}
-                  onClick={() =>
-                    handlePredecir(canvaRef.current[i]?.getImage(), sil, i)
-                  }
-                >
-                  Predecir
-                </button>
+              const indiceHueco = huecosCuento.findIndex(
+                (h) => h.id === segmento.id,
+              );
 
-                <button
-                  type="button"
-                  className="modal-btn-cancel"
-                  disabled={guardando}
-                  onClick={() => canvaRef.current[i]?.clear()}
-                >
-                  limpiar
-                </button>
-              </div>
+              const clave = crearClave("cuento", indiceHueco, segmento.silaba);
+
+              return (
+                <span className="ep-story-canvas" key={segmento.id}>
+                  <Canvas
+                    silaba={segmento.silaba}
+                    ref={(cr) => {
+                      canvaRef.current[indiceHueco] = cr;
+                    }}
+                  />
+
+                  <div className="modal-actions ep-story-actions">
+                    <button
+                      type="button"
+                      className="modal-btn-save"
+                      disabled={!modelo || guardando}
+                      onClick={() =>
+                        handlePredecir({
+                          canvas: canvaRef.current[indiceHueco]?.getImage(),
+                          silaba: segmento.silaba,
+                          clave,
+                        })
+                      }
+                    >
+                      Predecir
+                    </button>
+
+                    <button
+                      type="button"
+                      className="modal-btn-cancel"
+                      disabled={guardando}
+                      onClick={() => canvaRef.current[indiceHueco]?.clear()}
+                    >
+                      limpiar
+                    </button>
+                  </div>
+                </span>
+              );
+            })}
+          </div>
+        ) : (
+          <>
+            <p className="ep-sentence">{contenido.texto}</p>
+            <p className="ep-syllable-label">{actual.silabas.join(" - ")}</p>
+
+            <div className="ep-canvases">
+              {actual.silabas.map((sil, i) => {
+                const clave = crearClave(`oracion-${indice}`, i, sil);
+
+                return (
+                  <div key={`${indice}-${i}-${sil}`}>
+                    <Canvas
+                      silaba={sil}
+                      ref={(cr) => {
+                        canvaRef.current[i] = cr;
+                      }}
+                    />
+
+                    <div className="modal-actions">
+                      <button
+                        type="button"
+                        className="modal-btn-save"
+                        disabled={!modelo || guardando}
+                        onClick={() =>
+                          handlePredecir({
+                            canvas: canvaRef.current[i]?.getImage(),
+                            silaba: sil,
+                            clave,
+                          })
+                        }
+                      >
+                        Predecir
+                      </button>
+
+                      <button
+                        type="button"
+                        className="modal-btn-cancel"
+                        disabled={guardando}
+                        onClick={() => canvaRef.current[i]?.clear()}
+                      >
+                        limpiar
+                      </button>
+                    </div>
+                  </div>
+                );
+              })}
+
+              <span className="ep-arrow">→</span>
             </div>
-          ))}
-
-          <span className="ep-arrow">→</span>
-        </div>
+          </>
+        )}
 
         <div className="ep-actions">
           <button
@@ -306,10 +478,10 @@ function EjercicioPlayer({ ejercicio, idIngreso, onCerrar }) {
             {!modelo
               ? "Cargando modelo..."
               : guardando
-              ? "Procesando..."
-              : indice + 1 >= total
-              ? "Finalizar"
-              : "Siguiente →"}
+                ? "Procesando..."
+                : esCuento || indice + 1 >= total
+                  ? "Finalizar"
+                  : "Siguiente →"}
           </button>
         </div>
       </div>

@@ -235,3 +235,60 @@
     font-size: 1.3rem;
   }
 }
+
+.ep-card--story {
+  width: min(1050px, 100%);
+  align-items: stretch;
+}
+
+.ep-story {
+  width: 100%;
+  background: #fbfff8;
+  border: 1.5px solid #dbe9da;
+  border-radius: 22px;
+  padding: 26px;
+  line-height: 2.2;
+  font-size: 1.15rem;
+  color: #1e2e22;
+}
+
+.ep-story-text {
+  white-space: pre-wrap;
+}
+
+.ep-story-canvas {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  vertical-align: middle;
+  gap: 8px;
+  margin: 10px 12px;
+  padding: 12px;
+  border-radius: 18px;
+  background: #f6fff0;
+  border: 1.5px dashed #b5e68a;
+}
+
+.ep-story-canvas .canvas-visualizacion canvas {
+  width: 150px;
+  height: 150px;
+}
+
+.ep-story-actions {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+}
+
+@media (max-width: 700px) {
+  .ep-story {
+    padding: 18px;
+    font-size: 1rem;
+  }
+
+  .ep-story-canvas {
+    display: flex;
+    margin: 14px auto;
+    width: fit-content;
+  }
+}

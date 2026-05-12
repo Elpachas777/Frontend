@@ -180,6 +180,56 @@ export function dividirCanvas(canvas) {
   return [letraIzq, letraDer];
 }
 
+export function dividirCanvasPorCantidad(canvas, cantidad = 2) {
+  const total = Math.max(1, Number(cantidad || 1));
+  const ctx = canvas.getContext("2d");
+  const { width, height } = canvas;
+  const img = ctx.getImageData(0, 0, width, height).data;
+
+  const columnas = [];
+
+  for (let x = 0; x < width; x++) {
+    let pixel = false;
+
+    for (let y = 0; y < height; y++) {
+      const i = (y * width + x) * 4;
+
+      if (img[i] > 20 || img[i + 3] > 20) {
+        pixel = true;
+        break;
+      }
+    }
+
+    columnas.push(pixel);
+  }
+
+  const inicioReal = columnas.indexOf(true);
+  const finalReal = columnas.lastIndexOf(true);
+
+  if (inicioReal === -1 || finalReal === -1) {
+    return [];
+  }
+
+  const inicio = Math.max(0, inicioReal - 8);
+  const final = Math.min(width, finalReal + 8);
+  const anchoUtil = final - inicio;
+  const anchoSegmento = anchoUtil / total;
+
+  const tensores = [];
+
+  for (let i = 0; i < total; i++) {
+    const x = Math.round(inicio + i * anchoSegmento);
+    const siguienteX =
+      i === total - 1 ? final : Math.round(inicio + (i + 1) * anchoSegmento);
+
+    const ancho = Math.max(1, siguienteX - x);
+
+    tensores.push(procesar(canvas, x, ancho, height));
+  }
+
+  return tensores;
+}
+
 function procesar(canvas, x, width, height) {
   const tempCanvas = document.createElement("canvas");
   tempCanvas.width = width;
