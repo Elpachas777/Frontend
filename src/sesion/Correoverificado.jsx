@@ -39,5 +39,4 @@ function CorreoVerificado() {
     </div>
   );
 }
-
 export default CorreoVerificado;
