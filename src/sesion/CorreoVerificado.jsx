@@ -3,7 +3,6 @@ import "./CorreoVerificado.css";
 
 function CorreoVerificado() {
   const navigate = useNavigate();
-
   return (
     <div className="cv-page">
       <div className="cv-card">
