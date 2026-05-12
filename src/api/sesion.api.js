@@ -1,20 +1,37 @@
 import { useNavigate } from "react-router-dom";
 import axios from "../utils/axios.js";
 
+const mensajeError = (error, mensajeDefault) => {
+  return (
+    error?.response?.data || {
+      tipo: "error",
+      mensaje: mensajeDefault,
+    }
+  );
+};
+
 export function useIniciarSesion({ formData, setAutentificado, setMensaje }) {
   const navigate = useNavigate();
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+
     try {
       const respuesta = await axios.post("/iniciarSesion", formData);
 
-      if (respuesta) {
+      if (respuesta?.data?.ok) {
         setAutentificado(true);
         navigate("/inicio");
       }
     } catch (error) {
-      setMensaje(error.response.data);
+      console.log("Error al iniciar sesión:", error);
+
+      setMensaje(
+        mensajeError(
+          error,
+          "No se pudo conectar con el backend. Contacta a tu técnico que revise CORS o Railway.",
+        ),
+      );
     }
   };
 
@@ -26,11 +43,17 @@ export function useIniciarSesion({ formData, setAutentificado, setMensaje }) {
 export function useCorreoContraseña({ formData, setMensaje }) {
   const handleSubmit = async (event) => {
     event.preventDefault();
+
     try {
       const respuesta = await axios.post("/recuperar", formData);
       setMensaje(respuesta.data);
     } catch (error) {
-      setMensaje(error.response.data);
+      setMensaje(
+        mensajeError(
+          error,
+          "No se pudo enviar el correo de recuperación.",
+        ),
+      );
     }
   };
 
@@ -42,12 +65,16 @@ export function useCorreoContraseña({ formData, setMensaje }) {
 export function useRecuperarContraseña({ formData, setMensaje }, token) {
   const handleSubmit = async (event) => {
     event.preventDefault();
+
     try {
       const { password } = formData;
       const { confirmar } = formData;
 
       if (password !== confirmar) {
-        setMensaje({ tipo: "error", mensaje: "Las contraseñas no coinciden" });
+        setMensaje({
+          tipo: "error",
+          mensaje: "Las contraseñas no coinciden",
+        });
         return;
       }
 
@@ -55,9 +82,15 @@ export function useRecuperarContraseña({ formData, setMensaje }, token) {
         token,
         password,
       });
+
       setMensaje(respuesta.data);
     } catch (error) {
-      setMensaje(error.response.data);
+      setMensaje(
+        mensajeError(
+          error,
+          "No se pudo recuperar la contraseña.",
+        ),
+      );
     }
   };
 
@@ -69,9 +102,12 @@ export function useRecuperarContraseña({ formData, setMensaje }, token) {
 export async function cerrarSesion({ setAutentificado }) {
   try {
     const respuesta = await axios.get("/cerrar");
-    if (respuesta.data === "ok") setAutentificado(false);
+
+    if (respuesta.data === "ok") {
+      setAutentificado(false);
+    }
   } catch (error) {
-    console.log(error);
+    console.log("Error al cerrar sesión:", error);
   }
 }
 
