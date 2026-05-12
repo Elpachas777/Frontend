@@ -11,6 +11,7 @@ import {
   YAxis,
 } from "recharts";
 import * as respuestaApi from "../api/respuesta.api";
+import { generarReporteAlumno } from "./pdfReporteAlumno";
 import "./VerAlumnoDetalle.css";
 
 function colorPorPuntaje(p) {
@@ -81,14 +82,44 @@ function VerAlumnoDetalle({ alumno, onCerrar }) {
     }
   };
 
+  const [generandoPDF, setGenerandoPDF] = useState(false);
+
   const handlePDF = async () => {
-    await Swal.fire({
-      icon: "info",
-      title: "Próximamente",
-      text: "La generación de PDF estará disponible con la integración del backend.",
-      timer: 2200,
-      showConfirmButton: false,
-    });
+    if (generandoPDF) return;
+    if (!alumno?.id_ingreso) {
+      await Swal.fire({
+        icon: "warning",
+        title: "Falta el ID del alumno",
+        text: "No se puede generar el reporte sin el ID de acceso.",
+      });
+      return;
+    }
+    if (ejercicios.length === 0) {
+      await Swal.fire({
+        icon: "info",
+        title: "Sin datos",
+        text: "Este alumno aún no tiene ejercicios con resultados registrados.",
+      });
+      return;
+    }
+
+    try {
+      setGenerandoPDF(true);
+      await generarReporteAlumno(alumno, {
+        eficaciaGlobal,
+        ejercicios,
+        silabasDificiles,
+      });
+    } catch (err) {
+      console.error("Error generando PDF:", err);
+      await Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: "No se pudo generar el reporte. Intenta de nuevo.",
+      });
+    } finally {
+      setGenerandoPDF(false);
+    }
   };
 
   // Data para Recharts
@@ -201,8 +232,12 @@ function VerAlumnoDetalle({ alumno, onCerrar }) {
             </div>
           )}
 
-          <button className="vad-pdf-btn" onClick={handlePDF}>
-            Generar PDF
+          <button
+            className="vad-pdf-btn"
+            onClick={handlePDF}
+            disabled={generandoPDF || cargando}
+          >
+            {generandoPDF ? "Generando PDF…" : "Generar PDF"}
           </button>
         </div>
       </div>

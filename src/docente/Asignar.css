@@ -283,3 +283,177 @@
     width: 100%;
   }
 }
+/* ============ Modal Ver Resultados ============ */
+.ver-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 90;
+  padding: 20px;
+}
+
+.ver-modal-card {
+  background: #fff;
+  border-radius: 18px;
+  padding: 30px 34px;
+  width: 100%;
+  max-width: 640px;
+  max-height: 88vh;
+  overflow-y: auto;
+  position: relative;
+  box-shadow: 0 25px 70px rgba(0, 0, 0, 0.3);
+}
+
+.ver-modal-close {
+  position: absolute;
+  top: 14px;
+  right: 16px;
+  background: transparent;
+  border: none;
+  font-size: 1.25rem;
+  color: #888;
+  cursor: pointer;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s ease;
+}
+
+.ver-modal-close:hover {
+  background: #f0f0f0;
+  color: #444;
+}
+
+.ver-modal-title {
+  margin: 0 0 16px 0;
+  font-size: 1.5rem;
+  color: #222;
+  text-align: center;
+}
+
+.ver-modal-summary {
+  background: #f7faf3;
+  border-radius: 12px;
+  padding: 16px 18px;
+  margin-bottom: 22px;
+}
+
+.ver-modal-summary p {
+  margin: 0 0 6px 0;
+  font-size: 0.95rem;
+  color: #444;
+}
+
+.ver-modal-summary p:last-of-type {
+  margin-bottom: 12px;
+}
+
+.ver-modal-bar {
+  background: #e8f5e9;
+  border-radius: 12px;
+  height: 14px;
+  overflow: hidden;
+}
+
+.ver-modal-bar-fill {
+  height: 100%;
+  border-radius: 12px;
+  transition: width 0.3s ease;
+}
+
+.ver-modal-subtitle {
+  margin: 0 0 12px 0;
+  font-size: 1.05rem;
+  color: #333;
+}
+
+.ver-modal-empty {
+  text-align: center;
+  color: #888;
+  padding: 20px;
+}
+
+.ver-modal-tabla {
+  border: 1px solid #ebebeb;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.ver-modal-tabla-head {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr;
+  background: #f4f7f1;
+  padding: 11px 14px;
+  font-weight: 600;
+  font-size: 0.85rem;
+  color: #5a6e4d;
+}
+
+.ver-modal-tabla-row {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr;
+  padding: 11px 14px;
+  border-top: 1px solid #f0f0f0;
+  align-items: center;
+  font-size: 0.9rem;
+  color: #333;
+}
+
+.ver-modal-tabla-nombre {
+  font-weight: 500;
+}
+
+.ver-modal-tabla-id {
+  color: #666;
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  font-size: 0.85rem;
+}
+
+.ver-modal-chip {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 0.78rem;
+  font-weight: 600;
+}
+
+.ver-modal-chip--ok {
+  background: #e8f5e9;
+  color: #2e7d32;
+}
+
+.ver-modal-chip--pend {
+  background: #fff4e5;
+  color: #c47a1a;
+}
+
+.ver-modal-actions {
+  display: flex;
+  justify-content: center;
+  margin-top: 22px;
+}
+
+@media (max-width: 560px) {
+  .ver-modal-tabla-head,
+  .ver-modal-tabla-row {
+    grid-template-columns: 1.5fr 1fr 0.8fr;
+    gap: 6px;
+  }
+  .ver-modal-tabla-head span:nth-child(2),
+  .ver-modal-tabla-row .ver-modal-tabla-id {
+    display: none;
+  }
+}
+
+/* Botón Reasignar: ajustar al texto sin forzar min-width */
+.btn-reasignar {
+  min-width: auto;
+  padding: 0 16px;
+  white-space: nowrap;
+}

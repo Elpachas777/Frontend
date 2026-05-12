@@ -10,6 +10,7 @@ function Asignar() {
   const [estadisticas, setEstadisticas] = useState([]);
   const [ejercicioId, setEjercicioId] = useState("");
   const [cargandoStats, setCargandoStats] = useState(false);
+  const [modalVer, setModalVer] = useState(null);
 
   const ejercicioActual = ejercicios.find(
     (e) => e.id_ejercicio === Number(ejercicioId),
@@ -114,19 +115,11 @@ function Asignar() {
     });
   };
 
-  const handleVerResultados = async (grupo, estado) => {
-    await Swal.fire({
-      title: `Resultados · ${grupo.nombre}`,
-      html: `
-        <p style="margin:0 0 6px"><strong>Ejercicio:</strong> ${ejercicioActual?.titulo}</p>
-        <p style="margin:0 0 6px"><strong>Alumnos que resolvieron:</strong> ${estado.resueltos}/${estado.total_alumnos}</p>
-        <p style="margin:0 0 14px"><strong>Eficacia grupal:</strong> ${Number(estado.eficacia || 0).toFixed(2)}%</p>
-        <div style="background:#e8f5e9;border-radius:12px;height:18px;overflow:hidden">
-          <div style="height:100%;width:${Number(estado.eficacia || 0)}%;background:#4caf50;border-radius:12px"></div>
-        </div>
-      `,
-      confirmButtonText: "Cerrar",
-      confirmButtonColor: "#7bc043",
+  const handleVerResultados = (grupo, estado) => {
+    setModalVer({
+      grupo,
+      estado,
+      ejercicio: ejercicioActual,
     });
   };
 
@@ -251,7 +244,7 @@ function Asignar() {
                   {pertenece ? (
                     <button
                       type="button"
-                      className="btn btn-eliminar"
+                      className="btn btn-eliminar btn-reasignar"
                       onClick={() => handleReasignar(grupo, estado)}
                     >
                       Reasignar
@@ -275,7 +268,122 @@ function Asignar() {
           <p>Selecciona un ejercicio para ver el estado por grupo.</p>
         </div>
       )}
+
+      {modalVer && (
+        <ModalVerResultados
+          datos={modalVer}
+          onCerrar={() => setModalVer(null)}
+        />
+      )}
     </section>
+  );
+}
+
+function ModalVerResultados({ datos, onCerrar }) {
+  const { grupo, estado, ejercicio } = datos;
+  const alumnos = estado.alumnos || [];
+  const eficacia = Number(estado.eficacia || 0);
+
+  const colorPorPuntaje = (p) => {
+    if (p >= 80) return "#4caf50";
+    if (p >= 60) return "#9bbf3f";
+    if (p >= 40) return "#e89a3c";
+    return "#e35858";
+  };
+
+  return (
+    <div
+      className="ver-modal-overlay"
+      onClick={(e) => {
+        if (e.target === e.currentTarget) onCerrar();
+      }}
+    >
+      <div className="ver-modal-card">
+        <button
+          type="button"
+          className="ver-modal-close"
+          onClick={onCerrar}
+          aria-label="Cerrar"
+        >
+          ✕
+        </button>
+
+        <h2 className="ver-modal-title">Resultados · {grupo.nombre}</h2>
+
+        <div className="ver-modal-summary">
+          <p>
+            <strong>Ejercicio:</strong> {ejercicio?.titulo || "—"}
+          </p>
+          <p>
+            <strong>Alumnos que resolvieron:</strong> {estado.resueltos}/
+            {estado.total_alumnos}
+          </p>
+          <p>
+            <strong>Eficacia grupal:</strong> {eficacia.toFixed(2)}%
+          </p>
+
+          <div className="ver-modal-bar">
+            <div
+              className="ver-modal-bar-fill"
+              style={{
+                width: `${eficacia}%`,
+                background: colorPorPuntaje(eficacia),
+              }}
+            />
+          </div>
+        </div>
+
+        <h3 className="ver-modal-subtitle">Detalle por alumno</h3>
+
+        {alumnos.length === 0 ? (
+          <p className="ver-modal-empty">
+            Este grupo no tiene alumnos registrados.
+          </p>
+        ) : (
+          <div className="ver-modal-tabla">
+            <div className="ver-modal-tabla-head">
+              <span>Alumno</span>
+              <span>ID</span>
+              <span>Estado</span>
+              <span>Mejor puntaje</span>
+            </div>
+            {alumnos.map((a) => (
+              <div className="ver-modal-tabla-row" key={a.id_alumno}>
+                <span className="ver-modal-tabla-nombre">{a.nombre}</span>
+                <span className="ver-modal-tabla-id">{a.id_ingreso}</span>
+                <span>
+                  {a.resuelto ? (
+                    <span className="ver-modal-chip ver-modal-chip--ok">
+                      ✓ Resuelto
+                    </span>
+                  ) : (
+                    <span className="ver-modal-chip ver-modal-chip--pend">
+                      Pendiente
+                    </span>
+                  )}
+                </span>
+                <span
+                  style={{
+                    color: a.resuelto
+                      ? colorPorPuntaje(a.mejor_puntaje)
+                      : "#bbb",
+                    fontWeight: 600,
+                  }}
+                >
+                  {a.resuelto ? `${a.mejor_puntaje.toFixed(2)}%` : "—"}
+                </span>
+              </div>
+            ))}
+          </div>
+        )}
+
+        <div className="ver-modal-actions">
+          <button type="button" className="btn btn-ver" onClick={onCerrar}>
+            Cerrar
+          </button>
+        </div>
+      </div>
+    </div>
   );
 }
 
