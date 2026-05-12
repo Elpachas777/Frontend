@@ -23,7 +23,10 @@ export const listar = async () => {
 };
 
 export const actualizar = async (id, data) => {
-  const res = await axios.put(`/editarEjercicio/${id}`, data);
+  const res = await axios.put(`/editarEjercicio/${id}`, data, {
+    withCredentials: true,
+  });
+
   return res.data;
 };
 

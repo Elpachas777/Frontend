@@ -1,11 +1,14 @@
+import { useState } from "react";
+import Mensaje from "../components/Mensaje";
 import { USUARIOS } from "../enums/tipoUsuarios";
 import useFormData from "../hooks/useFormData";
 import "../RolAdmin/RolAdmin.css";
 import crear from "../utils/crearGrupo";
 
 function CrearGrupos({ onCerrar, onGuardado }) {
-  const { formData, handleChange } = useFormData(USUARIOS.GRUPO);
-  const { handleSubmit } = crear({ formData, onGuardado });
+  const [mensaje, setMensaje] = useState(null);
+  const { formData, handleChange, handleObjectChange } = useFormData(USUARIOS.GRUPO);
+  const { handleSubmit } = crear({ formData, setMensaje, onGuardado });
 
   return (
     <div className="modal-overlay" onClick={onCerrar}>
@@ -20,16 +23,18 @@ function CrearGrupos({ onCerrar, onGuardado }) {
           </button>
         </div>
 
+        {mensaje && <Mensaje tipo={mensaje.tipo} mensaje={mensaje.mensaje} />}
+
         <form className="modal-form" onSubmit={handleSubmit}>
           <div className="modal-field">
             <label>Nombre del grupo</label>
-            <input
+           <input
               type="text"
               name="nombre"
-              placeholder="Ejemplo: 3C, 2B, 5A"
+              placeholder="Ejemplo: 5CV3"
               required
               value={formData.nombre}
-              onChange={handleChange}
+              onChange={(e) => handleObjectChange("nombre", e.target.value.toUpperCase())}
             />
           </div>
 

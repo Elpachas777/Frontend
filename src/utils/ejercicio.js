@@ -8,6 +8,7 @@ export function crearCuento(silaba, cuento) {
       .toLowerCase()
       .replaceAll(silaba.toLowerCase(), "<Canvas>");
   }
+
   return ejercicio;
 }
 
@@ -17,10 +18,19 @@ export function crear({ formData, setErrores, setMensaje, onGuardado }) {
 
     try {
       const res = await api.guardarEjercicio(formData);
+
       setMensaje(res);
-      onGuardado();
+
+      if (onGuardado) {
+        await onGuardado();
+      }
     } catch (error) {
-      setMensaje(error.response.data);
+      setMensaje(
+        error?.response?.data || {
+          tipo: "error",
+          mensaje: "No se pudo crear el ejercicio",
+        },
+      );
     }
   };
 
@@ -53,11 +63,28 @@ export function actualizar(
     event.preventDefault();
 
     try {
-      const actualizado = await api.actualizar(id_ejercicio, formData);
+      const dataActualizar = {
+        titulo: formData.titulo,
+        fecha_inicio: formData.fecha_inicio,
+        fecha_final: formData.fecha_final,
+        id_tipo: formData.id_tipo,
+        contenido: formData.contenido,
+      };
+
+      const actualizado = await api.actualizar(id_ejercicio, dataActualizar);
+
       setMensaje(actualizado);
-      onGuardado();
+
+      if (onGuardado) {
+        await onGuardado();
+      }
     } catch (error) {
-      setMensaje(error.response.data);
+      setMensaje(
+        error?.response?.data || {
+          tipo: "error",
+          mensaje: "No se pudo actualizar el ejercicio",
+        },
+      );
     }
   };
 
@@ -68,9 +95,15 @@ export function actualizar(
 
 export async function asignarEjercicio({ id_ejercicio }, { id }) {
   try {
-    const data = { id }
-    await api.asignarEjercicio(id_ejercicio, data)
+    const data = { id };
+
+    await api.asignarEjercicio(id_ejercicio, data);
   } catch (error) {
-    console.log(error.response.data)
+    console.log(
+      error?.response?.data || {
+        tipo: "error",
+        mensaje: "No se pudo asignar el ejercicio",
+      },
+    );
   }
 }

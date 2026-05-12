@@ -16,13 +16,24 @@ export async function agregar(
   try {
     const data = {
       grupo: grupoNombre,
-      alumnos: alumnosSelect
+      alumnos: alumnosSelect,
+    };
+
+    const respuesta = await api.agregar(grupoId, data);
+
+    if (onGuardado) {
+      await onGuardado();
     }
 
-    await api.agregar(grupoId, data);
-    onGuardado();
+    return respuesta;
   } catch (error) {
-    console.log(error.response.data);
+    console.log(error?.response?.data || error.message);
+
+    if (setErrores) {
+      setErrores(error?.response?.data || {});
+    }
+
+    throw error;
   }
 }
 

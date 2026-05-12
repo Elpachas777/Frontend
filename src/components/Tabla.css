@@ -317,3 +317,37 @@
     font-size: 0.9rem;
   }
 }
+
+.td-empty-grupo {
+  text-align: center;
+  padding: 70px 20px;
+}
+
+.empty-state-grupo {
+  width: 100%;
+  min-height: 180px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  text-align: center;
+}
+
+.empty-state-grupo .empty-icon {
+  font-size: 34px;
+  display: block;
+}
+
+.empty-state-grupo h3 {
+  margin: 0;
+  font-size: 22px;
+  font-weight: 800;
+  color: #102318;
+}
+
+.empty-state-grupo p {
+  margin: 0;
+  font-size: 15px;
+  color: #5f7166;
+}

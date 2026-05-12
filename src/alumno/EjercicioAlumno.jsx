@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import * as alumnoApi from "../api/alumno.api";
 import * as respuestaApi from "../api/respuesta.api";
@@ -8,6 +8,7 @@ import "./EjercicioAlumno.css";
 function EjercicioAlumno() {
   const { idAlumno } = useParams();
   const navigate = useNavigate();
+
   const [alumno, setAlumno] = useState(null);
   const [ejercicios, setEjercicios] = useState([]);
   const [cargando, setCargando] = useState(true);
@@ -15,40 +16,49 @@ function EjercicioAlumno() {
   const [ejercicioActivo, setEjercicioActivo] = useState(null);
   const [silabasDificiles, setSilabasDificiles] = useState([]);
 
-  const cargarSilabasDificiles = async () => {
-    try {
-      const data = await respuestaApi.obtenerSilabasDificiles(idAlumno);
-      setSilabasDificiles(data.silabas || []);
-    } catch {
-      // Si no hay datos o falla, dejamos el array vacío (panel se oculta).
-      setSilabasDificiles([]);
-    }
-  };
-
-  useEffect(() => {
-    const cargar = async () => {
+  const cargarDatos = useCallback(
+    async ({ mostrarCarga = false } = {}) => {
       try {
+        if (mostrarCarga) {
+          setCargando(true);
+        }
+
+        setError(null);
+
         const data = await alumnoApi.obtenerEjerciciosAlumno(idAlumno);
+
         setAlumno(data.alumno);
         setEjercicios(data.ejercicios || []);
-        await cargarSilabasDificiles();
+
+        try {
+          const dificiles = await respuestaApi.obtenerSilabasDificiles(idAlumno);
+          setSilabasDificiles(dificiles.silabas || []);
+        } catch {
+          setSilabasDificiles([]);
+        }
       } catch {
         setError(
           "No se encontró un alumno con ese ID. Verifica e intenta de nuevo.",
         );
       } finally {
-        setCargando(false);
+        if (mostrarCarga) {
+          setCargando(false);
+        }
       }
-    };
-    cargar();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [idAlumno]);
+    },
+    [idAlumno],
+  );
+
+  useEffect(() => {
+    cargarDatos({ mostrarCarga: true });
+  }, [cargarDatos]);
 
   const handleCerrarPlayer = async () => {
     setEjercicioActivo(null);
-    // Al cerrar el player, refrescamos las sílabas difíciles porque
-    // pueden haber cambiado tras el último intento.
-    await cargarSilabasDificiles();
+
+    // Aquí se refresca el dashboard.
+    // Si el ejercicio ya fue resuelto, el backend ya no lo devolverá.
+    await cargarDatos();
   };
 
   if (cargando) {
@@ -102,12 +112,13 @@ function EjercicioAlumno() {
               Estas son las sílabas en las que tu precisión es menor. ¡Sigue
               practicando!
             </p>
+
             <div className="ea-dificiles-grid">
               {silabasDificiles.map((s) => (
                 <div className="ea-dificil-card" key={s.silaba}>
                   <span className="ea-dificil-silaba">{s.silaba}</span>
                   <span className="ea-dificil-precision">
-                    {s.precision.toFixed(1)}%
+                    {Number(s.precision || 0).toFixed(1)}%
                   </span>
                   <span className="ea-dificil-intentos">
                     {s.intentos} intento{s.intentos === 1 ? "" : "s"}
@@ -120,8 +131,8 @@ function EjercicioAlumno() {
 
         {ejercicios.length === 0 ? (
           <div className="ea-empty">
-            <p>No tienes ejercicios asignados por el momento.</p>
-            <p>Pide a tu docente que te asigne uno.</p>
+            <p>No tienes ejercicios pendientes por el momento.</p>
+            <p>Cuando tu docente asigne uno nuevo, aparecerá aquí.</p>
           </div>
         ) : (
           <div className="ea-grid">

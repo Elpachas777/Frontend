@@ -65,9 +65,9 @@ function VerGrupo({ grupo, onCerrar, onGuardado, vista = false }) {
                   ))
                 ) : (
                   <tr>
-                    <td colSpan={2}>
-                      <div className="tabla-empty">
-                        <span className="tabla-empty-icon">🌱</span>
+                    <td colSpan={3} className="td-empty-grupo">
+                      <div className="empty-state-grupo">
+                        <span className="empty-icon">🌱</span>
                         <h3>Sin alumnos</h3>
                         <p>Este grupo no tiene alumnos asignados.</p>
                       </div>
@@ -104,24 +104,30 @@ function VerGrupo({ grupo, onCerrar, onGuardado, vista = false }) {
           grupoId={grupo.id}
           grupoNombre={grupo.nombre}
           onCerrar={() => setMostrar(null)}
-          onGuardado={() => {
-            cargar();
-            onGuardado();
+          onGuardado={async () => {
+            await cargar();
+
+            if (onGuardado) {
+              await onGuardado();
+            }
           }}
         />
       )}
 
       {eliminar && (
         <AgregarAlumnos
-          grupoId={grupo.id}
-          grupoNombre={grupo.nombre}
-          onCerrar={() => setEliminar(null)}
-          onGuardado={() => {
-            cargar();
-            onGuardado();
-          }}
-          guardar={false}
-        />
+            grupoId={grupo.id}
+            grupoNombre={grupo.nombre}
+            onCerrar={() => setEliminar(null)}
+            onGuardado={async () => {
+              await cargar();
+
+              if (onGuardado) {
+                await onGuardado();
+              }
+            }}
+            guardar={false}
+          />
       )}
     </>
   );

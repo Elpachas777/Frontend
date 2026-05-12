@@ -41,14 +41,28 @@ function AgregarAlumnos({
     );
   };
 
-  const handleClick = async () => {
+ const handleClick = async () => {
+  if (alumnosSelect.length === 0) {
+    setErrores({ general: "Selecciona al menos un alumno." });
+    return;
+  }
+
+  try {
     await agregar(
       { grupoId, grupoNombre, alumnosSelect },
       { setErrores, onGuardado },
     );
-    cargar();
-  };
 
+    setAlumnosSelect([]);
+    await cargar();
+
+    if (onCerrar) {
+      onCerrar();
+    }
+  } catch (error) {
+    console.log("Error al agregar alumnos:", error);
+  }
+};
   const handleEliminar = async () => {
     await eliminarAlumno(grupoId, { alumnosSelect, setErrores, onGuardado });
     eliminar();
@@ -139,7 +153,7 @@ function AgregarAlumnos({
                   ))
                 ) : (
                   <tr>
-                    <td colSpan={4}>
+                    <td colSpan={guardar ? 5 : 4}>
                       <div className="tabla-empty">
                         <span className="tabla-empty-icon">🌱</span>
                         <h3>Sin alumnos disponibles</h3>

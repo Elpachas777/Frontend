@@ -8,25 +8,31 @@ import * as respuestaApi from "../api/respuesta.api";
 
 function EjercicioPlayer({ ejercicio, idIngreso, onCerrar }) {
   const canvaRef = useRef([]);
+  const intentoRef = useRef([]);
+
   const [indice, setIndice] = useState(0);
   const [terminado, setTerminado] = useState(false);
-  const [modelo, setModelo] = useState();
+  const [modelo, setModelo] = useState(null);
   const [guardando, setGuardando] = useState(false);
   const [resumen, setResumen] = useState(null);
 
-  // Acumulador de predicciones del intento actual.
-  // Cada entrada: { silaba, puntaje }
-  const intentoRef = useRef([]);
-
-  const palabras = ejercicio.contenido.palabras || [];
+  const palabras = ejercicio?.contenido?.palabras || [];
   const total = palabras.length;
   const actual = palabras[indice];
   const progreso = total > 0 ? (indice / total) * 100 : 0;
 
   useEffect(() => {
     const cargarModelo = async () => {
-      const modeloCargado = await tf.loadGraphModel("/model/model.json");
-      setModelo(modeloCargado);
+      try {
+        const modeloCargado = await tf.loadGraphModel("/model/model.json");
+        setModelo(modeloCargado);
+      } catch (error) {
+        console.error("Error al cargar modelo:", error);
+        mensaje("No se pudo cargar el modelo", {
+          tipo: "error",
+          mensaje: "Recarga la página e intenta de nuevo.",
+        });
+      }
     };
 
     cargarModelo();
@@ -36,81 +42,154 @@ function EjercicioPlayer({ ejercicio, idIngreso, onCerrar }) {
     canvaRef.current = [];
   }, [indice]);
 
-  const guardarIntento = async () => {
-    if (!idIngreso || !ejercicio?.id_ejercicio) {
-      // Sin id no podemos persistir; aún así marcamos como terminado.
-      setTerminado(true);
-      return;
-    }
-
-    const respuestas = intentoRef.current;
-    if (respuestas.length === 0) {
-      setTerminado(true);
-      return;
-    }
-
-    try {
-      setGuardando(true);
-      const res = await respuestaApi.registrarIntento({
-        idIngreso,
-        idEjercicio: ejercicio.id_ejercicio,
-        respuestas,
-      });
-      setResumen({
-        promedio: res.promedio,
-        guardadas: res.guardadas,
-      });
-    } catch (err) {
-      console.error("No se pudo guardar el intento:", err);
-      mensaje("No se pudo guardar tu intento", {
-        tipo: "error",
-        mensaje: "Ocurrió un error al guardar",
-      });
-    } finally {
-      setGuardando(false);
-      setTerminado(true);
-    }
+  const crearClave = (indicePalabra, indiceSilaba, silaba) => {
+    return `${indicePalabra}-${indiceSilaba}-${silaba}`;
   };
 
-  const handleSiguiente = () => {
-    if (indice + 1 >= total) {
-      // Último: guardamos todo el intento de una sola vez.
-      guardarIntento();
+  const canvasTieneTrazo = (canvas) => {
+    if (!canvas) return false;
+
+    const ctx = canvas.getContext("2d");
+    const img = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
+
+    for (let i = 0; i < img.length; i += 4) {
+      if (img[i + 3] > 20) {
+        return true;
+      }
+    }
+
+    return false;
+  };
+
+  const guardarPrediccion = ({ clave, silaba, puntaje }) => {
+    const index = intentoRef.current.findIndex((r) => r.clave === clave);
+
+    const nueva = {
+      clave,
+      silaba,
+      puntaje,
+    };
+
+    if (index >= 0) {
+      intentoRef.current[index] = nueva;
     } else {
-      setIndice((i) => i + 1);
+      intentoRef.current.push(nueva);
     }
   };
 
-  const handlePredecir = (canvas, silaba) => {
+  const predecirSilaba = (canvas, silaba, indiceSilaba) => {
+    if (!modelo) {
+      throw new Error("El modelo aún está cargando.");
+    }
+
+    if (!canvas) {
+      throw new Error(`No se encontró el canvas de la sílaba ${silaba}.`);
+    }
+
+    if (!canvasTieneTrazo(canvas)) {
+      throw new Error(`Dibuja la sílaba ${silaba.toUpperCase()} antes de avanzar.`);
+    }
+
     const letras = dividirCanvas(canvas);
     const resultadoIzq = predecir(modelo, letras[0]);
     const resultadoDer = predecir(modelo, letras[1]);
 
     const porcentajeTotal =
-      (resultadoIzq.porcentaje + resultadoDer.porcentaje) / 2;
+      (Number(resultadoIzq.porcentaje || 0) +
+        Number(resultadoDer.porcentaje || 0)) /
+      2;
 
-    // Acumulamos en el intento. Si la misma sílaba se predijo antes en este
-    // intento (el alumno volvió a tocar Predecir), sobrescribimos con la nueva.
-    const previo = intentoRef.current.findIndex((r) => r.silaba === silaba);
-    const nueva = { silaba, puntaje: porcentajeTotal };
-    if (previo >= 0) {
-      intentoRef.current[previo] = nueva;
-    } else {
-      intentoRef.current.push(nueva);
+    const clave = crearClave(indice, indiceSilaba, silaba);
+
+    guardarPrediccion({
+      clave,
+      silaba,
+      puntaje: porcentajeTotal,
+    });
+
+    return {
+      texto: `${resultadoIzq.letra}${resultadoDer.letra}`,
+      porcentaje: porcentajeTotal,
+    };
+  };
+
+  const handlePredecir = (canvas, silaba, indiceSilaba) => {
+    try {
+      const resultado = predecirSilaba(canvas, silaba, indiceSilaba);
+
+      mensaje(`Resultado: ${resultado.texto} - ${resultado.porcentaje.toFixed(2)}%`, {
+        tipo: "info",
+        mensaje: "Sigue así",
+      });
+    } catch (error) {
+      mensaje("No se pudo predecir", {
+        tipo: "error",
+        mensaje: error.message || "Intenta de nuevo.",
+      });
+    }
+  };
+
+  const predecirFaltantesActuales = () => {
+    const silabasActuales = actual?.silabas || [];
+
+    silabasActuales.forEach((silaba, indiceSilaba) => {
+      const clave = crearClave(indice, indiceSilaba, silaba);
+      const yaExiste = intentoRef.current.some((r) => r.clave === clave);
+
+      if (!yaExiste) {
+        predecirSilaba(canvaRef.current[indiceSilaba]?.getImage(), silaba, indiceSilaba);
+      }
+    });
+  };
+
+  const guardarIntento = async () => {
+    if (!idIngreso || !ejercicio?.id_ejercicio) {
+      throw new Error("Falta el ID del alumno o del ejercicio.");
     }
 
-    mensaje(
-      "Resultado: " +
-        resultadoIzq.letra +
-        resultadoDer.letra +
-        " - " +
-        porcentajeTotal.toFixed(2) +
-        "%",
-      {
-        tipo: "info",
-        mensaje: "Sigue asi",
-      },
-    );
+    const respuestas = intentoRef.current.map((r) => ({
+      silaba: r.silaba,
+      puntaje: r.puntaje,
+    }));
+
+    if (respuestas.length === 0) {
+      throw new Error("No hay respuestas para guardar.");
+    }
+
+    const res = await respuestaApi.registrarIntento({
+      idIngreso,
+      idEjercicio: ejercicio.id_ejercicio,
+      respuestas,
+    });
+
+    setResumen({
+      promedio: Number(res.promedio || 0),
+      guardadas: res.guardadas,
+    });
+
+    setTerminado(true);
+  };
+
+  const handleSiguiente = async () => {
+    try {
+      setGuardando(true);
+
+      // Predice automáticamente lo que falte antes de avanzar.
+      predecirFaltantesActuales();
+
+      if (indice + 1 >= total) {
+        await guardarIntento();
+      } else {
+        setIndice((i) => i + 1);
+      }
+    } catch (error) {
+      mensaje("No se puede avanzar", {
+        tipo: "error",
+        mensaje: error.message || "Revisa que todas las sílabas estén dibujadas.",
+      });
+    } finally {
+      setGuardando(false);
+    }
   };
 
   if (!ejercicio || total === 0) {
@@ -141,12 +220,14 @@ function EjercicioPlayer({ ejercicio, idIngreso, onCerrar }) {
           <p className="ep-done-sub">
             Has completado todas las sílabas del ejercicio.
           </p>
+
           {resumen && (
             <p className="ep-done-sub">
               Tu promedio en este intento:{" "}
-              <strong>{resumen.promedio.toFixed(2)}%</strong>
+              <strong>{Number(resumen.promedio || 0).toFixed(2)}%</strong>
             </p>
           )}
+
           <button className="ep-btn" onClick={onCerrar}>
             Cerrar
           </button>
@@ -185,28 +266,33 @@ function EjercicioPlayer({ ejercicio, idIngreso, onCerrar }) {
 
         <div className="ep-canvases">
           {actual.silabas.map((sil, i) => (
-            <div key={`${indice}-${i}`}>
+            <div key={`${indice}-${i}-${sil}`}>
               <Canvas silaba={sil} ref={(cr) => (canvaRef.current[i] = cr)} />
+
               <div className="modal-actions">
                 <button
                   type="button"
                   className="modal-btn-save"
+                  disabled={!modelo || guardando}
                   onClick={() =>
-                    handlePredecir(canvaRef.current[i].getImage(), sil)
+                    handlePredecir(canvaRef.current[i]?.getImage(), sil, i)
                   }
                 >
                   Predecir
                 </button>
+
                 <button
                   type="button"
                   className="modal-btn-cancel"
-                  onClick={() => canvaRef.current[i].clear()}
+                  disabled={guardando}
+                  onClick={() => canvaRef.current[i]?.clear()}
                 >
                   limpiar
                 </button>
               </div>
             </div>
           ))}
+
           <span className="ep-arrow">→</span>
         </div>
 
@@ -215,10 +301,12 @@ function EjercicioPlayer({ ejercicio, idIngreso, onCerrar }) {
             type="button"
             className="ep-btn"
             onClick={handleSiguiente}
-            disabled={guardando}
+            disabled={!modelo || guardando}
           >
-            {guardando
-              ? "Guardando..."
+            {!modelo
+              ? "Cargando modelo..."
+              : guardando
+              ? "Procesando..."
               : indice + 1 >= total
               ? "Finalizar"
               : "Siguiente →"}

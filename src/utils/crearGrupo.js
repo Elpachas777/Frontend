@@ -4,8 +4,13 @@ import { crearGrupo } from "../api/grupo.api";
 function crear({ formData, onGuardado }) {
   const handleSubmit = async (event) => {
     event.preventDefault();
+
     try {
-      await crearGrupo(formData);
+      await crearGrupo({
+        ...formData,
+        nombre: String(formData.nombre || "").trim().toUpperCase(),
+      });
+
       await Swal.fire({
         title: "¡Grupo creado!",
         text: "El grupo fue registrado correctamente.",
@@ -14,6 +19,7 @@ function crear({ formData, onGuardado }) {
         showConfirmButton: false,
         confirmButtonColor: "#7bc043",
       });
+
       onGuardado();
     } catch (error) {
       Swal.fire({
