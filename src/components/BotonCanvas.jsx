@@ -67,13 +67,6 @@ function BotonCanvas({ Texto = "__" }) {
             <div className="modal-actions">
               <button
                 type="button"
-                className="modal-btn-save"
-                onClick={() => handlePredecir(canvaRef.current.getImage())}
-              >
-                Predecir
-              </button>
-              <button
-                type="button"
                 className="modal-btn-cancel"
                 onClick={() => canvaRef.current.clear()}
               >
