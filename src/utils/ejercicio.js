@@ -107,3 +107,19 @@ export async function asignarEjercicio({ id_ejercicio }, { id }) {
     );
   }
 }
+
+export async function estadisticasAsignacion(idEjercicio) {
+  try {
+    const estadisticas = await api.estadisticasAsignacion(idEjercicio);
+    return estadisticas;
+  } catch (error) {
+    console.log(
+      error?.response?.data || {
+        tipo: "error",
+        mensaje: "No se pudieron cargar las estadísticas de asignación",
+      },
+    );
+
+    return [];
+  }
+}

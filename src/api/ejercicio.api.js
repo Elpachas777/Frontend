@@ -39,3 +39,11 @@ export const asignarEjercicio = async (id, data) => {
   const res = await axios.put(`/asignar/${id}`, data)
   return res.data
 }
+
+export const estadisticasAsignacion = async (idEjercicio) => {
+  const res = await axios.get(`/estadisticasAsignacion/${idEjercicio}`, {
+    withCredentials: true,
+  });
+
+  return res.data;
+};

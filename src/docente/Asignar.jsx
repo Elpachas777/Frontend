@@ -1,6 +1,5 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import Swal from "sweetalert2";
-import { GRUPOS_MOCK } from "../RolAdmin/mockData";
 import "./Asignar.css";
 import * as utilsEjercicios from "../utils/ejercicio";
 import * as utilsGrupos from "../utils/grupos";
@@ -8,11 +7,23 @@ import * as utilsGrupos from "../utils/grupos";
 function Asignar() {
   const [ejercicios, setEjercicios] = useState([]);
   const [grupos, setGrupos] = useState([]);
+  const [estadisticas, setEstadisticas] = useState([]);
   const [ejercicioId, setEjercicioId] = useState("");
+  const [cargandoStats, setCargandoStats] = useState(false);
 
   const ejercicioActual = ejercicios.find(
     (e) => e.id_ejercicio === Number(ejercicioId),
   );
+
+  const estadisticasMap = useMemo(() => {
+    const mapa = new Map();
+
+    estadisticas.forEach((item) => {
+      mapa.set(Number(item.id), item);
+    });
+
+    return mapa;
+  }, [estadisticas]);
 
   const cargar = useCallback(async () => {
     const ejerciciosArreglo = await utilsEjercicios.listar();
@@ -22,9 +33,27 @@ function Asignar() {
     setEjercicios(ejerciciosArreglo);
   }, []);
 
+  const cargarEstadisticas = useCallback(async (idEjercicio) => {
+    if (!idEjercicio) {
+      setEstadisticas([]);
+      return;
+    }
+
+    setCargandoStats(true);
+
+    const data = await utilsEjercicios.estadisticasAsignacion(idEjercicio);
+
+    setEstadisticas(data);
+    setCargandoStats(false);
+  }, []);
+
   useEffect(() => {
     cargar();
-  }, []);
+  }, [cargar]);
+
+  useEffect(() => {
+    cargarEstadisticas(ejercicioId);
+  }, [ejercicioId, cargarEstadisticas]);
 
   const handleAsignar = async (grupo) => {
     const confirm = await Swal.fire({
@@ -37,11 +66,13 @@ function Asignar() {
       confirmButtonColor: "#7bc043",
       cancelButtonColor: "#6c757d",
     });
+
     if (!confirm.isConfirmed) return;
 
     await utilsEjercicios.asignarEjercicio(ejercicioActual, grupo);
 
-    cargar();
+    await cargar();
+    await cargarEstadisticas(ejercicioId);
 
     await Swal.fire({
       icon: "success",
@@ -55,9 +86,10 @@ function Asignar() {
   const handleReasignar = async (grupo, estado) => {
     const confirm = await Swal.fire({
       title: "¿Reasignar ejercicio?",
-      html: estado.realizado
-        ? `El grupo <strong>${grupo.nombre}</strong> ya realizó este ejercicio (${estado.porcentaje}%). ¿Deseas reasignarlo y reiniciar los resultados?`
-        : `¿Deseas reasignar <strong>${ejercicioActual?.ejercicio}</strong> al grupo <strong>${grupo.nombre}</strong>?`,
+      html:
+        estado.resueltos > 0
+          ? `El grupo <strong>${grupo.nombre}</strong> ya tiene <strong>${estado.resueltos}/${estado.total_alumnos}</strong> alumnos con resultado. ¿Deseas reasignarlo?`
+          : `¿Deseas reasignar <strong>${ejercicioActual?.titulo}</strong> al grupo <strong>${grupo.nombre}</strong>?`,
       icon: "warning",
       showCancelButton: true,
       confirmButtonText: "Sí, reasignar",
@@ -65,13 +97,19 @@ function Asignar() {
       confirmButtonColor: "#e74c3c",
       cancelButtonColor: "#6c757d",
     });
+
     if (!confirm.isConfirmed) return;
+
+    await utilsEjercicios.asignarEjercicio(ejercicioActual, grupo);
+
+    await cargar();
+    await cargarEstadisticas(ejercicioId);
 
     await Swal.fire({
       icon: "success",
       title: "Reasignado",
-      text: `Ejercicio reasignado al grupo ${grupo.nombre}. Resultados anteriores reiniciados.`,
-      timer: 2000,
+      text: `Ejercicio reasignado al grupo ${grupo.nombre}.`,
+      timer: 1800,
       showConfirmButton: false,
     });
   };
@@ -80,10 +118,11 @@ function Asignar() {
     await Swal.fire({
       title: `Resultados · ${grupo.nombre}`,
       html: `
-        <p style="margin:0 0 6px"><strong>Ejercicio:</strong> ${ejercicioActual?.ejercicio}</p>
-        <p style="margin:0 0 14px"><strong>Desempeño:</strong> ${estado.porcentaje}%</p>
+        <p style="margin:0 0 6px"><strong>Ejercicio:</strong> ${ejercicioActual?.titulo}</p>
+        <p style="margin:0 0 6px"><strong>Alumnos que resolvieron:</strong> ${estado.resueltos}/${estado.total_alumnos}</p>
+        <p style="margin:0 0 14px"><strong>Eficacia grupal:</strong> ${Number(estado.eficacia || 0).toFixed(2)}%</p>
         <div style="background:#e8f5e9;border-radius:12px;height:18px;overflow:hidden">
-          <div style="height:100%;width:${estado.porcentaje}%;background:#4caf50;border-radius:12px"></div>
+          <div style="height:100%;width:${Number(estado.eficacia || 0)}%;background:#4caf50;border-radius:12px"></div>
         </div>
       `,
       confirmButtonText: "Cerrar",
@@ -91,7 +130,9 @@ function Asignar() {
     });
   };
 
-  const asignado = (grupo) => {
+  const asignado = (grupo, estado) => {
+    if (estado) return estado.asignado;
+
     return grupo.ejercicios.some(
       (ejercicio) => ejercicio.id === Number(ejercicioId),
     );
@@ -131,27 +172,38 @@ function Asignar() {
           <div className="asignar-card-header">
             <span>Grupo</span>
             <span>Estado</span>
+            <span>Resueltos</span>
+            <span>Eficacia grupal</span>
             <span>Acciones</span>
           </div>
 
           {grupos.map((grupo) => {
-            const pertenece = asignado(grupo);
-            const estado = grupo.respuestas || "";
+            const estado = estadisticasMap.get(Number(grupo.id)) || {
+              id: grupo.id,
+              nombre: grupo.nombre,
+              asignado: asignado(grupo),
+              total_alumnos: 0,
+              resueltos: 0,
+              eficacia: 0,
+            };
+
+            const pertenece = asignado(grupo, estado);
+            const eficacia = Number(estado.eficacia || 0);
+            const totalAlumnos = Number(estado.total_alumnos || 0);
+            const resueltos = Number(estado.resueltos || 0);
+
             return (
               <div key={grupo.id} className="asignar-row">
                 <span className="asignar-grupo-nombre">{grupo.nombre}</span>
 
                 <div className="asignar-status-cell">
-                  {pertenece && estado.realizado ? (
+                  {pertenece && resueltos > 0 ? (
                     <div className="asignar-status asignar-status--realizado">
-                      <span>Realizado</span>
-                      <div className="asignar-progress">
-                        <div
-                          className="asignar-progress-bar"
-                          style={{ width: `${estado.porcentaje}%` }}
-                        />
-                      </div>
-                      <span className="asignar-pct">{estado.porcentaje}%</span>
+                      <span>
+                        {resueltos === totalAlumnos
+                          ? "Realizado"
+                          : "Asignado · con avances"}
+                      </span>
                     </div>
                   ) : pertenece ? (
                     <div className="asignar-status asignar-status--pendiente">
@@ -164,16 +216,38 @@ function Asignar() {
                   )}
                 </div>
 
+                <div className="asignar-resueltos">
+                  <strong>
+                    {cargandoStats ? "..." : `${resueltos}/${totalAlumnos}`}
+                  </strong>
+                </div>
+
+                <div className="asignar-eficacia">
+                  <div className="asignar-eficacia-top">
+                    <strong>
+                      {cargandoStats ? "..." : `${eficacia.toFixed(2)}%`}
+                    </strong>
+                  </div>
+
+                  <div className="asignar-progress">
+                    <div
+                      className="asignar-progress-bar"
+                      style={{ width: `${eficacia}%` }}
+                    />
+                  </div>
+                </div>
+
                 <div className="asignar-acciones">
-                  {pertenece && estado.realizado && (
+                  {pertenece && resueltos > 0 && (
                     <button
                       type="button"
                       className="btn btn-ver"
                       onClick={() => handleVerResultados(grupo, estado)}
                     >
-                      Ver resultados
+                      Ver
                     </button>
                   )}
+
                   {pertenece ? (
                     <button
                       type="button"
