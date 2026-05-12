@@ -134,7 +134,7 @@ function DocentesAdmin() {
               ))
             ) : (
               <tr>
-                <td colSpan={5}>
+                <td colSpan={6}>
                   <div className="tabla-empty">
                     <span className="tabla-empty-icon">🌱</span>
                     <h3>Sin resultados</h3>
