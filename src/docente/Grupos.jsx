@@ -193,6 +193,7 @@ function Grupos() {
         <CrearGrupos
           onCerrar={() => setMostrarCrear(false)}
           onGuardado={() => {
+            setMostrarCrear(false);
             cargar();
           }}
         />

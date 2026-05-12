@@ -1,22 +1,16 @@
 import { useState } from "react";
-import Mensaje from "../components/Mensaje";
 import { USUARIOS } from "../enums/tipoUsuarios";
 import useFormData from "../hooks/useFormData";
 import "../RolAdmin/RolAdmin.css";
 import crear from "../utils/crearAlumno";
 
-const GMAPS_REGEX =
-  /^https?:\/\/(www\.)?(google\.[a-z.]+\/maps|maps\.google\.[a-z.]+|goo\.gl\/maps|maps\.app\.goo\.gl)/i;
-
 function CrearAlumno({ onCerrar, onGuardado }) {
   const [errores, setErrores] = useState({});
-  const [mensaje, setMensaje] = useState(null);
 
   const { formData, handleChange } = useFormData(USUARIOS.ALUMNO);
   const { handleSubmit } = crear({
     formData,
     setErrores,
-    setMensaje,
     onGuardado,
   });
 
@@ -32,7 +26,6 @@ function CrearAlumno({ onCerrar, onGuardado }) {
             ✕
           </button>
         </div>
-        {mensaje && <Mensaje tipo={mensaje.tipo} mensaje={mensaje.mensaje} />}
         <form className="modal-form" onSubmit={handleSubmit}>
           <div className="modal-field">
             <label>Nombre</label>

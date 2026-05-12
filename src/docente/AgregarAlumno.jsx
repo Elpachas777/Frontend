@@ -18,18 +18,15 @@ function AgregarAlumnos({
   const [filtroApellidos, setFiltroApellidos] = useState("");
   const [alumnosSelect, setAlumnosSelect] = useState([]);
 
-  const cargar = useCallback(async () => {
-    const alumnosArreglo = await listar();
-    const alumnosGrupo = await listarAlumnos({ id: grupoId });
-    const arregloFinal = alumnosArreglo.filter(
-      (general) =>
-        !alumnosGrupo.some(
-          (registrado) => registrado.id === general.id_ingreso,
-        ),
-    );
+ const cargar = useCallback(async () => {
+  const alumnosArreglo = await listar();
 
-    setAlumnos(arregloFinal);
-  }, [grupoId]);
+  const alumnosSinGrupo = alumnosArreglo.filter(
+    (alumno) => !alumno.grupo || alumno.grupo.trim() === "",
+  );
+
+  setAlumnos(alumnosSinGrupo);
+}, []);
 
   const eliminar = useCallback(async () => {
     const alumnosGrupo = await listarAlumnos({ id: grupoId });

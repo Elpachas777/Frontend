@@ -1,14 +1,11 @@
-import { useState } from "react";
-import Mensaje from "../components/Mensaje";
 import { USUARIOS } from "../enums/tipoUsuarios";
 import useFormData from "../hooks/useFormData";
 import "../RolAdmin/RolAdmin.css";
 import crear from "../utils/crearGrupo";
 
 function CrearGrupos({ onCerrar, onGuardado }) {
-  const [mensaje, setMensaje] = useState(null);
   const { formData, handleChange } = useFormData(USUARIOS.GRUPO);
-  const { handleSubmit } = crear({ formData, setMensaje, onGuardado });
+  const { handleSubmit } = crear({ formData, onGuardado });
 
   return (
     <div className="modal-overlay" onClick={onCerrar}>
@@ -22,8 +19,6 @@ function CrearGrupos({ onCerrar, onGuardado }) {
             ✕
           </button>
         </div>
-
-        {mensaje && <Mensaje tipo={mensaje.tipo} mensaje={mensaje.mensaje} />}
 
         <form className="modal-form" onSubmit={handleSubmit}>
           <div className="modal-field">

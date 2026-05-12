@@ -191,6 +191,7 @@ function Alumnos() {
         <CrearAlumno
           onCerrar={() => setMostrarCrear(false)}
           onGuardado={() => {
+            setMostrarCrear(false);
             cargar();
           }}
         />
