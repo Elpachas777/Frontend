@@ -3,7 +3,7 @@ import Registro from "../admin/Registro";
 import EjercicioAlumno from "../alumno/EjercicioAlumno";
 import Arrastrar from "../ejercicios/Arrastrar";
 import LandingPage from "../LandingPage";
-import CorreoVerificado from "../sesion/CorreoVerificado.jsx";
+import CorreoVerificado from "../sesion/CorreoVerificado";
 import Login from "../sesion/Login";
 import Recuperar from "../sesion/Recuperar";
 import RecuperarContra from "../sesion/RecuperarContra";
