@@ -16,7 +16,7 @@ function SideBar({ credencial, basePath = "", onCerrarSesion, usuario }) {
   return (
     <aside className="sidebar">
       <div className="sidebar-brand">
-        <img src="/img/logo.png" alt="Logo" className="sidebar-brand-logo" />
+        <img src="/img/ESCOM.png" alt="Logo" className="sidebar-brand-logo" />
         <div>
           <h2 className="sidebar-title">Menú</h2>
           <p className="sidebar-subtitle">Usuario</p>
