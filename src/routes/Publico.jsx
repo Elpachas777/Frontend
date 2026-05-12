@@ -3,11 +3,11 @@ import Registro from "../admin/Registro";
 import EjercicioAlumno from "../alumno/EjercicioAlumno";
 import Arrastrar from "../ejercicios/Arrastrar";
 import LandingPage from "../LandingPage";
-import CorreoVerificado from "../sesion/CorreoVerificado";
 import Login from "../sesion/Login";
 import Recuperar from "../sesion/Recuperar";
 import RecuperarContra from "../sesion/RecuperarContra";
 import RegistrarAdmin from "../sesion/RegistroAdmin";
+import Verificado from "../sesion/Verificado";
 
 function Publico({ setAutentificado }) {
   return (
@@ -39,8 +39,8 @@ function Publico({ setAutentificado }) {
           <Route path="/recuperar-contraseña" element={<RecuperarContra />} />
           <Route path="/Recuperar" element={<Recuperar />} />
           <Route path="/recuperar" element={<Recuperar />} />
-          <Route path="/verificado" element={<CorreoVerificado />} />
-          <Route path="/Verificado" element={<CorreoVerificado />} />
+          <Route path="/verificado" element={<Verificado />} />
+          <Route path="/Verificado" element={<Verificado />} />
           <Route path="/Agarrar" element={<Arrastrar />} />
           <Route path="/alumno/:idAlumno" element={<EjercicioAlumno />} />
           <Route path="*" element={<Navigate to="/" />} />
