@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from "react";
 import "../components/Tabla.css";
 import { obtenerDocentes } from "../utils/docentes";
 import { obtenerEscuelas } from "../utils/escuela";
+import { getDocFoto } from "../utils/logoCache";
 import CrearDocente from "./CrearDocente";
 import EditarDocente from "./EditarDocente";
 import "./RolAdmin.css";
@@ -84,6 +85,7 @@ function DocentesAdmin() {
           <thead>
             <tr>
               <th>id</th>
+              <th>foto</th>
               <th>nombre</th>
               <th>escuela</th>
               <th>correo</th>
@@ -95,6 +97,14 @@ function DocentesAdmin() {
               docentesFiltrados.map((docente) => (
                 <tr key={docente.id}>
                   <td>{docente.id}</td>
+                  <td>
+                    {(() => {
+                      const src = docente.foto || getDocFoto(docente.correo);
+                      return src
+                        ? <img src={src} alt={docente.nombre} className="escuela-logo-thumb" />
+                        : <span className="tabla-sin-foto">Sin foto</span>;
+                    })()}
+                  </td>
                   <td>{docente.nombre}</td>
                   <td>{docente.escuela.nombre}</td>
                   <td>{docente.correo}</td>
@@ -160,6 +170,7 @@ function DocentesAdmin() {
           escuelas={escuelas}
           onCerrar={() => setMostrarCrear(false)}
           onGuardado={() => {
+            setMostrarCrear(false);
             cargar();
           }}
         />

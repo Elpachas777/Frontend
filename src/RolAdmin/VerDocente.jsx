@@ -1,18 +1,26 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Swal from "sweetalert2";
 import "sweetalert2/dist/sweetalert2.min.css";
-import { eliminarDocente } from "../api/docente.api";
+import { eliminarDocente, verDocente as fetchDocente } from "../api/docente.api";
 import "../components/Tabla.css";
 import { comprobarContraseña } from "../utils/admin";
 import { modificarHabilitado } from "../utils/docentes";
+import { getDocFoto } from "../utils/logoCache";
 import { IconEye, IconEyeOff } from "./EyeIcons";
 import "./RolAdmin.css";
-import VerGrupoAdmin from "./VerGrupoAdmin";
 import VerGrupo from "../docente/VerGrupo";
 
 function VerDocente({ docente, onCerrar, onGuardado, onEliminado }) {
   const [habilitado, setHabilitado] = useState(docente.habilitado);
   const [grupoViendoId, setGrupoViendoId] = useState(null);
+  const [showPassword, setShowPassword] = useState(false);
+  const [password, setPassword] = useState(null);
+
+  useEffect(() => {
+    fetchDocente(docente.id)
+      .then((d) => setPassword(d?.contraseña ?? d?.password ?? null))
+      .catch(() => {});
+  }, [docente.id]);
   const gruposDocente = docente.grupos ?? [];
 
   const handleToggleHabilitado = async () => {
@@ -112,11 +120,12 @@ function VerDocente({ docente, onCerrar, onGuardado, onEliminado }) {
           <div className="docente-panel-top">
             <div className="docente-panel-left">
               <div className="docente-foto">
-                {docente.foto ? (
-                  <img src={docente.foto} alt={docente.nombre} />
-                ) : (
-                  <span>👤</span>
-                )}
+                {(() => {
+                  const src = docente.foto || getDocFoto(docente.correo);
+                  return src
+                    ? <img src={src} alt={docente.nombre} />
+                    : <span className="tabla-sin-foto" style={{ fontSize: "0.75rem" }}>Sin foto de perfil</span>;
+                })()}
               </div>
             </div>
 
@@ -138,7 +147,7 @@ function VerDocente({ docente, onCerrar, onGuardado, onEliminado }) {
                     className="docente-grupo-btn"
                     onClick={() => setGrupoViendoId(grupo)}
                   >
-                    📚 {grupo.nombre}
+                    {grupo.nombre}
                   </button>
                 ))
               ) : (
@@ -149,13 +158,12 @@ function VerDocente({ docente, onCerrar, onGuardado, onEliminado }) {
             </div>
           </div>
 
-          {/* Mid: contraseña, fecha, estado */}
+          {/* Mid: fecha, estado, contraseña */}
           <div className="docente-panel-mid">
             <div className="docente-mid-item">
               <span className="docente-mid-label">Ingresado desde el</span>
               <span className="docente-mid-value">
-                {new Date(docente.fechaIngreso).toLocaleDateString("es-MX") ||
-                  "—"}
+                {new Date(docente.fechaIngreso).toLocaleDateString("es-MX") || "—"}
               </span>
             </div>
             <div className="docente-mid-item">
@@ -169,6 +177,24 @@ function VerDocente({ docente, onCerrar, onGuardado, onEliminado }) {
               >
                 {habilitado ? "● Activo" : "● Inactivo"}
               </span>
+            </div>
+            <div className="docente-mid-item">
+              <span className="docente-mid-label">Contraseña</span>
+              <div className="docente-password-wrap">
+                <span className="docente-mid-value docente-password-value">
+                  {showPassword
+                    ? (password ?? "No disponible")
+                    : "••••••••"}
+                </span>
+                <button
+                  type="button"
+                  className="password-eye docente-password-eye"
+                  onClick={() => setShowPassword((p) => !p)}
+                  aria-label={showPassword ? "Ocultar" : "Mostrar"}
+                >
+                  {showPassword ? <IconEyeOff /> : <IconEye />}
+                </button>
+              </div>
             </div>
           </div>
 

@@ -81,7 +81,6 @@ export function actualizar(
       const { logo_muestra, ...datos } = formData;
 
       const respuesta = await api.actualizar(id, datos);
-      saveLogo(formData.nombre, logo_muestra);
       setMensaje(respuesta);
       onGuardado();
     } catch (error) {

@@ -130,6 +130,18 @@
   border-color: #7bc043;
 }
 
+.tabla-sin-foto {
+  font-size: 0.78rem;
+  color: #aaa;
+  font-style: italic;
+}
+
+.modal-hint {
+  color: #7a9a72;
+  font-size: 0.80rem;
+  margin-top: 2px;
+}
+
 .modal-error {
   color: #e74c3c;
   font-size: 0.84rem;
@@ -443,6 +455,31 @@
   display: flex;
   flex-direction: column;
   gap: 5px;
+}
+
+.docente-password-wrap {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.docente-password-value {
+  font-family: monospace;
+  letter-spacing: 0.04em;
+}
+
+.docente-password-eye {
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  color: #94a3b8;
+  display: flex;
+  align-items: center;
+}
+
+.docente-password-eye:hover {
+  color: #4a7c59;
 }
 
 .docente-mid-label {

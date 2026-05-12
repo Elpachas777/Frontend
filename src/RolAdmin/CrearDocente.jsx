@@ -14,23 +14,20 @@ function CrearDocente({ escuelas, onCerrar, onGuardado }) {
   const [errores, setErrores] = useState({});
   const [showPassword, setShowPassword] = useState(false);
 
+  const [foto, setFoto] = useState("");
   const { formData, handleChange } = useFormData(USUARIOS.DOCENTE);
   const { handleSubmit } = registrar({
     formData,
+    foto,
     setErrores,
     onGuardado,
-  });
-
-  const [form, setForm] = useState({
-    foto: "",
   });
 
   const handleFoto = (e) => {
     const file = e.target.files[0];
     if (!file) return;
     const reader = new FileReader();
-    reader.onload = (ev) =>
-      setForm((prev) => ({ ...prev, foto: ev.target.result }));
+    reader.onload = (ev) => setFoto(ev.target.result);
     reader.readAsDataURL(file);
   };
 
@@ -47,12 +44,8 @@ function CrearDocente({ escuelas, onCerrar, onGuardado }) {
           <div className="modal-field">
             <label>Foto</label>
             <div className="foto-upload-row">
-              {form.foto && (
-                <img
-                  src={form.foto}
-                  alt="preview"
-                  className="foto-upload-preview"
-                />
+              {foto && (
+                <img src={foto} alt="preview" className="foto-upload-preview" />
               )}
               <input type="file" accept="image/*" onChange={handleFoto} />
             </div>
@@ -133,6 +126,7 @@ function CrearDocente({ escuelas, onCerrar, onGuardado }) {
                 {showPassword ? <IconEyeOff /> : <IconEye />}
               </button>
             </div>
+            <span className="modal-hint">Mínimo 8 caracteres, una mayúscula, un número y un carácter especial.</span>
             {errores.password && (
               <span className="modal-error">{errores.password}</span>
             )}

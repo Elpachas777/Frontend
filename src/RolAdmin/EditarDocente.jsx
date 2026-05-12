@@ -15,6 +15,7 @@ function EditarDocente({ docente, escuelas, onCerrar, onGuardado }) {
 
   const [errores, setErrores] = useState({});
 
+  const [foto, setFoto] = useState(docente.foto || "");
   const { formData, setFormData, handleChange } = useFormData(
     USUARIOS.DOCENTE_EDITAR,
   );
@@ -22,35 +23,25 @@ function EditarDocente({ docente, escuelas, onCerrar, onGuardado }) {
   useEffect(() => {
     setFormData((prev) => {
       const nuevo = { ...prev };
-
       Object.keys(prev).forEach((key) => {
-        if (key in docente) {
-          nuevo[key] = docente[key];
-        }
+        if (key in docente) nuevo[key] = docente[key];
       });
-
       return nuevo;
     });
   }, []);
 
   const { handleSubmit } = editar(docente, {
     formData,
+    foto,
     setErrores,
     onGuardado,
-  });
-
-  const [form, setForm] = useState({
-    foto: docente.foto || "",
-    passwordAntigua: "",
-    passwordNueva: "",
   });
 
   const handleFoto = (e) => {
     const file = e.target.files[0];
     if (!file) return;
     const reader = new FileReader();
-    reader.onload = (ev) =>
-      setForm((prev) => ({ ...prev, foto: ev.target.result }));
+    reader.onload = (ev) => setFoto(ev.target.result);
     reader.readAsDataURL(file);
   };
 
@@ -71,9 +62,9 @@ function EditarDocente({ docente, escuelas, onCerrar, onGuardado }) {
           <div className="modal-field">
             <label>Foto</label>
             <input type="file" accept="image/*" onChange={handleFoto} />
-            {form.foto && (
+            {foto && (
               <img
-                src={form.foto}
+                src={foto}
                 alt="preview"
                 className="logo-preview"
                 style={{ borderRadius: "50%" }}

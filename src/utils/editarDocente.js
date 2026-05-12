@@ -1,6 +1,9 @@
 import { editarDocente } from "../api/docente.api";
 import { comprobarContraseña } from "./docentes";
+import { saveDocFoto } from "./logoCache";
 import mensaje from "./mensajes";
+
+const PASSWORD_REGEX = /^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&_#\-])[A-Za-z\d@$!%*?&_#\-]{8,}$/;
 
 async function validar(formData, id) {
   const e = {};
@@ -14,12 +17,14 @@ async function validar(formData, id) {
     }
     if (!formData.passwordNueva) {
       e.passwordNueva = "Ingresa la nueva contraseña.";
+    } else if (!PASSWORD_REGEX.test(formData.passwordNueva)) {
+      e.passwordNueva = "Mínimo 8 caracteres, una mayúscula, un número y un carácter especial (@$!%*?&_#-).";
     }
   }
   return e;
 }
 
-function editar({ id }, { formData, setErrores, onGuardado }) {
+function editar({ id }, { formData, foto, setErrores, onGuardado }) {
   const handleSubmit = async (event) => {
     event.preventDefault();
     const errores = await validar(formData, id);
@@ -45,6 +50,7 @@ function editar({ id }, { formData, setErrores, onGuardado }) {
       };
 
       const respuesta = await editarDocente(id, datos);
+      saveDocFoto(formData.correo, foto);
       mensaje("Docente editado", respuesta);
       onGuardado();
     } catch (error) {
@@ -52,9 +58,7 @@ function editar({ id }, { formData, setErrores, onGuardado }) {
     }
   };
 
-  return {
-    handleSubmit,
-  };
+  return { handleSubmit };
 }
 
 export default editar;
