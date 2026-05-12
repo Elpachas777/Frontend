@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import "./CorreoVerificado.css";
+import "./Verificado.css";
 
 function Verificado() {
   const navigate = useNavigate();
