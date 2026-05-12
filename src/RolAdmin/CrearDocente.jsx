@@ -70,7 +70,7 @@ function CrearDocente({ escuelas, onCerrar, onGuardado }) {
               onChange={handleChange}
               placeholder="Apellidos completos"
             />
-            {errores.nombre && (
+            {errores.apellidos && (
               <span className="modal-error">{errores.apellidos}</span>
             )}
           </div>
