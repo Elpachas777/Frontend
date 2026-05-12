@@ -5,6 +5,7 @@ import { eliminar } from "../api/escuela.api";
 import "../components/Tabla.css";
 import { comprobarContraseña } from "../utils/admin";
 import { obtenerEscuelas } from "../utils/escuela";
+import { getLogo } from "../utils/logoCache";
 import CrearEscuela from "./CrearEscuela";
 import EditarEscuela from "./EditarEscuela";
 import "./RolAdmin.css";
@@ -131,15 +132,12 @@ function Escuelas() {
                   <tr key={escuela.id}>
                     <td>{escuela.id}</td>
                     <td>
-                      {escuela.logo ? (
-                        <img
-                          src={escuela.logo}
-                          alt={escuela.nombre}
-                          className="escuela-logo-thumb"
-                        />
-                      ) : (
-                        <span className="escuela-logo-empty">🏫</span>
-                      )}
+                      {(() => {
+                        const src = escuela.logo || getLogo(escuela.nombre);
+                        return src
+                          ? <img src={src} alt={escuela.nombre} className="escuela-logo-thumb" />
+                          : <span className="escuela-logo-empty">🏫</span>;
+                      })()}
                     </td>
                     <td>{escuela.nombre}</td>
                     <td>{escuela.director}</td>

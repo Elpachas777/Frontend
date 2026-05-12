@@ -1,4 +1,5 @@
 import * as api from "../api/escuela.api";
+import { saveLogo } from "./logoCache";
 const PHONE_REGEX = /^\+?[\d\s\-\(\)]{7,20}$/;
 
 function validar(formData) {
@@ -41,6 +42,7 @@ export function registrarEscuela({
       const { logo_muestra, ...datos } = formData;
 
       const respuesta = await api.crear(datos);
+      saveLogo(formData.nombre, logo_muestra);
       setMensaje(respuesta);
       onGuardado();
     } catch (error) {
@@ -77,7 +79,9 @@ export function actualizar(
 
     try {
       const { logo_muestra, ...datos } = formData;
+
       const respuesta = await api.actualizar(id, datos);
+      saveLogo(formData.nombre, logo_muestra);
       setMensaje(respuesta);
       onGuardado();
     } catch (error) {
