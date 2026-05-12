@@ -14,6 +14,7 @@ function Tabla({
   Editar,
   id,
   ocultarColumnas = [],
+  AccionExtra,
 }) {
   const [encabezados, setEncabezados] = useState([]);
   const [mostrarModal, setMostrarModal] = useState(false);
@@ -221,7 +222,20 @@ function Tabla({
                 <tr key={fila.id ?? filaIndex}>
                   {encabezados.map((columna) => (
                     <td key={`${fila.id ?? filaIndex}-${columna}`}>
-                      {fila[columna]}
+                      {columna === "estado" ? (
+                        <span
+                          className={`tabla-chip ${
+                            fila[columna] === "Verificado"
+                              ? "tabla-chip--ok"
+                              : "tabla-chip--pend"
+                          }`}
+                        >
+                          {fila[columna] === "Verificado" ? "✓ " : "● "}
+                          {fila[columna]}
+                        </span>
+                      ) : (
+                        fila[columna]
+                      )}
                     </td>
                   ))}
 
@@ -246,6 +260,13 @@ function Tabla({
                       >
                         Editar
                       </button>
+                    )}
+
+                    {AccionExtra && (
+                      <AccionExtra
+                        fila={fila}
+                        onCambio={() => setActualizado((prev) => !prev)}
+                      />
                     )}
 
                     {Borrar && (

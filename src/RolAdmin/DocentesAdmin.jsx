@@ -1,4 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
+import Swal from "sweetalert2";
+import { reenviarVerificacion } from "../api/docente.api";
 import "../components/Tabla.css";
 import { obtenerDocentes } from "../utils/docentes";
 import { obtenerEscuelas } from "../utils/escuela";
@@ -17,6 +19,7 @@ function DocentesAdmin() {
   const [mostrarEditar, setMostrarEditar] = useState(false);
   const [mostrarVer, setMostrarVer] = useState(false);
   const [seleccionado, setSeleccionado] = useState(null);
+  const [reenviandoId, setReenviandoId] = useState(null);
 
   const cargar = useCallback(async () => {
     const docentesArreglo = await obtenerDocentes();
@@ -38,6 +41,49 @@ function DocentesAdmin() {
       filtroEscuela === "" || docente.escuela.id === Number(filtroEscuela);
     return matchNombre && matchEscuela;
   });
+
+  const handleReenviar = async (docente) => {
+    if (reenviandoId) return;
+
+    const confirm = await Swal.fire({
+      title: "Reenviar correo de verificación",
+      html: `¿Enviar nuevamente el correo de verificación a <strong>${docente.correo}</strong>?`,
+      icon: "question",
+      showCancelButton: true,
+      confirmButtonText: "Sí, reenviar",
+      cancelButtonText: "Cancelar",
+      confirmButtonColor: "#7bc043",
+      cancelButtonColor: "#6c757d",
+    });
+
+    if (!confirm.isConfirmed) return;
+
+    try {
+      setReenviandoId(docente.id);
+      const res = await reenviarVerificacion(docente.id);
+
+      await Swal.fire({
+        icon: "success",
+        title: "Correo enviado",
+        text: res?.mensaje || `Se reenvió el correo a ${docente.correo}.`,
+        timer: 2200,
+        showConfirmButton: false,
+      });
+
+      await cargar();
+    } catch (error) {
+      const datos = error?.response?.data || {};
+      await Swal.fire({
+        icon: "error",
+        title: "No se pudo reenviar",
+        text:
+          datos.mensaje ||
+          "Ocurrió un error al reenviar el correo. Intenta de nuevo.",
+      });
+    } finally {
+      setReenviandoId(null);
+    }
+  };
 
   return (
     <section className="tabla-container">
@@ -89,52 +135,85 @@ function DocentesAdmin() {
               <th>Nombre</th>
               <th>Escuela</th>
               <th>Correo</th>
+              <th>Estado</th>
               <th>Acciones</th>
             </tr>
           </thead>
           <tbody>
             {docentesFiltrados.length > 0 ? (
-              docentesFiltrados.map((docente) => (
-                <tr key={docente.id}>
-                  <td>{docente.id}</td>
-                  <td>
-                    {(() => {
-                      const src = docente.foto || getDocFoto(docente.correo);
-                      return src
-                        ? <img src={src} alt={docente.nombre} className="escuela-logo-thumb" />
-                        : <span className="tabla-sin-foto">Sin foto</span>;
-                    })()}
-                  </td>
-                  <td>{docente.nombre}</td>
-                  <td>{docente.escuela.nombre}</td>
-                  <td>{docente.correo}</td>
-                  <td className="acciones">
-                    <button
-                      type="button"
-                      className="btn btn-ver"
-                      onClick={() => {
-                        setSeleccionado(docente);
-                        setMostrarVer(true);
-                      }}
-                    >
-                      Ver
-                    </button>
-                    <button
-                      type="button"
-                      className="btn btn-editar"
-                      onClick={() => {
-                        setSeleccionado(docente);
-                        setMostrarEditar(true);
-                      }}
-                    >
-                      Editar
-                    </button>
-                  </td>
-                </tr>
-              ))
+              docentesFiltrados.map((docente) => {
+                // Compatibilidad: si por algún motivo no llega 'estado',
+                // lo derivamos del booleano 'habilitado'.
+                const estado =
+                  docente.estado ||
+                  (docente.habilitado ? "Verificado" : "Pendiente");
+                const verificado = estado === "Verificado";
+
+                return (
+                  <tr key={docente.id}>
+                    <td>{docente.id}</td>
+                    <td>
+                      {(() => {
+                        const src = docente.foto || getDocFoto(docente.correo);
+                        return src
+                          ? <img src={src} alt={docente.nombre} className="escuela-logo-thumb" />
+                          : <span className="tabla-sin-foto">Sin foto</span>;
+                      })()}
+                    </td>
+                    <td>{docente.nombre}</td>
+                    <td>{docente.escuela.nombre}</td>
+                    <td>{docente.correo}</td>
+                    <td>
+                      <span
+                        className={`tabla-chip ${
+                          verificado ? "tabla-chip--ok" : "tabla-chip--pend"
+                        }`}
+                      >
+                        {verificado ? "✓ " : "● "}
+                        {estado}
+                      </span>
+                    </td>
+                    <td className="acciones">
+                      <button
+                        type="button"
+                        className="btn btn-ver"
+                        onClick={() => {
+                          setSeleccionado(docente);
+                          setMostrarVer(true);
+                        }}
+                      >
+                        Ver
+                      </button>
+                      <button
+                        type="button"
+                        className="btn btn-editar"
+                        onClick={() => {
+                          setSeleccionado(docente);
+                          setMostrarEditar(true);
+                        }}
+                      >
+                        Editar
+                      </button>
+                      {!verificado && (
+                        <button
+                          type="button"
+                          className="btn btn-reenviar"
+                          onClick={() => handleReenviar(docente)}
+                          disabled={reenviandoId === docente.id}
+                          title={`Reenviar correo a ${docente.correo}`}
+                        >
+                          {reenviandoId === docente.id
+                            ? "Enviando…"
+                            : "Reenviar correo"}
+                        </button>
+                      )}
+                    </td>
+                  </tr>
+                );
+              })
             ) : (
               <tr>
-                <td colSpan={6}>
+                <td colSpan={7}>
                   <div className="tabla-empty">
                     <span className="tabla-empty-icon">🌱</span>
                     <h3>Sin resultados</h3>

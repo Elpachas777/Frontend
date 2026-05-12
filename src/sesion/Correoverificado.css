@@ -1,0 +1,98 @@
+.cv-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background: linear-gradient(135deg, #f3f9ec 0%, #e8f5e9 100%);
+}
+
+.cv-card {
+  background: #ffffff;
+  border-radius: 24px;
+  padding: 48px 40px;
+  max-width: 480px;
+  width: 100%;
+  text-align: center;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15);
+  border: 1px solid rgba(123, 192, 67, 0.15);
+}
+
+.cv-icon-wrap {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 24px;
+}
+
+.cv-check {
+  width: 96px;
+  height: 96px;
+}
+
+.cv-check-circle {
+  fill: none;
+  stroke: #7bc043;
+  stroke-width: 2;
+  stroke-dasharray: 166;
+  stroke-dashoffset: 166;
+  animation: cv-circle 0.7s ease-out forwards;
+}
+
+.cv-check-mark {
+  stroke: #7bc043;
+  stroke-width: 4;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-dasharray: 60;
+  stroke-dashoffset: 60;
+  animation: cv-mark 0.4s 0.6s ease-out forwards;
+}
+
+@keyframes cv-circle {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes cv-mark {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+.cv-title {
+  color: #2d5016;
+  font-size: 1.9rem;
+  margin: 0 0 14px 0;
+  font-weight: 700;
+}
+
+.cv-text {
+  color: #5a6e4d;
+  font-size: 1rem;
+  line-height: 1.55;
+  margin: 0 0 30px 0;
+}
+
+.cv-btn {
+  background: #7bc043;
+  color: white;
+  border: none;
+  padding: 14px 28px;
+  border-radius: 999px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  box-shadow: 0 8px 20px rgba(123, 192, 67, 0.25);
+}
+
+.cv-btn:hover {
+  background: #6caa3a;
+  transform: translateY(-1px);
+  box-shadow: 0 10px 24px rgba(123, 192, 67, 0.35);
+}
+
+.cv-btn:active {
+  transform: translateY(0);
+}

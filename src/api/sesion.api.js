@@ -1,4 +1,5 @@
 import { useNavigate } from "react-router-dom";
+import Swal from "sweetalert2";
 import axios from "../utils/axios.js";
 
 const mensajeError = (error, mensajeDefault) => {
@@ -25,6 +26,22 @@ export function useIniciarSesion({ formData, setAutentificado, setMensaje }) {
       }
     } catch (error) {
       console.log("Error al iniciar sesión:", error);
+
+      // Caso especial: cuenta no verificada (403). Usamos Swal con un
+      // mensaje más prominente porque es algo que el usuario debe atender.
+      if (error?.response?.status === 403) {
+        const datos = error.response.data || {};
+        await Swal.fire({
+          icon: "warning",
+          title: "Cuenta no verificada",
+          text:
+            datos.mensaje ||
+            "Tu cuenta aún no ha sido verificada. Habla con tu técnico para habilitarla.",
+          confirmButtonText: "Entendido",
+          confirmButtonColor: "#7bc043",
+        });
+        return;
+      }
 
       setMensaje(
         mensajeError(

@@ -34,3 +34,8 @@ export const verificarContraseña = async (id, data) => {
   const res = await axios.put(`/verificarContra/${id}`, data);
   return res.data;
 };
+
+export const reenviarVerificacion = async (id) => {
+  const res = await axios.post(`/reenviarVerificacion/${id}`);
+  return res.data;
+};
