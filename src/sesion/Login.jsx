@@ -3,6 +3,7 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useIniciarSesion } from "../api/sesion.api";
 import "../components/button.css";
 import Mensaje from "../components/Mensaje";
+import { USUARIOS } from "../enums/tipoUsuarios";
 import useFormData from "../hooks/useFormData";
 import { IconEye, IconEyeOff } from "../RolAdmin/EyeIcons";
 import "./Login.css";
@@ -15,7 +16,7 @@ function Login({ setAutentificado }) {
   const isPreview = location.pathname.startsWith("/preview");
   const recuperarPath = isPreview ? "/preview/recuperar" : "/Recuperar";
   const landingPath = isPreview ? "/preview/landing" : "/";
-  const { formData, handleChange } = useFormData("docente_login");
+  const { formData, handleChange } = useFormData(USUARIOS.DOCENTE_LOGIN);
 
   const { handleSubmit } = useIniciarSesion({
     formData,

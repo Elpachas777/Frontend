@@ -1,9 +1,9 @@
 import * as tf from "@tensorflow/tfjs";
 import { useEffect, useRef, useState } from "react";
-import Canvas from "./Canvas";
-import { dividirCanvas, predecir } from "../utils/modelo";
 import "../RolAdmin/RolAdmin.css";
 import mensaje from "../utils/mensajes";
+import { dividirCanvas, predecir } from "../utils/modelo";
+import Canvas from "./Canvas";
 
 function BotonCanvas({ Texto = "__" }) {
   const [modelo, setModelo] = useState();
@@ -31,8 +31,8 @@ function BotonCanvas({ Texto = "__" }) {
       "Resultado: " +
         resultadoIzq.letra +
         resultadoDer.letra +
-        "- " +
-        procentajeTotal +
+        " - " +
+        procentajeTotal.toFixed(2) +
         "%",
       {
         tipo: "info",
@@ -65,13 +65,6 @@ function BotonCanvas({ Texto = "__" }) {
 
             <Canvas ref={canvaRef} />
             <div className="modal-actions">
-              <button
-                type="button"
-                className="modal-btn-save"
-                onClick={() => handlePredecir(canvaRef.current.getImage())}
-              >
-                Predecir
-              </button>
               <button
                 type="button"
                 className="modal-btn-cancel"

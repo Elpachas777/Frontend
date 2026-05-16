@@ -1,9 +1,8 @@
 import { useNavigate } from "react-router-dom";
-import "./CorreoVerificado.css";
+import "./Verificado.css";
 
-function CorreoVerificado() {
+function Verificado() {
   const navigate = useNavigate();
-
   return (
     <div className="cv-page">
       <div className="cv-card">
@@ -40,4 +39,4 @@ function CorreoVerificado() {
   );
 }
 
-export default CorreoVerificado;
+export default Verificado;

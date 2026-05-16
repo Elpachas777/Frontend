@@ -18,15 +18,15 @@ function AgregarAlumnos({
   const [filtroApellidos, setFiltroApellidos] = useState("");
   const [alumnosSelect, setAlumnosSelect] = useState([]);
 
- const cargar = useCallback(async () => {
-  const alumnosArreglo = await listar();
+  const cargar = useCallback(async () => {
+    const alumnosArreglo = await listar();
 
-  const alumnosSinGrupo = alumnosArreglo.filter(
-    (alumno) => !alumno.grupo || alumno.grupo.trim() === "",
-  );
+    const alumnosSinGrupo = alumnosArreglo.filter(
+      (alumno) => !alumno.grupo || alumno.grupo.trim() === "",
+    );
 
-  setAlumnos(alumnosSinGrupo);
-}, []);
+    setAlumnos(alumnosSinGrupo);
+  }, []);
 
   const eliminar = useCallback(async () => {
     const alumnosGrupo = await listarAlumnos({ id: grupoId });
@@ -41,28 +41,17 @@ function AgregarAlumnos({
     );
   };
 
- const handleClick = async () => {
-  if (alumnosSelect.length === 0) {
-    setErrores({ general: "Selecciona al menos un alumno." });
-    return;
-  }
+  const handleClick = async () => {
+    if (alumnosSelect.length === 0) {
+      setErrores({ general: "Selecciona al menos un alumno." });
+      return;
+    }
 
-  try {
-    await agregar(
-      { grupoId, grupoNombre, alumnosSelect },
-      { setErrores, onGuardado },
-    );
+    await agregar({ grupoId, grupoNombre, alumnosSelect }, { onGuardado });
 
     setAlumnosSelect([]);
-    await cargar();
-
-    if (onCerrar) {
-      onCerrar();
-    }
-  } catch (error) {
-    console.log("Error al agregar alumnos:", error);
-  }
-};
+    cargar();
+  };
   const handleEliminar = async () => {
     await eliminarAlumno(grupoId, { alumnosSelect, setErrores, onGuardado });
     eliminar();

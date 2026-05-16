@@ -44,10 +44,12 @@ function LandingPage() {
       <div className="landing-content">
         <div className="landing-copy">
           <h1 className="landing-heading">
-            <span className="landing-heading-sila">Sila</span><span className="landing-heading-trazo">Trazo</span>
+            <span className="landing-heading-sila">Sila</span>
+            <span className="landing-heading-trazo">Bando</span>
           </h1>
           <p className="landing-copy-text">
-            Para comenzar, ingresa el ID del estudiante que realizará el ejercicio.
+            Para comenzar, ingresa el ID del estudiante que realizará el
+            ejercicio.
           </p>
 
           <form className="landing-card" onSubmit={handleComenzar}>
@@ -62,7 +64,10 @@ function LandingPage() {
                 onChange={(e) => setIdAlumno(e.target.value)}
                 autoComplete="off"
               />
-              <button type="submit" className="landing-button landing-submit-btn">
+              <button
+                type="submit"
+                className="landing-button landing-submit-btn"
+              >
                 Comenzar
               </button>
             </div>

@@ -4,7 +4,12 @@ import Canvas from "../components/Canvas";
 import "./EjercicioPlayer.css";
 import { dividirCanvasPorCantidad, predecir } from "../utils/modelo";
 import mensaje from "../utils/mensajes";
+import { useEffect, useRef, useState } from "react";
 import * as respuestaApi from "../api/respuesta.api";
+import Canvas from "../components/Canvas";
+import mensaje from "../utils/mensajes";
+import { dividirCanvas, predecir } from "../utils/modelo";
+import "./EjercicioPlayer.css";
 
 function limpiarSilaba(valor) {
   return String(valor || "")
@@ -164,21 +169,19 @@ function EjercicioPlayer({
     };
   };
 
-  const handlePredecir = ({ canvas, silaba, clave }) => {
+  const handlePredecir = async (canvas, silaba, indiceSilaba) => {
     try {
       const resultado = predecirSilaba({ canvas, silaba, clave });
 
-      mensaje(
-        `Resultado: ${resultado.texto} - similitud ${resultado.porcentaje.toFixed(
-          2,
-        )}%`,
+      await mensaje(
+        `Resultado: ${resultado.texto} - ${resultado.porcentaje.toFixed(2)}%`,
         {
           tipo: "info",
           mensaje: "Sigue así",
         },
       );
     } catch (error) {
-      mensaje("No se pudo predecir", {
+      await mensaje("No se pudo predecir", {
         tipo: "error",
         mensaje: error.message || "Intenta de nuevo.",
       });
@@ -193,26 +196,11 @@ function EjercicioPlayer({
       const yaExiste = intentoRef.current.some((r) => r.clave === clave);
 
       if (!yaExiste) {
-        predecirSilaba({
-          canvas: canvaRef.current[indiceSilaba]?.getImage(),
+        predecirSilaba(
+          canvaRef.current[indiceSilaba]?.getImage(),
           silaba,
-          clave,
-        });
-      }
-    });
-  };
-
-  const predecirFaltantesCuento = () => {
-    huecosCuento.forEach((hueco, indiceHueco) => {
-      const clave = crearClave("cuento", indiceHueco, hueco.silaba);
-      const yaExiste = intentoRef.current.some((r) => r.clave === clave);
-
-      if (!yaExiste) {
-        predecirSilaba({
-          canvas: canvaRef.current[indiceHueco]?.getImage(),
-          silaba: hueco.silaba,
-          clave,
-        });
+          indiceSilaba,
+        );
       }
     });
   };
@@ -372,98 +360,16 @@ function EjercicioPlayer({
                 );
               }
 
-              const indiceHueco = huecosCuento.findIndex(
-                (h) => h.id === segmento.id,
-              );
-
-              const clave = crearClave("cuento", indiceHueco, segmento.silaba);
-
-              return (
-                <span className="ep-story-canvas" key={segmento.id}>
-                  <Canvas
-                    silaba={segmento.silaba}
-                    ref={(cr) => {
-                      canvaRef.current[indiceHueco] = cr;
-                    }}
-                  />
-
-                  <div className="modal-actions ep-story-actions">
-                    <button
-                      type="button"
-                      className="modal-btn-save"
-                      disabled={!modelo || guardando}
-                      onClick={() =>
-                        handlePredecir({
-                          canvas: canvaRef.current[indiceHueco]?.getImage(),
-                          silaba: segmento.silaba,
-                          clave,
-                        })
-                      }
-                    >
-                      Predecir
-                    </button>
-
-                    <button
-                      type="button"
-                      className="modal-btn-cancel"
-                      disabled={guardando}
-                      onClick={() => canvaRef.current[indiceHueco]?.clear()}
-                    >
-                      limpiar
-                    </button>
-                  </div>
-                </span>
-              );
-            })}
-          </div>
-        ) : (
-          <>
-            <p className="ep-sentence">{contenido.texto}</p>
-            <p className="ep-syllable-label">{actual.silabas.join(" - ")}</p>
-
-            <div className="ep-canvases">
-              {actual.silabas.map((sil, i) => {
-                const clave = crearClave(`oracion-${indice}`, i, sil);
-
-                return (
-                  <div key={`${indice}-${i}-${sil}`}>
-                    <Canvas
-                      silaba={sil}
-                      ref={(cr) => {
-                        canvaRef.current[i] = cr;
-                      }}
-                    />
-
-                    <div className="modal-actions">
-                      <button
-                        type="button"
-                        className="modal-btn-save"
-                        disabled={!modelo || guardando}
-                        onClick={() =>
-                          handlePredecir({
-                            canvas: canvaRef.current[i]?.getImage(),
-                            silaba: sil,
-                            clave,
-                          })
-                        }
-                      >
-                        Predecir
-                      </button>
-
-                      <button
-                        type="button"
-                        className="modal-btn-cancel"
-                        disabled={guardando}
-                        onClick={() => canvaRef.current[i]?.clear()}
-                      >
-                        limpiar
-                      </button>
-                    </div>
-                  </div>
-                );
-              })}
-
-              <span className="ep-arrow">→</span>
+              <div className="modal-actions">
+                <button
+                  type="button"
+                  className="modal-btn-cancel"
+                  disabled={guardando}
+                  onClick={() => canvaRef.current[i]?.clear()}
+                >
+                  limpiar
+                </button>
+              </div>
             </div>
           </>
         )}
@@ -479,7 +385,7 @@ function EjercicioPlayer({
               ? "Cargando modelo..."
               : guardando
                 ? "Procesando..."
-                : esCuento || indice + 1 >= total
+                : indice + 1 >= total
                   ? "Finalizar"
                   : "Siguiente →"}
           </button>

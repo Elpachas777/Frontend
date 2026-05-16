@@ -26,12 +26,14 @@ function EjercicioAlumno() {
         setError(null);
 
         const data = await alumnoApi.obtenerEjerciciosAlumno(idAlumno);
+        console.log(data);
 
         setAlumno(data.alumno);
         setEjercicios(data.ejercicios || []);
 
         try {
-          const dificiles = await respuestaApi.obtenerSilabasDificiles(idAlumno);
+          const dificiles =
+            await respuestaApi.obtenerSilabasDificiles(idAlumno);
           setSilabasDificiles(dificiles.silabas || []);
         } catch {
           setSilabasDificiles([]);
@@ -55,9 +57,6 @@ function EjercicioAlumno() {
 
   const handleCerrarPlayer = async () => {
     setEjercicioActivo(null);
-
-    // Aquí se refresca el dashboard.
-    // Si el ejercicio ya fue resuelto, el backend ya no lo devolverá.
     await cargarDatos();
   };
 

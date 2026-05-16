@@ -1,4 +1,5 @@
 import * as api from "../api/alumno.api";
+import mensaje from "./mensajes";
 
 function validar(formData) {
   const e = {};
@@ -30,10 +31,11 @@ export function actualizar(
     }
     try {
       const respuesta = await api.actualizar(id, formData);
-      setMensaje(respuesta);
+      await mensaje("Alumno editado con exito", respuesta);
       onGuardado();
     } catch (error) {
-      setMensaje(error.response.data);
+      const { data } = error.response;
+      await mensaje("Error al modificar al alumno", data);
     }
   };
 

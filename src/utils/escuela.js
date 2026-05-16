@@ -10,7 +10,7 @@ function validar(formData) {
   if (!formData.ubicacion) {
     e.ubicacion = "La URL de Google Maps es obligatoria.";
   } else if (!URL_REGEX.test(formData.ubicacion)) {
-    e.ubicacion = "Ingresa una URL válida (debe iniciar con http:// o https://).";
+    e.ubicacion = "La URL debe empezar con https://";
   }
   if (!formData.director) e.director = "El director a cargo es obligatorio.";
   if (!formData.contacto) {
@@ -27,11 +27,7 @@ function validar(formData) {
   return e;
 }
 
-export function registrarEscuela({
-  formData,
-  setErrores,
-  onGuardado,
-}) {
+export function registrarEscuela({ formData, setErrores, onGuardado }) {
   const handleSubmit = async (event) => {
     event.preventDefault();
     const errores = validar(formData);
@@ -78,10 +74,7 @@ export async function obtenerEscuelas() {
   }
 }
 
-export function actualizar(
-  { id },
-  { formData, setErrores, onGuardado },
-) {
+export function actualizar({ id }, { formData, setErrores, onGuardado }) {
   const handleSubmit = async (event) => {
     event.preventDefault();
     const errores = validar(formData);
@@ -107,7 +100,8 @@ export function actualizar(
     } catch (error) {
       Swal.fire({
         title: "Error",
-        text: error?.response?.data?.mensaje ?? "No se pudo actualizar la escuela.",
+        text:
+          error?.response?.data?.mensaje ?? "No se pudo actualizar la escuela.",
         icon: "error",
         confirmButtonColor: "#7bc043",
       });
