@@ -2,6 +2,7 @@ export const DATOS = {
   docente: {
     nombres: "",
     apellidos: "",
+    foto: "",
     escuela: "",
     correo: "",
     password: "",
@@ -9,6 +10,7 @@ export const DATOS = {
   docente_editar: {
     nombre: "",
     apellidos: "",
+    foto: "",
     escuela: "",
     correo: "",
     passwordAntigua: "",
@@ -41,8 +43,7 @@ export const DATOS = {
     nombre: "",
     ubicacion: "",
     director: "",
-    logo: "",
-    logo_muestra: "",
+    foto: "",
     contacto: "",
     contacto_adicional: "",
   },

@@ -5,7 +5,6 @@ import { eliminar } from "../api/escuela.api";
 import "../components/Tabla.css";
 import { comprobarContraseña } from "../utils/admin";
 import { obtenerEscuelas } from "../utils/escuela";
-import { getLogo } from "../utils/logoCache";
 import CrearEscuela from "./CrearEscuela";
 import EditarEscuela from "./EditarEscuela";
 import "./RolAdmin.css";
@@ -132,12 +131,15 @@ function Escuelas() {
                   <tr key={escuela.id}>
                     <td>{escuela.id}</td>
                     <td>
-                      {(() => {
-                        const src = escuela.logo || getLogo(escuela.nombre);
-                        return src
-                          ? <img src={src} alt={escuela.nombre} className="escuela-logo-thumb" />
-                          : <span className="tabla-sin-foto">Sin logo</span>;
-                      })()}
+                      {escuela.foto ? (
+                        <img
+                          src={escuela.foto}
+                          alt={escuela.nombre}
+                          className="escuela-logo-thumb"
+                        />
+                      ) : (
+                        <span className="tabla-sin-foto">Sin logo</span>
+                      )}
                     </td>
                     <td>{escuela.nombre}</td>
                     <td>{escuela.director}</td>
@@ -202,7 +204,6 @@ function Escuelas() {
         <CrearEscuela
           onCerrar={() => setMostrarCrear(false)}
           onGuardado={() => {
-            setMostrarCrear(false);
             cargar();
           }}
         />
@@ -216,8 +217,6 @@ function Escuelas() {
             setSeleccionada(null);
           }}
           onGuardado={() => {
-            setMostrarEditar(false);
-            setSeleccionada(null);
             cargar();
           }}
         />

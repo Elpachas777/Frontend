@@ -3,11 +3,10 @@ import Swal from "sweetalert2";
 import "sweetalert2/dist/sweetalert2.min.css";
 import { eliminarDocente } from "../api/docente.api";
 import "../components/Tabla.css";
+import VerGrupo from "../docente/VerGrupo";
 import { comprobarContraseña } from "../utils/admin";
 import { modificarHabilitado } from "../utils/docentes";
-import { getDocFoto } from "../utils/logoCache";
 import "./RolAdmin.css";
-import VerGrupo from "../docente/VerGrupo";
 
 function VerDocente({ docente, onCerrar, onGuardado, onEliminado }) {
   const [habilitado, setHabilitado] = useState(docente.habilitado);
@@ -111,12 +110,16 @@ function VerDocente({ docente, onCerrar, onGuardado, onEliminado }) {
           <div className="docente-panel-top">
             <div className="docente-panel-left">
               <div className="docente-foto">
-                {(() => {
-                  const src = docente.foto || getDocFoto(docente.correo);
-                  return src
-                    ? <img src={src} alt={docente.nombre} />
-                    : <span className="tabla-sin-foto" style={{ fontSize: "0.75rem" }}>Sin foto de perfil</span>;
-                })()}
+                {docente.foto ? (
+                  <img src={docente.foto} alt={docente.nombre} />
+                ) : (
+                  <span
+                    className="tabla-sin-foto"
+                    style={{ fontSize: "0.75rem" }}
+                  >
+                    Sin foto de perfil
+                  </span>
+                )}
               </div>
             </div>
 
@@ -154,7 +157,8 @@ function VerDocente({ docente, onCerrar, onGuardado, onEliminado }) {
             <div className="docente-mid-item">
               <span className="docente-mid-label">Ingresado desde el</span>
               <span className="docente-mid-value">
-                {new Date(docente.fechaIngreso).toLocaleDateString("es-MX") || "—"}
+                {new Date(docente.fechaIngreso).toLocaleDateString("es-MX") ||
+                  "—"}
               </span>
             </div>
             <div className="docente-mid-item">

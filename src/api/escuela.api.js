@@ -7,7 +7,7 @@ export const crear = async (data) => {
 
 export const actualizar = async (id, data) => {
   const res = await axios.put(`/actualizarEscuela/${id}`, data);
-  return res.data
+  return res.data;
 };
 
 export const listar = async () => {

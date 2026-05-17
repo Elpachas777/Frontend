@@ -7,7 +7,9 @@ import "./RolAdmin.css";
 function CrearEscuela({ onCerrar, onGuardado }) {
   const [errores, setErrores] = useState({});
 
-  const { formData, handleChange } = useFormData(USUARIOS.ESCUELA);
+  const { formData, handleChange, handleFileChange } = useFormData(
+    USUARIOS.ESCUELA,
+  );
   const { handleSubmit } = registrarEscuela({
     formData,
     setErrores,
@@ -41,19 +43,21 @@ function CrearEscuela({ onCerrar, onGuardado }) {
           </div>
           <div className="modal-field">
             <label>Logo</label>
-            <input
-              type="file"
-              name="logo"
-              accept="image/*"
-              onChange={handleChange}
-            />
-            {formData.logo_muestra && (
-              <img
-                src={formData.logo_muestra}
-                alt="logo preview"
-                className="logo-preview"
+            <div className="foto-upload-row">
+              {formData.foto && (
+                <img
+                  src={URL.createObjectURL(formData.foto)}
+                  alt="preview"
+                  className="foto-upload-preview"
+                />
+              )}
+              <input
+                name="foto"
+                type="file"
+                accept="image/*"
+                onChange={handleFileChange}
               />
-            )}
+            </div>
           </div>
           <div className="modal-field">
             <label>Ubicación — URL de Google Maps *</label>

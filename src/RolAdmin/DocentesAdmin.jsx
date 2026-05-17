@@ -4,7 +4,6 @@ import { reenviarVerificacion } from "../api/docente.api";
 import "../components/Tabla.css";
 import { obtenerDocentes } from "../utils/docentes";
 import { obtenerEscuelas } from "../utils/escuela";
-import { getDocFoto } from "../utils/logoCache";
 import CrearDocente from "./CrearDocente";
 import EditarDocente from "./EditarDocente";
 import "./RolAdmin.css";
@@ -151,18 +150,15 @@ function DocentesAdmin() {
                   <tr key={docente.id}>
                     <td>{docente.id}</td>
                     <td>
-                      {(() => {
-                        const src = docente.foto || getDocFoto(docente.correo);
-                        return src ? (
-                          <img
-                            src={src}
-                            alt={docente.nombre}
-                            className="escuela-logo-thumb"
-                          />
-                        ) : (
-                          <span className="tabla-sin-foto">Sin foto</span>
-                        );
-                      })()}
+                      {docente.foto ? (
+                        <img
+                          src={docente.foto}
+                          alt={docente.nombre}
+                          className="escuela-logo-thumb"
+                        />
+                      ) : (
+                        <span className="tabla-sin-foto">Sin foto</span>
+                      )}
                     </td>
                     <td>{docente.nombre}</td>
                     <td>{docente.escuela.nombre}</td>
@@ -253,7 +249,6 @@ function DocentesAdmin() {
           escuelas={escuelas}
           onCerrar={() => setMostrarCrear(false)}
           onGuardado={() => {
-            setMostrarCrear(false);
             cargar();
           }}
         />
@@ -268,8 +263,6 @@ function DocentesAdmin() {
             setSeleccionado(null);
           }}
           onGuardado={() => {
-            setMostrarEditar(false);
-            setSeleccionado(null);
             cargar();
           }}
         />

@@ -25,8 +25,7 @@ export function useIniciarSesion({ formData, setAutentificado, setMensaje }) {
         navigate("/inicio");
       }
     } catch (error) {
-      const { data } = error.response;
-      await mensaje("Error al iniciar sesión", data);
+      await mensaje("Error al iniciar sesión", error.response.data);
     }
   };
 
