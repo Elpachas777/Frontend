@@ -7,7 +7,9 @@ import "./RolAdmin.css";
 function EditarEscuela({ escuela, onCerrar, onGuardado }) {
   const [errores, setErrores] = useState({});
 
-  const { formData, setFormData, handleChange } = useFormData(USUARIOS.ESCUELA);
+  const { formData, setFormData, handleChange, handleFileChange } = useFormData(
+    USUARIOS.ESCUELA,
+  );
 
   useEffect(() => {
     setFormData((prev) => {
@@ -50,21 +52,24 @@ function EditarEscuela({ escuela, onCerrar, onGuardado }) {
             )}
           </div>
           <div className="modal-field">
-            <label>Logo</label>
-            <input
-              type="file"
-              name="logo"
-              accept="image/*"
-              onChange={handleChange}
-            />
-            {formData.logo_muestra && (
-              <img
-                src={formData.logo_muestra}
-                alt="logo"
-                className="logo-preview"
+            <label>Foto</label>
+            <div className="foto-upload-row">
+              {formData.foto && (
+                <img
+                  src={formData.fotoPreview || formData.foto}
+                  alt="preview"
+                  className="foto-upload-preview"
+                />
+              )}
+              <input
+                name="foto"
+                type="file"
+                accept="image/*"
+                onChange={handleFileChange}
               />
-            )}
+            </div>
           </div>
+
           <div className="modal-field">
             <label>Ubicación — URL de Google Maps *</label>
             <input

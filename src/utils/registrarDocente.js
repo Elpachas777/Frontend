@@ -1,5 +1,4 @@
 import * as api from "../api/docente.api";
-import { saveDocFoto } from "./logoCache";
 import mensaje from "./mensajes";
 
 const PASSWORD_REGEX =
@@ -20,7 +19,7 @@ function validar(formData) {
   return e;
 }
 
-function registrar({ formData, foto, setErrores, onGuardado }) {
+function registrar({ formData, setErrores, onGuardado }) {
   const handleSubmit = async (event) => {
     event.preventDefault();
     const errores = validar(formData);
@@ -31,19 +30,21 @@ function registrar({ formData, foto, setErrores, onGuardado }) {
     }
 
     try {
-      const datos = {
-        nombres: formData.nombres,
-        apellidos: formData.apellidos,
-        escuela: formData.escuela,
-        correo: formData.correo,
-        contraseña: formData.password,
-      };
+      const datos = new FormData();
+
+      datos.append("nombres", formData.nombres);
+      datos.append("apellidos", formData.apellidos);
+      datos.append("escuela", formData.escuela);
+      datos.append("foto", formData.foto);
+      datos.append("correo", formData.correo);
+      datos.append("contrasena", formData.password);
+
       const respuesta = await api.crear(datos);
-      saveDocFoto(formData.correo, foto);
       await mensaje("Docente creado", respuesta);
       onGuardado();
     } catch (error) {
-      mensaje("Error al registrar el docente", error.response.data);
+      const { data } = error.response;
+      mensaje("Error al registrar el docente", data);
     }
   };
 

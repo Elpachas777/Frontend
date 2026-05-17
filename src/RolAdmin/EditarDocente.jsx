@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import Mensaje from "../components/Mensaje";
 import { USUARIOS } from "../enums/tipoUsuarios";
 import useFormData from "../hooks/useFormData";
 import editar from "../utils/editarDocente";
@@ -15,8 +14,7 @@ function EditarDocente({ docente, escuelas, onCerrar, onGuardado }) {
 
   const [errores, setErrores] = useState({});
 
-  const [foto, setFoto] = useState(docente.foto || "");
-  const { formData, setFormData, handleChange } = useFormData(
+  const { formData, setFormData, handleChange, handleFileChange } = useFormData(
     USUARIOS.DOCENTE_EDITAR,
   );
 
@@ -32,18 +30,9 @@ function EditarDocente({ docente, escuelas, onCerrar, onGuardado }) {
 
   const { handleSubmit } = editar(docente, {
     formData,
-    foto,
     setErrores,
     onGuardado,
   });
-
-  const handleFoto = (e) => {
-    const file = e.target.files[0];
-    if (!file) return;
-    const reader = new FileReader();
-    reader.onload = (ev) => setFoto(ev.target.result);
-    reader.readAsDataURL(file);
-  };
 
   return (
     <div className="modal-overlay">
@@ -58,18 +47,23 @@ function EditarDocente({ docente, escuelas, onCerrar, onGuardado }) {
           </button>
         </div>
         <form className="modal-form" onSubmit={handleSubmit}>
-          {/* Foto */}
           <div className="modal-field">
             <label>Foto</label>
-            <input type="file" accept="image/*" onChange={handleFoto} />
-            {foto && (
-              <img
-                src={foto}
-                alt="preview"
-                className="logo-preview"
-                style={{ borderRadius: "50%" }}
+            <div className="foto-upload-row">
+              {formData.foto && (
+                <img
+                  src={formData.fotoPreview || formData.foto}
+                  alt="preview"
+                  className="foto-upload-preview"
+                />
+              )}
+              <input
+                name="foto"
+                type="file"
+                accept="image/*"
+                onChange={handleFileChange}
               />
-            )}
+            </div>
           </div>
 
           {/* Nombre */}

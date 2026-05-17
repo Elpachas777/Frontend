@@ -5,30 +5,21 @@ function useFormData(tipo) {
   const [formData, setFormData] = useState(DATOS[tipo]);
 
   const handleChange = (event) => {
-    const { name, value, type, files } = event.target;
-    if (type === "file") {
-      const file = files[0];
-
-      if (!file) return;
-
-      setFormData((prev) => ({
-        ...prev,
-        [name]: file.name,
-      }));
-
-      const reader = new FileReader();
-
-      reader.onload = (ev) => {
-        setFormData((prev) => ({
-          ...prev,
-          [`${name}_muestra`]: ev.target.result,
-        }));
-      };
-      reader.readAsDataURL(file);
-      return;
-    }
-
+    const { name, value } = event.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleFileChange = (event) => {
+    const { name, files } = event.target;
+    const file = files[0];
+
+    if (!file) return;
+
+    setFormData((prev) => ({
+      ...prev,
+      foto: file,
+      fotoPreview: URL.createObjectURL(file),
+    }));
   };
 
   const handleObjectChange = (name, value) => {
@@ -42,6 +33,7 @@ function useFormData(tipo) {
     formData,
     setFormData,
     handleChange,
+    handleFileChange,
     handleObjectChange,
   };
 }

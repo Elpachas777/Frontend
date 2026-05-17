@@ -1,6 +1,6 @@
-import Swal from "sweetalert2";
 import * as api from "../api/escuela.api";
-import { saveLogo } from "./logoCache";
+import { quitarFoto } from "./foto";
+import mensaje from "./mensajes";
 const PHONE_REGEX = /^\+?[\d\s\-\(\)]{7,20}$/;
 const URL_REGEX = /^https?:\/\/.+\..+/;
 
@@ -38,25 +38,18 @@ export function registrarEscuela({ formData, setErrores, onGuardado }) {
     }
 
     try {
-      const { logo_muestra, ...datos } = formData;
-      await api.crear(datos);
-      saveLogo(formData.nombre, logo_muestra);
-      await Swal.fire({
-        title: "¡Escuela creada!",
-        text: "La escuela fue registrada correctamente.",
-        icon: "success",
-        timer: 1800,
-        showConfirmButton: false,
-        confirmButtonColor: "#7bc043",
-      });
+      const { foto, fotoPreview, ...datos } = formData;
+      const data = new FormData();
+
+      data.append("data", JSON.stringify(datos));
+      data.append("foto", formData.foto);
+
+      const respuesta = await api.crear(data);
+      mensaje("¡Escuela creada!", respuesta);
       onGuardado();
     } catch (error) {
-      Swal.fire({
-        title: "Error",
-        text: error?.response?.data?.mensaje ?? "No se pudo crear la escuela.",
-        icon: "error",
-        confirmButtonColor: "#7bc043",
-      });
+      const { data } = error.response;
+      await mensaje("Error al crear la escuela", data);
     }
   };
 
@@ -74,7 +67,7 @@ export async function obtenerEscuelas() {
   }
 }
 
-export function actualizar({ id }, { formData, setErrores, onGuardado }) {
+export function actualizar({ id, foto }, { formData, setErrores, onGuardado }) {
   const handleSubmit = async (event) => {
     event.preventDefault();
     const errores = validar(formData);
@@ -85,26 +78,23 @@ export function actualizar({ id }, { formData, setErrores, onGuardado }) {
     }
 
     try {
-      const { logo_muestra, ...datos } = formData;
-      await api.actualizar(id, datos);
-      saveLogo(formData.nombre, logo_muestra);
-      await Swal.fire({
-        title: "¡Escuela editada!",
-        text: "Los cambios fueron guardados correctamente.",
-        icon: "success",
-        timer: 1800,
-        showConfirmButton: false,
-        confirmButtonColor: "#7bc043",
-      });
+      const data = new FormData();
+      const datos = quitarFoto(formData);
+
+      if (formData.foto !== foto) {
+        data.append("foto", formData.foto);
+      }
+
+      data.append("data", JSON.stringify(datos));
+
+      const respuesta = await api.actualizar(id, data);
+      await mensaje("¡Escuela editada!", respuesta);
       onGuardado();
     } catch (error) {
-      Swal.fire({
-        title: "Error",
-        text:
-          error?.response?.data?.mensaje ?? "No se pudo actualizar la escuela.",
-        icon: "error",
-        confirmButtonColor: "#7bc043",
-      });
+      console.log(error);
+
+      const { data } = error.response;
+      await mensaje("Error al editar la información de la escuela", data);
     }
   };
 

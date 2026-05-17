@@ -1,11 +1,11 @@
 import "./RolAdmin.css";
-import { getLogo } from "../utils/logoCache";
 
 function toEmbedUrl(url, nombre) {
   try {
-    if (!url || !url.startsWith("http")) return nombre
-      ? `https://maps.google.com/maps?q=${encodeURIComponent(nombre)}&output=embed`
-      : null;
+    if (!url || !url.startsWith("http"))
+      return nombre
+        ? `https://maps.google.com/maps?q=${encodeURIComponent(nombre)}&output=embed`
+        : null;
 
     if (url.includes("/embed")) return url;
 
@@ -26,7 +26,8 @@ function toEmbedUrl(url, nombre) {
     // ?q= param
     const u = new URL(url);
     const q = u.searchParams.get("q");
-    if (q) return `https://maps.google.com/maps?q=${encodeURIComponent(q)}&output=embed`;
+    if (q)
+      return `https://maps.google.com/maps?q=${encodeURIComponent(q)}&output=embed`;
 
     // Shortened URL (goo.gl / maps.app.goo.gl) — can't embed, use nombre fallback
     if (nombre)
@@ -63,12 +64,11 @@ function VerEscuela({ escuela, onCerrar }) {
           {/* ── Left column ── */}
           <div className="escuela-panel-left">
             <div className="escuela-panel-logo">
-              {(() => {
-                const src = escuela.logo || getLogo(escuela.nombre);
-                return src
-                  ? <img src={src} alt={escuela.nombre} />
-                  : <span className="tabla-sin-foto">Sin logo</span>;
-              })()}
+              {escuela.foto ? (
+                <img src={escuela.foto} alt={escuela.foto} />
+              ) : (
+                <span className="tabla-sin-foto">Sin logo</span>
+              )}
             </div>
 
             <div className="escuela-panel-info">
