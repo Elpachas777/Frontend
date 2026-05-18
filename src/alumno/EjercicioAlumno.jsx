@@ -110,6 +110,13 @@ function EjercicioAlumno() {
           <span className="ea-logo-sila">Sila</span>
           <span className="ea-logo-trazo">bando</span>
         </div>
+        <button
+          className="ea-btn-inicio"
+          onClick={() => navigate("/")}
+          title="Volver al inicio"
+        >
+          Inicio
+        </button>
       </div>
 
       <div className="ea-content">
@@ -152,17 +159,48 @@ function EjercicioAlumno() {
           </div>
         ) : (
           <div className="ea-grid">
-            {ejercicios.map((ej) => (
-              <button
-                key={ej.id_ejercicio}
-                className="ea-card"
-                onClick={() => setEjercicioActivo(ej)}
-              >
-                <span className="ea-card-badge">{nombreTipo(ej.id_tipo)}</span>
-                <span className="ea-card-title">{ej.titulo}</span>
-                <span className="ea-card-cta">Comenzar →</span>
-              </button>
-            ))}
+            {ejercicios.map((ej) => {
+              const vencido = ej.vencido;
+              const noIniciado = ej.no_iniciado;
+              return (
+                <button
+                  key={ej.id_ejercicio}
+                  className={`ea-card${vencido ? " ea-card--vencido" : ""}${noIniciado ? " ea-card--no-iniciado" : ""}`}
+                  onClick={() => {
+                    if (vencido || noIniciado) return;
+                    setEjercicioActivo(ej);
+                  }}
+                  disabled={vencido || noIniciado}
+                >
+                  <span className="ea-card-badge">{nombreTipo(ej.id_tipo)}</span>
+                  {vencido && (
+                    <span className="ea-card-vencido-badge">Vencido</span>
+                  )}
+                  {noIniciado && !vencido && (
+                    <span className="ea-card-pronto-badge">🕐 Próximamente</span>
+                  )}
+                  <span className="ea-card-title">{ej.titulo}</span>
+                  {ej.fecha_final && (
+                    <span className="ea-card-fecha">
+                      {vencido ? "Venció" : "Vence"}:{" "}
+                      {new Date(ej.fecha_final).toLocaleDateString("es-MX", {
+                        day: "2-digit",
+                        month: "short",
+                        year: "numeric",
+                      })}
+                    </span>
+                  )}
+                  {!vencido && !noIniciado && (
+                    <span className="ea-card-cta">Comenzar →</span>
+                  )}
+                  {vencido && (
+                    <span className="ea-card-cta ea-card-cta--disabled">
+                      No disponible
+                    </span>
+                  )}
+                </button>
+              );
+            })}
           </div>
         )}
       </div>

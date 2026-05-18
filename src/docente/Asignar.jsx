@@ -102,7 +102,7 @@ function Asignar() {
 
     if (!confirm.isConfirmed) return;
 
-    await utilsEjercicios.asignarEjercicio(ejercicioActual, grupo);
+    await utilsEjercicios.reasignarEjercicio(ejercicioActual, grupo);
 
     await cargar();
     await cargarEstadisticas(ejercicioId);

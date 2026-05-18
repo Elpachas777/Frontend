@@ -296,7 +296,7 @@ export async function generarReporteAlumno(alumno, datos) {
   doc.setFont("helvetica", "bold");
   doc.setFontSize(16);
   doc.setTextColor(...COLORES.primarioTexto);
-  doc.text("SilaTrazo · Reporte del alumno", margenIzq, 13);
+  doc.text("Silabando · Reporte del alumno", margenIzq, 13);
 
   doc.setFont("helvetica", "normal");
   doc.setFontSize(9);

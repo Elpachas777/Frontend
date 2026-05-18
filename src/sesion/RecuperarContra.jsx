@@ -15,6 +15,8 @@ const PASSWORD_REGEX =
 function RecuperarContra() {
   const [mensaje, setMensaje] = useState(null);
   const [erroresValidacion, setErroresValidacion] = useState({});
+  const [mostrarPassword, setMostrarPassword] = useState(false);
+  const [mostrarConfirmar, setMostrarConfirmar] = useState(false);
   const [searhParams] = useSearchParams();
   const { formData, handleChange } = useFormData(USUARIOS.CONTRASEÑA);
   const { handleSubmit: handleSubmitOriginal } = useRecuperarContraseña(
@@ -87,15 +89,42 @@ function RecuperarContra() {
             <form className="reset-form" onSubmit={handleSubmit} noValidate>
               <div className="reset-field">
                 <label htmlFor="password">Nueva contraseña</label>
-                <input
-                  type="password"
-                  id="password"
-                  name="password"
-                  placeholder="••••••••"
-                  value={formData.password || ""}
-                  onChange={handleChange}
-                  aria-invalid={Boolean(erroresValidacion.password)}
-                />
+                <div style={{ position: "relative" }}>
+                  <input
+                    type={mostrarPassword ? "text" : "password"}
+                    id="password"
+                    name="password"
+                    placeholder="••••••••"
+                    value={formData.password || ""}
+                    onChange={handleChange}
+                    aria-invalid={Boolean(erroresValidacion.password)}
+                    style={{ paddingRight: "2.5rem", width: "100%", boxSizing: "border-box" }}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setMostrarPassword((v) => !v)}
+                    aria-label={mostrarPassword ? "Ocultar contraseña" : "Mostrar contraseña"}
+                    style={{
+                      position: "absolute",
+                      right: "10px",
+                      top: "50%",
+                      transform: "translateY(-50%)",
+                      background: "none",
+                      border: "none",
+                      cursor: "pointer",
+                      padding: 0,
+                      color: "#888",
+                      display: "flex",
+                      alignItems: "center",
+                    }}
+                  >
+                    {mostrarPassword ? (
+                      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/><path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+                    ) : (
+                      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                    )}
+                  </button>
+                </div>
                 {erroresValidacion.password && (
                   <span
                     style={{
@@ -112,15 +141,42 @@ function RecuperarContra() {
 
               <div className="reset-field">
                 <label htmlFor="confirmar">Confirmar contraseña</label>
-                <input
-                  type="password"
-                  id="confirmar"
-                  name="confirmar"
-                  placeholder="Repite tu contraseña"
-                  value={formData.confirmar || ""}
-                  onChange={handleChange}
-                  aria-invalid={Boolean(erroresValidacion.confirmar)}
-                />
+                <div style={{ position: "relative" }}>
+                  <input
+                    type={mostrarConfirmar ? "text" : "password"}
+                    id="confirmar"
+                    name="confirmar"
+                    placeholder="Repite tu contraseña"
+                    value={formData.confirmar || ""}
+                    onChange={handleChange}
+                    aria-invalid={Boolean(erroresValidacion.confirmar)}
+                    style={{ paddingRight: "2.5rem", width: "100%", boxSizing: "border-box" }}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setMostrarConfirmar((v) => !v)}
+                    aria-label={mostrarConfirmar ? "Ocultar contraseña" : "Mostrar contraseña"}
+                    style={{
+                      position: "absolute",
+                      right: "10px",
+                      top: "50%",
+                      transform: "translateY(-50%)",
+                      background: "none",
+                      border: "none",
+                      cursor: "pointer",
+                      padding: 0,
+                      color: "#888",
+                      display: "flex",
+                      alignItems: "center",
+                    }}
+                  >
+                    {mostrarConfirmar ? (
+                      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/><path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+                    ) : (
+                      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                    )}
+                  </button>
+                </div>
                 {erroresValidacion.confirmar && (
                   <span
                     style={{

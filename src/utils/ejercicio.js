@@ -93,6 +93,20 @@ export async function asignarEjercicio({ id_ejercicio }, { id }) {
   }
 }
 
+export async function reasignarEjercicio({ id_ejercicio }, { id }) {
+  try {
+    const data = { id };
+    await api.reasignarEjercicio(id_ejercicio, data);
+  } catch (error) {
+    console.log(
+      error?.response?.data || {
+        tipo: "error",
+        mensaje: "No se pudo reasignar el ejercicio",
+      },
+    );
+  }
+}
+
 export async function estadisticasAsignacion(idEjercicio) {
   try {
     const estadisticas = await api.estadisticasAsignacion(idEjercicio);
