@@ -204,6 +204,7 @@ function Escuelas() {
         <CrearEscuela
           onCerrar={() => setMostrarCrear(false)}
           onGuardado={() => {
+            setMostrarCrear(false);
             cargar();
           }}
         />
@@ -217,6 +218,8 @@ function Escuelas() {
             setSeleccionada(null);
           }}
           onGuardado={() => {
+            setMostrarEditar(false);
+            setSeleccionada(null);
             cargar();
           }}
         />

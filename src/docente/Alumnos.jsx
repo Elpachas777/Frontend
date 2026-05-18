@@ -205,6 +205,8 @@ function Alumnos() {
             setSeleccionada(null);
           }}
           onGuardado={() => {
+            setMostrarEditar(false);
+            setSeleccionada(null);
             cargar();
           }}
         />

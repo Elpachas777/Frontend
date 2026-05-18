@@ -249,6 +249,7 @@ function DocentesAdmin() {
           escuelas={escuelas}
           onCerrar={() => setMostrarCrear(false)}
           onGuardado={() => {
+            setMostrarCrear(false);
             cargar();
           }}
         />
@@ -263,6 +264,8 @@ function DocentesAdmin() {
             setSeleccionado(null);
           }}
           onGuardado={() => {
+            setMostrarEditar(false);
+            setSeleccionado(null);
             cargar();
           }}
         />

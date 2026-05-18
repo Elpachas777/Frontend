@@ -207,6 +207,8 @@ function Grupos() {
             setSeleccionada(null);
           }}
           onGuardado={() => {
+            setMostrarEditar(false);
+            setSeleccionada(null);
             cargar();
           }}
         />
