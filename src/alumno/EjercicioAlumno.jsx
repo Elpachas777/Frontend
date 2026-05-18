@@ -108,7 +108,7 @@ function EjercicioAlumno() {
       <div className="ea-topbar">
         <div className="ea-logo">
           <span className="ea-logo-sila">Sila</span>
-          <span className="ea-logo-trazo">Trazo</span>
+          <span className="ea-logo-trazo">bando</span>
         </div>
       </div>
 

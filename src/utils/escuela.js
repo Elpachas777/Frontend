@@ -2,15 +2,16 @@ import * as api from "../api/escuela.api";
 import { quitarFoto } from "./foto";
 import mensaje from "./mensajes";
 const PHONE_REGEX = /^\+?[\d\s\-\(\)]{7,20}$/;
-const URL_REGEX = /^https?:\/\/.+\..+/;
+const GOOGLE_MAPS_REGEX =
+  /^https:\/\/(www\.)?(google\.(com|com\.\w+)|goo\.gl|maps\.app\.goo\.gl)(\/maps)?[\/\?].*$/i;
 
 function validar(formData) {
   const e = {};
   if (!formData.nombre) e.nombre = "El nombre es obligatorio.";
   if (!formData.ubicacion) {
     e.ubicacion = "La URL de Google Maps es obligatoria.";
-  } else if (!URL_REGEX.test(formData.ubicacion)) {
-    e.ubicacion = "La URL debe empezar con https://";
+  } else if (!GOOGLE_MAPS_REGEX.test(formData.ubicacion)) {
+    e.ubicacion = "Ingresa una URL válida de Google Maps (google.com/maps).";
   }
   if (!formData.director) e.director = "El director a cargo es obligatorio.";
   if (!formData.contacto) {

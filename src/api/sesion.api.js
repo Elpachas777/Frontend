@@ -1,4 +1,5 @@
 import { useNavigate } from "react-router-dom";
+import Swal from "sweetalert2";
 import axios from "../utils/axios.js";
 import mensaje from "../utils/mensajes.js";
 
@@ -21,6 +22,14 @@ export function useIniciarSesion({ formData, setAutentificado, setMensaje }) {
       const respuesta = await axios.post("/iniciarSesion", formData);
 
       if (respuesta?.data?.ok) {
+        await Swal.fire({
+          icon: "success",
+          title: "¡Bienvenido!",
+          text: "Has iniciado sesión correctamente.",
+          timer: 1800,
+          showConfirmButton: false,
+          timerProgressBar: true,
+        });
         setAutentificado(true);
         navigate("/inicio");
       }

@@ -21,6 +21,7 @@ function CrearDocente({ escuelas, onCerrar, onGuardado }) {
     formData,
     setErrores,
     onGuardado,
+    onCerrar,
   });
 
   return (
@@ -52,7 +53,7 @@ function CrearDocente({ escuelas, onCerrar, onGuardado }) {
             </div>
           </div>
           <div className="modal-field">
-            <label>Nombre</label>
+            <label>Nombre <span style={{color:"#e53935"}}>*</span></label>
             <input
               name="nombres"
               value={formData.nombres}
@@ -64,7 +65,7 @@ function CrearDocente({ escuelas, onCerrar, onGuardado }) {
             )}
           </div>
           <div className="modal-field">
-            <label>Apellidos</label>
+            <label>Apellidos <span style={{color:"#e53935"}}>*</span></label>
             <input
               name="apellidos"
               value={formData.apellidos}
@@ -76,7 +77,7 @@ function CrearDocente({ escuelas, onCerrar, onGuardado }) {
             )}
           </div>
           <div className="modal-field">
-            <label>Escuela</label>
+            <label>Escuela <span style={{color:"#e53935"}}>*</span></label>
             <select
               name="escuela"
               value={formData.escuela}
@@ -94,7 +95,7 @@ function CrearDocente({ escuelas, onCerrar, onGuardado }) {
             )}
           </div>
           <div className="modal-field">
-            <label>Correo</label>
+            <label>Correo <span style={{color:"#e53935"}}>*</span></label>
             <input
               name="correo"
               value={formData.correo}
@@ -107,7 +108,7 @@ function CrearDocente({ escuelas, onCerrar, onGuardado }) {
             )}
           </div>
           <div className="modal-field">
-            <label>Contraseña</label>
+            <label>Contraseña <span style={{color:"#e53935"}}>*</span></label>
             <div className="password-input-wrap">
               <input
                 name="password"

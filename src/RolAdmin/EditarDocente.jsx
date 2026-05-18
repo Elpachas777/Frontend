@@ -68,7 +68,7 @@ function EditarDocente({ docente, escuelas, onCerrar, onGuardado }) {
 
           {/* Nombre */}
           <div className="modal-field">
-            <label>Nombre</label>
+            <label>Nombre <span style={{color:"#e53935"}}>*</span></label>
             <input
               name="nombre"
               value={formData.nombre}
@@ -80,7 +80,7 @@ function EditarDocente({ docente, escuelas, onCerrar, onGuardado }) {
           </div>
 
           <div className="modal-field">
-            <label>Apellidos</label>
+            <label>Apellidos <span style={{color:"#e53935"}}>*</span></label>
             <input
               name="apellidos"
               value={formData.apellidos}
@@ -93,7 +93,7 @@ function EditarDocente({ docente, escuelas, onCerrar, onGuardado }) {
 
           {/* Escuela */}
           <div className="modal-field">
-            <label>Escuela</label>
+            <label>Escuela <span style={{color:"#e53935"}}>*</span></label>
             <select
               name="escuela"
               value={formData.escuela.id}
@@ -110,7 +110,7 @@ function EditarDocente({ docente, escuelas, onCerrar, onGuardado }) {
 
           {/* Correo */}
           <div className="modal-field">
-            <label>Correo</label>
+            <label>Correo <span style={{color:"#e53935"}}>*</span></label>
             <input
               name="correo"
               value={formData.correo}
