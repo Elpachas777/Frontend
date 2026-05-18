@@ -152,7 +152,7 @@ function Asignar() {
           value={ejercicioId}
           onChange={(e) => setEjercicioId(e.target.value)}
         >
-          <option value="">— Selecciona un ejercicio —</option>
+          <option value="">Selecciona un ejercicio</option>
           {ejercicios.map((ejercicio) => (
             <option key={ejercicio.id_ejercicio} value={ejercicio.id_ejercicio}>
               Ejercicio {ejercicio.id_ejercicio}: "{ejercicio.titulo}"

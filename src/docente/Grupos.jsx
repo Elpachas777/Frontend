@@ -31,7 +31,7 @@ function Grupos() {
   const handleEliminar = async (grupo) => {
     const result = await Swal.fire({
       title: "Confirmación requerida",
-      html: "Ingresa la contraseña del administrador para eliminar la grupo.",
+      html: "Ingresa la contraseña del administrador para eliminar el grupo.",
       icon: "warning",
       input: "password",
       inputPlaceholder: "Contraseña",
@@ -61,8 +61,8 @@ function Grupos() {
     await eliminar(grupo.id);
 
     await Swal.fire({
-      title: "Eliminada",
-      text: "grupo eliminada correctamente.",
+      title: "Eliminado",
+      text: "Grupo eliminado correctamente.",
       icon: "success",
       timer: 1600,
       showConfirmButton: false,

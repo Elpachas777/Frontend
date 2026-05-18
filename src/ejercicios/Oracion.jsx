@@ -130,7 +130,7 @@ function Oracion({ ejercicio, contenido, handleObjectChange }) {
               className="btn-prev"
               onClick={() => setPreviewing(true)}
             >
-              Vista previa
+              Previsualizar
             </button>
           </div>
         </div>

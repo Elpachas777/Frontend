@@ -30,7 +30,7 @@ function Ejercicios() {
   const handleEliminar = async (ejercicio) => {
     const result = await Swal.fire({
       title: "Confirmación requerida",
-      html: "Ingresa la contraseña del administrador para eliminar la grupo.",
+      html: "Ingresa la contraseña del administrador para eliminar el ejercicio.",
       icon: "warning",
       input: "password",
       inputPlaceholder: "Contraseña",
@@ -60,8 +60,8 @@ function Ejercicios() {
     await eliminar(ejercicio.id_ejercicio);
 
     await Swal.fire({
-      title: "Eliminada",
-      text: "grupo eliminada correctamente.",
+      title: "Eliminado",
+      text: "Ejercicio eliminado correctamente.",
       icon: "success",
       timer: 1600,
       showConfirmButton: false,
