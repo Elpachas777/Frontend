@@ -2,33 +2,37 @@ html,
 body,
 #root {
   width: 100%;
-  min-height: 100%;
+  height: 100%;
   margin: 0;
   padding: 0;
-  overflow-x: hidden;
-  overflow-y: auto;
+  overflow: hidden;
   font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto,
     "Helvetica Neue", Arial, sans-serif;
 }
 
 body {
-  min-height: 100vh;
   color: #203024;
   background: #f7fbf4;
 }
 
+/* Layout principal: ocupa exactamente la altura de la ventana, sin scroll en
+   la página. El scroll vive DENTRO de cada vista (tabla, modal, etc). */
 .private-layout {
-  min-height: 100vh;
+  height: 100vh;
+  overflow: hidden;
   background-color: #edf7ea;
   background-image:
     radial-gradient(circle at 2px 2px, rgba(87, 133, 92, 0.12) 1.2px, transparent 0);
   background-size: 22px 22px;
 }
 
+/* main = el área del contenido (a la derecha del sidebar). También fija. */
 .private-main {
-  min-height: 100vh;
+  height: 100vh;
   margin-left: 286px;
   padding: 26px 22px 40px 10px;
+  overflow: hidden;
+  box-sizing: border-box;
 }
 
 .private-topbar {
@@ -136,7 +140,7 @@ body {
   transition: background 0.2s ease;
 }
 
-..private-user-dropdown-logout:hover {
+.private-user-dropdown-logout:hover {
   background: #61a339;
 }
 
@@ -214,9 +218,29 @@ body {
 }
 
 @media (max-width: 920px) {
+  /* En móvil sí permitimos scroll en la página porque el sidebar pasa a
+     ser un drawer y el contenido necesita poder hacerse alto. */
+  html,
+  body,
+  #root {
+    overflow-y: auto;
+    overflow-x: hidden;
+    height: auto;
+    min-height: 100%;
+  }
+
+  .private-layout {
+    height: auto;
+    min-height: 100vh;
+    overflow: visible;
+  }
+
   .private-main {
     margin-left: 0;
     padding: 12px 12px 28px;
+    height: auto;
+    min-height: 100vh;
+    overflow: visible;
   }
 
   .logout-btn {

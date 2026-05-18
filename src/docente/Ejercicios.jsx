@@ -12,7 +12,6 @@ import VerEjercicio from "./VerEjercicio";
 function Ejercicios() {
   const [ejercicios, setEjercicios] = useState([]);
   const [filtroTitulo, setFiltroTItulo] = useState("");
-  const [filtroTurno, setFiltroTurno] = useState("");
   const [mostrarCrear, setMostrarCrear] = useState(false);
   const [mostrarEditar, setMostrarEditar] = useState(false);
   const [mostrarVer, setMostrarVer] = useState(false);
@@ -94,14 +93,6 @@ function Ejercicios() {
           value={filtroTitulo}
           onChange={(ev) => setFiltroTItulo(ev.target.value)}
         />
-        <input
-          name="filtro-apellido"
-          className="tabla-filtro-input"
-          type="text"
-          placeholder="Buscar por apellidos..."
-          value={filtroTurno}
-          onChange={(ev) => setFiltroTurno(ev.target.value)}
-        />
       </div>
 
       <div className="tabla-wrap">
@@ -116,11 +107,9 @@ function Ejercicios() {
           <tbody>
             {(() => {
               const n = filtroTitulo.toLowerCase();
-              const t = filtroTurno.toLowerCase();
               const filtradas = ejercicios.filter(
                 (ejercicio) =>
-                  (!n || ejercicio.titulo?.toLowerCase().includes(n)) &&
-                  (!t || ejercicio.turno?.toLowerCase().includes(t)),
+                  !n || ejercicio.titulo?.toLowerCase().includes(n),
               );
               return filtradas.length > 0 ? (
                 filtradas.map((ejercicio) => (
@@ -188,7 +177,6 @@ function Ejercicios() {
         <CrearEjercicio
           onCerrar={() => setMostrarCrear(false)}
           onGuardado={() => {
-            setMostrarCrear(false);
             cargar();
           }}
         />
@@ -201,11 +189,7 @@ function Ejercicios() {
             setMostrarEditar(false);
             setSeleccionada(null);
           }}
-          onGuardado={() => {
-            setMostrarEditar(false);
-            setSeleccionada(null);
-            cargar();
-          }}
+          onGuardado={() => cargar()}
         />
       )}
     </section>

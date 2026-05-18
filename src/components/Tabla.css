@@ -1,7 +1,7 @@
 .tabla-container {
   position: relative;
   width: min(1120px, calc(100% - 48px));
-  margin: 34px auto;
+  margin: 0 auto;
   padding: 30px;
   border-radius: 32px;
   background: rgba(255, 255, 255, 0.96);
@@ -10,6 +10,13 @@
     0 18px 40px rgba(40, 77, 52, 0.08),
     0 6px 18px rgba(31, 53, 37, 0.06);
   overflow: hidden;
+  /* Ocupa toda la altura disponible del .private-main (que ya está fija
+     en 100vh). Usamos flex para que el wrap interno tenga el espacio
+     restante con scroll vertical interno. */
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
 }
 
 .tabla-decor {
@@ -43,6 +50,7 @@
   margin-bottom: 24px;
   position: relative;
   z-index: 1;
+  flex-shrink: 0;
 }
 
 .tabla-hero-copy {
@@ -86,6 +94,7 @@
   margin-bottom: 20px;
   position: relative;
   z-index: 1;
+  flex-shrink: 0;
 }
 
 .tabla-filtro-input {
@@ -144,13 +153,16 @@
   transform: translateY(0);
 }
 
+/* === Wrap de la tabla: el ÚNICO que hace scroll === */
 .tabla-wrap {
-  overflow-x: auto;
+  overflow: auto;
   border-radius: 24px;
   border: 1px solid #e3efe2;
   background: #fbfef8;
   position: relative;
   z-index: 1;
+  flex: 1 1 auto;
+  min-height: 0;
 }
 
 .tabla {
@@ -161,6 +173,7 @@
   min-width: 760px;
 }
 
+/* Cabecera STICKY: se queda arriba al hacer scroll dentro del wrap */
 .tabla thead th {
   background: #56a96b;
   color: #ffffff;
@@ -170,6 +183,9 @@
   font-weight: 800;
   letter-spacing: 0.01em;
   border-bottom: 1px solid #4c9960;
+  position: sticky;
+  top: 0;
+  z-index: 2;
 }
 
 .tabla thead th:first-child {
@@ -275,6 +291,27 @@
   color: #6b7b68;
 }
 
+/* Scroll estilizado en verde */
+.tabla-wrap::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+.tabla-wrap::-webkit-scrollbar-track {
+  background: #f0f7ec;
+  border-radius: 10px;
+}
+
+.tabla-wrap::-webkit-scrollbar-thumb {
+  background: #c0dab5;
+  border-radius: 10px;
+  border: 2px solid #f0f7ec;
+}
+
+.tabla-wrap::-webkit-scrollbar-thumb:hover {
+  background: #a4cb96;
+}
+
 @media (max-width: 980px) {
   .tabla-container {
     width: min(100%, calc(100% - 24px));
@@ -293,6 +330,20 @@
 
   .crear-btn {
     width: 100%;
+  }
+}
+
+@media (max-width: 920px) {
+  /* En móvil el padre vuelve a permitir scroll en la página entera, así
+     que recuperamos el comportamiento clásico de la tabla. */
+  .tabla-container {
+    height: auto;
+    max-height: none;
+    margin: 18px auto 90px;
+  }
+
+  .tabla-wrap {
+    max-height: 70vh;
   }
 }
 
@@ -351,6 +402,7 @@
   font-size: 15px;
   color: #5f7166;
 }
+
 /* === Chips para columna 'estado' (verificación de docentes) === */
 .tabla-chip {
   display: inline-flex;

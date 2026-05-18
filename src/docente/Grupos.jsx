@@ -95,10 +95,10 @@ function Grupos() {
           onChange={(ev) => setFiltroNombre(ev.target.value)}
         />
         <input
-          name="filtro-apellido"
+          name="filtro-turno"
           className="tabla-filtro-input"
           type="text"
-          placeholder="Buscar por apellidos..."
+          placeholder="Buscar por turno..."
           value={filtroTurno}
           onChange={(ev) => setFiltroTurno(ev.target.value)}
         />
@@ -207,8 +207,6 @@ function Grupos() {
             setSeleccionada(null);
           }}
           onGuardado={() => {
-            setMostrarEditar(false);
-            setSeleccionada(null);
             cargar();
           }}
         />
