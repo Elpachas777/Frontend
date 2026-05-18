@@ -99,8 +99,10 @@ function Ejercicios() {
         <table className="tabla">
           <thead>
             <tr>
-              <th>id</th>
-              <th>Titulo</th>
+              <th>ID</th>
+              <th>Título</th>
+              <th>Fecha de inicio</th>
+              <th>Fecha de finalización</th>
               <th>Acciones</th>
             </tr>
           </thead>
@@ -111,12 +113,71 @@ function Ejercicios() {
                 (ejercicio) =>
                   !n || ejercicio.titulo?.toLowerCase().includes(n),
               );
+              const formatearFecha = (valor) => {
+                if (!valor) return "—";
+                const fecha = new Date(valor);
+                if (isNaN(fecha.getTime())) return "—";
+                return fecha.toLocaleDateString("es-MX", {
+                  day: "2-digit",
+                  month: "2-digit",
+                  year: "numeric",
+                });
+              };
+              // Determinamos si la fecha de finalización ya pasó.
+              // Comparamos a nivel "día completo" para que el día actual
+              // todavía cuente como activo (no marca como vencido hasta el
+              // día siguiente).
+              const yaVencio = (valor) => {
+                if (!valor) return false;
+                const fecha = new Date(valor);
+                if (isNaN(fecha.getTime())) return false;
+                const hoy = new Date();
+                hoy.setHours(0, 0, 0, 0);
+                fecha.setHours(0, 0, 0, 0);
+                return fecha < hoy;
+              };
               return filtradas.length > 0 ? (
-                filtradas.map((ejercicio) => (
-                  <tr key={ejercicio.id_ejercicio}>
-                    <td>{ejercicio.id_ejercicio}</td>
-                    <td>{ejercicio.titulo}</td>
-                    <td className="acciones">
+                filtradas.map((ejercicio) => {
+                  const vencido = yaVencio(ejercicio.fecha_final);
+                  return (
+                    <tr key={ejercicio.id_ejercicio}>
+                      <td>{ejercicio.id_ejercicio}</td>
+                      <td>{ejercicio.titulo}</td>
+                      <td>{formatearFecha(ejercicio.fecha_inicio)}</td>
+                      <td>
+                        <span
+                          style={
+                            vencido
+                              ? {
+                                  color: "#c62828",
+                                  fontWeight: 700,
+                                  display: "inline-flex",
+                                  alignItems: "center",
+                                  gap: 6,
+                                }
+                              : undefined
+                          }
+                        >
+                          {formatearFecha(ejercicio.fecha_final)}
+                          {vencido && (
+                            <span
+                              style={{
+                                background: "#ffebee",
+                                color: "#c62828",
+                                border: "1px solid #ef9a9a",
+                                borderRadius: 999,
+                                padding: "2px 10px",
+                                fontSize: "0.75em",
+                                fontWeight: 700,
+                                letterSpacing: "0.02em",
+                              }}
+                            >
+                              Vencido
+                            </span>
+                          )}
+                        </span>
+                      </td>
+                      <td className="acciones">
                       <button
                         type="button"
                         className="btn btn-ver"
@@ -146,10 +207,11 @@ function Ejercicios() {
                       </button>
                     </td>
                   </tr>
-                ))
+                  );
+                })
               ) : (
                 <tr>
-                  <td colSpan={4}>
+                  <td colSpan={5}>
                     <div className="tabla-empty">
                       <span className="tabla-empty-icon">🌱</span>
                       <h3>Sin grupos registradas</h3>

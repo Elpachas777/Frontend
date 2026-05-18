@@ -109,9 +109,9 @@ function Alumnos() {
         <table className="tabla">
           <thead>
             <tr>
-              <th>id</th>
-              <th>nombre</th>
-              <th>apellidos</th>
+              <th>ID único</th>
+              <th>Nombre</th>
+              <th>Apellidos</th>
               <th>Acciones</th>
             </tr>
           </thead>
@@ -127,7 +127,7 @@ function Alumnos() {
               return filtradas.length > 0 ? (
                 filtradas.map((alumno) => (
                   <tr key={alumno.id}>
-                    <td>{alumno.id}</td>
+                    <td>{alumno.id_ingreso || "—"}</td>
                     <td>{alumno.nombres}</td>
                     <td>{alumno.apellidos}</td>
                     <td className="acciones">
@@ -205,8 +205,6 @@ function Alumnos() {
             setSeleccionada(null);
           }}
           onGuardado={() => {
-            setMostrarEditar(false);
-            setSeleccionada(null);
             cargar();
           }}
         />
