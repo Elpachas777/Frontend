@@ -3,7 +3,25 @@ import { useNavigate, useParams } from "react-router-dom";
 import * as alumnoApi from "../api/alumno.api";
 import * as respuestaApi from "../api/respuesta.api";
 import EjercicioPlayer from "../docente/EjercicioPlayer";
+import EjercicioPalabraPlayer from "./EjercicioPalabraPlayer";
 import "./EjercicioAlumno.css";
+
+/**
+ * Devuelve el label legible para el badge según id_tipo.
+ *  1 = Cuento, 2 = Oración, 3 = Palabra revuelta
+ */
+function nombreTipo(idTipo) {
+  switch (idTipo) {
+    case 1:
+      return "Cuento";
+    case 2:
+      return "Oración";
+    case 3:
+      return "Palabra revuelta";
+    default:
+      return "Ejercicio";
+  }
+}
 
 function EjercicioAlumno() {
   const { idAlumno } = useParams();
@@ -26,7 +44,6 @@ function EjercicioAlumno() {
         setError(null);
 
         const data = await alumnoApi.obtenerEjerciciosAlumno(idAlumno);
-        console.log(data);
 
         setAlumno(data.alumno);
         setEjercicios(data.ejercicios || []);
@@ -141,9 +158,7 @@ function EjercicioAlumno() {
                 className="ea-card"
                 onClick={() => setEjercicioActivo(ej)}
               >
-                <span className="ea-card-badge">
-                  {ej.id_tipo === 1 ? "Cuento" : "Oración"}
-                </span>
+                <span className="ea-card-badge">{nombreTipo(ej.id_tipo)}</span>
                 <span className="ea-card-title">{ej.titulo}</span>
                 <span className="ea-card-cta">Comenzar →</span>
               </button>
@@ -152,13 +167,26 @@ function EjercicioAlumno() {
         )}
       </div>
 
-      {ejercicioActivo && (
-        <EjercicioPlayer
-          ejercicio={ejercicioActivo}
-          idIngreso={idAlumno}
-          onCerrar={handleCerrarPlayer}
-        />
-      )}
+      {/*
+        Dispatch del player según el tipo de ejercicio:
+        - id_tipo 3 (Palabra revuelta) → player especializado con sílabas
+          revueltas como pista.
+        - Cualquier otro tipo (1, 2) → player estándar.
+      */}
+      {ejercicioActivo &&
+        (ejercicioActivo.id_tipo === 3 ? (
+          <EjercicioPalabraPlayer
+            ejercicio={ejercicioActivo}
+            idIngreso={idAlumno}
+            onCerrar={handleCerrarPlayer}
+          />
+        ) : (
+          <EjercicioPlayer
+            ejercicio={ejercicioActivo}
+            idIngreso={idAlumno}
+            onCerrar={handleCerrarPlayer}
+          />
+        ))}
     </div>
   );
 }

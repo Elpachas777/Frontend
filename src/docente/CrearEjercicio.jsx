@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import Swal from "sweetalert2";
 import Mensaje from "../components/Mensaje";
-import Selector from "../ejercicios/Selector";
+import Editor from "../ejercicios/Editor";
 import { USUARIOS } from "../enums/tipoUsuarios";
 import useFormData from "../hooks/useFormData";
 import "../RolAdmin/RolAdmin.css";
@@ -106,8 +106,8 @@ function CrearEjercicio({ onCerrar, onGuardado }) {
             </select>
           </div>
 
-          <Selector
-            ejercicio={formData}
+          <Editor
+            formData={formData}
             handleObjectChange={handleObjectChange}
           />
 

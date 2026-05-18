@@ -13,7 +13,7 @@ export function crearCuento(silaba, cuento) {
   return ejercicio;
 }
 
-export function crear({ formData, setErrores, onGuardado }) {
+export function crear({ formData, setErrores, setMensaje, onGuardado }) {
   const handleSubmit = async (event) => {
     event.preventDefault();
 

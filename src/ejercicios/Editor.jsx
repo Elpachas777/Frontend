@@ -1,5 +1,6 @@
 import Cuento from "./Cuento";
 import Oracion from "./Oracion";
+import PalabraRevuelta from "./PalabraRevuelta";
 
 function Editor({ formData, handleObjectChange }) {
   const ejercicios = {
@@ -12,6 +13,13 @@ function Editor({ formData, handleObjectChange }) {
     ),
     2: (
       <Oracion
+        ejercicio={formData}
+        contenido={formData.contenido}
+        handleObjectChange={handleObjectChange}
+      />
+    ),
+    3: (
+      <PalabraRevuelta
         ejercicio={formData}
         contenido={formData.contenido}
         handleObjectChange={handleObjectChange}
