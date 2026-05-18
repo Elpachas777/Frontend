@@ -177,7 +177,7 @@ function EjercicioAlumno() {
                     <span className="ea-card-vencido-badge">Vencido</span>
                   )}
                   {noIniciado && !vencido && (
-                    <span className="ea-card-pronto-badge">🕐 Próximamente</span>
+                    <span className="ea-card-pronto-badge">Próximamente</span>
                   )}
                   <span className="ea-card-title">{ej.titulo}</span>
                   {ej.fecha_final && (
