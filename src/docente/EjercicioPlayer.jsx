@@ -1,9 +1,4 @@
 import * as tf from "@tensorflow/tfjs";
-import { useEffect, useMemo, useRef, useState } from "react";
-import Canvas from "../components/Canvas";
-import "./EjercicioPlayer.css";
-import { dividirCanvasPorCantidad, predecir } from "../utils/modelo";
-import mensaje from "../utils/mensajes";
 import { useEffect, useRef, useState } from "react";
 import * as respuestaApi from "../api/respuesta.api";
 import Canvas from "../components/Canvas";
@@ -11,21 +6,7 @@ import mensaje from "../utils/mensajes";
 import { dividirCanvas, predecir } from "../utils/modelo";
 import "./EjercicioPlayer.css";
 
-function limpiarSilaba(valor) {
-  return String(valor || "")
-    .trim()
-    .toLowerCase()
-    .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, "")
-    .replace(/[^a-z]/g, "");
-}
-
-function EjercicioPlayer({
-  ejercicio,
-  idIngreso,
-  onCerrar,
-  soloVistaPrevia = false,
-}) {
+function EjercicioPlayer({ ejercicio, idIngreso, onCerrar }) {
   const canvaRef = useRef([]);
   const intentoRef = useRef([]);
 
@@ -35,24 +16,10 @@ function EjercicioPlayer({
   const [guardando, setGuardando] = useState(false);
   const [resumen, setResumen] = useState(null);
 
-  const contenido = ejercicio?.contenido || {};
-  const esCuento = Array.isArray(contenido.segmentos);
-
-  const palabras = contenido?.palabras || [];
-  const total = esCuento ? 1 : palabras.length;
-  const actual = esCuento ? null : palabras[indice];
-  const progreso = esCuento ? 100 : total > 0 ? (indice / total) * 100 : 0;
-
-  const huecosCuento = useMemo(() => {
-    if (!esCuento) return [];
-
-    return contenido.segmentos
-      .filter((segmento) => segmento.tipo === "silaba")
-      .map((segmento, index) => ({
-        ...segmento,
-        index,
-      }));
-  }, [esCuento, contenido.segmentos]);
+  const palabras = ejercicio?.contenido?.palabras || [];
+  const total = palabras.length;
+  const actual = palabras[indice];
+  const progreso = total > 0 ? (indice / total) * 100 : 0;
 
   useEffect(() => {
     const cargarModelo = async () => {
@@ -61,7 +28,6 @@ function EjercicioPlayer({
         setModelo(modeloCargado);
       } catch (error) {
         console.error("Error al cargar modelo:", error);
-
         mensaje("No se pudo cargar el modelo", {
           tipo: "error",
           mensaje: "Recarga la página e intenta de nuevo.",
@@ -74,10 +40,10 @@ function EjercicioPlayer({
 
   useEffect(() => {
     canvaRef.current = [];
-  }, [indice, ejercicio?.id_ejercicio]);
+  }, [indice]);
 
-  const crearClave = (origen, indiceSilaba, silaba) => {
-    return `${origen}-${indiceSilaba}-${limpiarSilaba(silaba)}`;
+  const crearClave = (indicePalabra, indiceSilaba, silaba) => {
+    return `${indicePalabra}-${indiceSilaba}-${silaba}`;
   };
 
   const canvasTieneTrazo = (canvas) => {
@@ -95,14 +61,13 @@ function EjercicioPlayer({
     return false;
   };
 
-  const guardarPrediccion = ({ clave, silaba, puntaje, prediccion }) => {
+  const guardarPrediccion = ({ clave, silaba, puntaje }) => {
     const index = intentoRef.current.findIndex((r) => r.clave === clave);
 
     const nueva = {
       clave,
       silaba,
       puntaje,
-      prediccion,
     };
 
     if (index >= 0) {
@@ -112,15 +77,9 @@ function EjercicioPlayer({
     }
   };
 
-  const predecirSilaba = ({ canvas, silaba, clave }) => {
+  const predecirSilaba = (canvas, silaba, indiceSilaba) => {
     if (!modelo) {
       throw new Error("El modelo aún está cargando.");
-    }
-
-    const silabaLimpia = limpiarSilaba(silaba);
-
-    if (!silabaLimpia) {
-      throw new Error("La sílaba esperada está vacía.");
     }
 
     if (!canvas) {
@@ -133,45 +92,32 @@ function EjercicioPlayer({
       );
     }
 
-    const tensores = dividirCanvasPorCantidad(canvas, silabaLimpia.length);
+    const letras = dividirCanvas(canvas);
+    const resultadoIzq = predecir(modelo, letras[0]);
+    const resultadoDer = predecir(modelo, letras[1]);
 
-    if (!tensores.length) {
-      throw new Error(`No se pudo leer el trazo de ${silaba.toUpperCase()}.`);
-    }
+    const porcentajeTotal =
+      (Number(resultadoIzq.porcentaje || 0) +
+        Number(resultadoDer.porcentaje || 0)) /
+      2;
 
-    const predicciones = tensores.map((tensor) => predecir(modelo, tensor));
-    const textoPredicho = predicciones.map((p) => p.letra).join("");
-
-    const letrasEsperadas = silabaLimpia.split("");
-
-    const puntaje =
-      letrasEsperadas.reduce((acc, letra, index) => {
-        const prediccion = predicciones[index];
-
-        if (!prediccion) return acc;
-
-        return (
-          acc +
-          (prediccion.letra === letra ? Number(prediccion.porcentaje || 0) : 0)
-        );
-      }, 0) / letrasEsperadas.length;
+    const clave = crearClave(indice, indiceSilaba, silaba);
 
     guardarPrediccion({
       clave,
-      silaba: silabaLimpia,
-      puntaje,
-      prediccion: textoPredicho,
+      silaba,
+      puntaje: porcentajeTotal,
     });
 
     return {
-      texto: textoPredicho,
-      porcentaje: puntaje,
+      texto: `${resultadoIzq.letra}${resultadoDer.letra}`,
+      porcentaje: porcentajeTotal,
     };
   };
 
   const handlePredecir = async (canvas, silaba, indiceSilaba) => {
     try {
-      const resultado = predecirSilaba({ canvas, silaba, clave });
+      const resultado = predecirSilaba(canvas, silaba, indiceSilaba);
 
       await mensaje(
         `Resultado: ${resultado.texto} - ${resultado.porcentaje.toFixed(2)}%`,
@@ -188,11 +134,11 @@ function EjercicioPlayer({
     }
   };
 
-  const predecirFaltantesOracion = () => {
+  const predecirFaltantesActuales = () => {
     const silabasActuales = actual?.silabas || [];
 
     silabasActuales.forEach((silaba, indiceSilaba) => {
-      const clave = crearClave(`oracion-${indice}`, indiceSilaba, silaba);
+      const clave = crearClave(indice, indiceSilaba, silaba);
       const yaExiste = intentoRef.current.some((r) => r.clave === clave);
 
       if (!yaExiste) {
@@ -206,32 +152,17 @@ function EjercicioPlayer({
   };
 
   const guardarIntento = async () => {
+    if (!idIngreso || !ejercicio?.id_ejercicio) {
+      throw new Error("Falta el ID del alumno o del ejercicio.");
+    }
+
     const respuestas = intentoRef.current.map((r) => ({
       silaba: r.silaba,
       puntaje: r.puntaje,
-      prediccion: r.prediccion,
     }));
 
     if (respuestas.length === 0) {
       throw new Error("No hay respuestas para guardar.");
-    }
-
-    if (soloVistaPrevia) {
-      const promedio =
-        respuestas.reduce((acc, item) => acc + Number(item.puntaje || 0), 0) /
-        respuestas.length;
-
-      setResumen({
-        promedio,
-        guardadas: respuestas.length,
-      });
-
-      setTerminado(true);
-      return;
-    }
-
-    if (!idIngreso || !ejercicio?.id_ejercicio) {
-      throw new Error("Falta el ID del alumno o del ejercicio.");
     }
 
     const res = await respuestaApi.registrarIntento({
@@ -252,13 +183,8 @@ function EjercicioPlayer({
     try {
       setGuardando(true);
 
-      if (esCuento) {
-        predecirFaltantesCuento();
-        await guardarIntento();
-        return;
-      }
-
-      predecirFaltantesOracion();
+      // Predice automáticamente lo que falte antes de avanzar.
+      predecirFaltantesActuales();
 
       if (indice + 1 >= total) {
         await guardarIntento();
@@ -286,9 +212,8 @@ function EjercicioPlayer({
       >
         <div className="ep-card ep-card--center">
           <p className="ep-empty-msg">
-            Este ejercicio no tiene sílabas configuradas aún.
+            Este ejercicio no tiene palabras configuradas aún.
           </p>
-
           <button className="ep-btn-secondary" onClick={onCerrar}>
             Cerrar
           </button>
@@ -302,7 +227,6 @@ function EjercicioPlayer({
       <div className="ep-overlay">
         <div className="ep-card ep-card--center ep-card--done">
           <h2 className="ep-done-title">¡Muchas gracias por jugar!</h2>
-
           <p className="ep-done-sub">
             Has completado todas las sílabas del ejercicio.
           </p>
@@ -329,7 +253,7 @@ function EjercicioPlayer({
         if (e.target === e.currentTarget) onCerrar();
       }}
     >
-      <div className={esCuento ? "ep-card ep-card--story" : "ep-card"}>
+      <div className="ep-card">
         <button className="ep-close" onClick={onCerrar} aria-label="Cerrar">
           ✕
         </button>
@@ -341,26 +265,33 @@ function EjercicioPlayer({
               style={{ width: `${progreso}%` }}
             />
           </div>
-
           <span className="ep-progress-label">
-            {esCuento ? "Cuento" : `${indice + 1} / ${total}`}
+            {indice + 1} / {total}
           </span>
         </div>
 
         <p className="ep-sentence">{ejercicio.titulo}</p>
+        {ejercicio.contenido?.texto && (
+          <p className="ep-sentence">{ejercicio.contenido.texto}</p>
+        )}
+        <p className="ep-syllable-label">{actual.silabas.join(" - ")}</p>
 
-        {esCuento ? (
-          <div className="ep-story">
-            {contenido.segmentos.map((segmento, index) => {
-              if (segmento.tipo === "texto") {
-                return (
-                  <span className="ep-story-text" key={`texto-${index}`}>
-                    {segmento.texto}
-                  </span>
-                );
-              }
+        <div className="ep-canvases">
+          {actual.silabas.map((sil, i) => (
+            <div key={`${indice}-${i}-${sil}`}>
+              <Canvas silaba={sil} ref={(cr) => (canvaRef.current[i] = cr)} />
 
               <div className="modal-actions">
+                <button
+                  type="button"
+                  className="modal-btn-save"
+                  disabled={!modelo || guardando}
+                  onClick={() =>
+                    handlePredecir(canvaRef.current[i]?.getImage(), sil, i)
+                  }
+                >
+                  Predecir
+                </button>
                 <button
                   type="button"
                   className="modal-btn-cancel"
@@ -371,8 +302,10 @@ function EjercicioPlayer({
                 </button>
               </div>
             </div>
-          </>
-        )}
+          ))}
+
+          <span className="ep-arrow">→</span>
+        </div>
 
         <div className="ep-actions">
           <button
