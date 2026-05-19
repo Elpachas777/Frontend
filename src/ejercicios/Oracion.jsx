@@ -10,7 +10,7 @@ function Oracion({ ejercicio, contenido, handleObjectChange }) {
   const [palabrasObj, setPalabrasObj] = useState([]);
   const [previewing, setPreviewing] = useState(false);
 
-  const tokens = texto.trim() ? texto.trim().split(/\s+/) : [];
+  const tokens = texto ? texto.trim().split(/\s+/) : [];
 
   const togglePalabra = (rawWord) => {
     const key = cleanWord(rawWord);
