@@ -18,7 +18,12 @@ export function crear({ formData, setErrores, setMensaje, onGuardado }) {
     event.preventDefault();
 
     try {
-      const res = await api.guardarEjercicio(formData);
+      const dataConvertida = {
+        ...formData,
+        fecha_inicio: new Date(formData.fecha_inicio).toISOString(),
+        fecha_final: new Date(formData.fecha_final).toISOString(),
+      };
+      const res = await api.guardarEjercicio(dataConvertida);
       await mensaje("Ejercicio creado con exito", res);
       onGuardado();
     } catch (error) {

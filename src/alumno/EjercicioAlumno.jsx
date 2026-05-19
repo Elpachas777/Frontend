@@ -69,7 +69,7 @@ function EjercicioAlumno() {
   );
 
   useEffect(() => {
-    cargarDatos({ mostrarCarga: true });
+      cargarDatos({ mostrarCarga: true });
   }, [cargarDatos]);
 
   const handleCerrarPlayer = async () => {

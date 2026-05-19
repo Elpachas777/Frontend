@@ -24,7 +24,6 @@ export const actualizar = async (id, data) => {
   return res.data;
 };
 
-// Returns: { alumno: { nombre, id_alumno }, ejercicios: [...] }
 export const obtenerEjerciciosAlumno = async (id) => {
   const res = await axios.get(`/ejerciciosAlumno/${id}`);
   return res.data;

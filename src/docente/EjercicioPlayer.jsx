@@ -284,16 +284,6 @@ function EjercicioPlayer({ ejercicio, idIngreso, onCerrar }) {
               <div className="modal-actions">
                 <button
                   type="button"
-                  className="modal-btn-save"
-                  disabled={!modelo || guardando}
-                  onClick={() =>
-                    handlePredecir(canvaRef.current[i]?.getImage(), sil, i)
-                  }
-                >
-                  Predecir
-                </button>
-                <button
-                  type="button"
                   className="modal-btn-cancel"
                   disabled={guardando}
                   onClick={() => canvaRef.current[i]?.clear()}
