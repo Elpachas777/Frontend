@@ -1,6 +1,14 @@
 import { useEffect, useMemo, useState } from "react";
 import EjercicioPlayer from "../docente/EjercicioPlayer";
 
+const TILDE_REGEX = /[áéíóúÁÉÍÓÚàèìòùäëïöüâêîôû]/;
+
+// Extrae solo el contenido dentro de paréntesis tipo ____(sílaba)
+function silabasEnParentesis(texto) {
+  const matches = [...texto.matchAll(/_{2,}\(([^)]*)\)/g)];
+  return matches.map((m) => m[1]);
+}
+
 function limpiarSilaba(valor) {
   return String(valor || "")
     .trim()
@@ -58,6 +66,19 @@ function parsearCuento(texto) {
 function Cuento({ ejercicio, contenido, handleObjectChange }) {
   const [texto, setTexto] = useState("");
   const [previewing, setPreviewing] = useState(false);
+  const [errorTilde, setErrorTilde] = useState("");
+
+  const handleTextoChange = (e) => {
+    const valor = e.target.value;
+    // Validar si alguna sílaba dentro de paréntesis tiene tilde
+    const silabasActuales = silabasEnParentesis(valor);
+    if (silabasActuales.some((s) => TILDE_REGEX.test(s))) {
+      setErrorTilde("Las sílabas entre paréntesis no pueden contener tildes (acentos).");
+    } else {
+      setErrorTilde("");
+    }
+    setTexto(valor);
+  };
 
   const segmentos = useMemo(() => parsearCuento(texto), [texto]);
 
@@ -105,8 +126,24 @@ function Cuento({ ejercicio, contenido, handleObjectChange }) {
           name="cuento"
           placeholder='Ej. Fernan____(da), Per____(la) estaban en el par____(que) jugan____(do).'
           value={texto}
-          onChange={(e) => setTexto(e.target.value)}
+          onChange={handleTextoChange}
+          style={errorTilde ? { borderColor: "#c62828" } : {}}
         />
+        {errorTilde && (
+          <p
+            style={{
+              color: "#c62828",
+              background: "#fff5f5",
+              border: "1px solid #f5c6c6",
+              borderRadius: 8,
+              padding: "8px 14px",
+              fontSize: "0.88rem",
+              marginTop: 6,
+            }}
+          >
+             {errorTilde}
+          </p>
+        )}
       </div>
 
       <div className="modal-field">
@@ -136,7 +173,7 @@ function Cuento({ ejercicio, contenido, handleObjectChange }) {
           type="button"
           className="btn-prev"
           onClick={() => setPreviewing(true)}
-          disabled={silabas.length === 0}
+          disabled={silabas.length === 0 || Boolean(errorTilde)}
         >
           Previsualizar
         </button>

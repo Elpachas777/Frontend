@@ -1,26 +1,14 @@
 import { useEffect, useState } from "react";
 import EjercicioPalabraPlayer from "../alumno/EjercicioPalabraPlayer";
 
-/**
- * Formulario para el docente: ejercicios de tipo "Palabra revuelta".
- *
- * El docente captura varias palabras y las separa en sílabas con guiones.
- * El alumno verá, al resolver: las sílabas DESORDENADAS arriba como pista
- * y los canvases en el ORDEN CORRECTO debajo.
- *
- * Nota técnica: mantenemos el texto literal del input ("ma-pa", "ma-",
- * "-ma-pa") en estado mientras el docente está escribiendo, para que no
- * se borren los guiones intermedios al teclear. Solo cuando publicamos
- * al form padre (handleObjectChange) limpiamos los vacíos.
- */
+const TILDE_REGEX = /[áéíóúÁÉÍÓÚàèìòùäëïöüâêîôû]/;
+
 function PalabraRevuelta({ ejercicio, contenido, handleObjectChange }) {
-  // palabras = lista de { palabra, silabasRaw } donde silabasRaw es el
-  // texto crudo que está escribiendo el docente, sin recortar.
   const [palabras, setPalabras] = useState([
     { palabra: "", silabasRaw: "" },
   ]);
-
   const [previewing, setPreviewing] = useState(false);
+  const [errorTilde, setErrorTilde] = useState("");
 
   // Cargar contenido inicial si viene de edición
   useEffect(() => {
@@ -63,6 +51,11 @@ function PalabraRevuelta({ ejercicio, contenido, handleObjectChange }) {
   // Si filtráramos vacíos aquí, no podría escribir "ma-" porque al
   // teclear el guion el último elemento (vacío tras split) se eliminaría.
   const actualizarSilabasRaw = (i, valor) => {
+    if (TILDE_REGEX.test(valor)) {
+      setErrorTilde("Las sílabas no pueden contener tildes (acentos).");
+      return;
+    }
+    setErrorTilde("");
     setPalabras((prev) =>
       prev.map((p, idx) => (idx === i ? { ...p, silabasRaw: valor } : p)),
     );
@@ -138,6 +131,22 @@ function PalabraRevuelta({ ejercicio, contenido, handleObjectChange }) {
       </div>
 
       <div className="visualiza-palabras">
+        {errorTilde && (
+          <p
+            style={{
+              color: "#c62828",
+              background: "#fff5f5",
+              border: "1px solid #f5c6c6",
+              borderRadius: 8,
+              padding: "8px 14px",
+              fontSize: "0.88rem",
+              marginBottom: 10,
+              width: "100%",
+            }}
+          >
+             {errorTilde}
+          </p>
+        )}
         {palabras.map((p, i) => {
           const divididas = silabasDivididas(p.silabasRaw);
           return (
@@ -189,6 +198,7 @@ function PalabraRevuelta({ ejercicio, contenido, handleObjectChange }) {
                   placeholder="Ej. si-lla"
                   value={p.silabasRaw}
                   onChange={(e) => actualizarSilabasRaw(i, e.target.value)}
+                  style={errorTilde ? { borderColor: "#c62828" } : {}}
                 />
               </div>
 

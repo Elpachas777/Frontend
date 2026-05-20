@@ -5,12 +5,19 @@ function cleanWord(w) {
   return w.replace(/[.,!?;:"""'']/g, "").toLowerCase();
 }
 
+const TILDE_REGEX = /[áéíóúÁÉÍÓÚàèìòùäëïöüâêîôû]/;
+
+function tieneTilde(valor) {
+  return TILDE_REGEX.test(valor);
+}
+
 function Oracion({ ejercicio, contenido, handleObjectChange }) {
   const [texto, setTexto] = useState("");
   const [palabrasObj, setPalabrasObj] = useState([]);
   const [previewing, setPreviewing] = useState(false);
+  const [errorTilde, setErrorTilde] = useState("");
 
-  const tokens = texto ? texto.trim().split(/\s+/) : [];
+  const tokens = texto.trim() ? texto.trim().split(/\s+/) : [];
 
   const togglePalabra = (rawWord) => {
     const key = cleanWord(rawWord);
@@ -27,6 +34,11 @@ function Oracion({ ejercicio, contenido, handleObjectChange }) {
   };
 
   const updateSilabas = (key, valor) => {
+    if (tieneTilde(valor)) {
+      setErrorTilde("Las sílabas no pueden contener tildes (acentos).");
+      return;
+    }
+    setErrorTilde("");
     const silabas = valor
       .split("-")
       .map((s) => s.trim())
@@ -109,6 +121,21 @@ function Oracion({ ejercicio, contenido, handleObjectChange }) {
       {palabrasObj.length > 0 && (
         <div>
           <p>Define las sílabas separadas por guión:</p>
+          {errorTilde && (
+            <p
+              style={{
+                color: "#c62828",
+                background: "#fff5f5",
+                border: "1px solid #f5c6c6",
+                borderRadius: 8,
+                padding: "8px 14px",
+                fontSize: "0.88rem",
+                marginBottom: 10,
+              }}
+            >
+               {errorTilde}
+            </p>
+          )}
           <div className="visualiza-palabras">
             {palabrasObj.map((p) => (
               <div className="palabra" key={p.key}>
@@ -116,6 +143,7 @@ function Oracion({ ejercicio, contenido, handleObjectChange }) {
                 <input
                   value={p.silabas.join("-")}
                   onChange={(e) => updateSilabas(p.key, e.target.value)}
+                  style={errorTilde ? { borderColor: "#c62828" } : {}}
                 />
                 <span className="palabra-separada">
                   → {p.silabas.join(" · ")}

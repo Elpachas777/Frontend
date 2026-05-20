@@ -1,6 +1,32 @@
 import * as api from "../api/ejercicio.api";
 import mensaje from "./mensajes";
 
+const TILDE_REGEX = /[áéíóúÁÉÍÓÚàèìòùäëïöüâêîôû]/;
+
+/**
+ * Extrae todas las sílabas del contenido del ejercicio
+ * y verifica si alguna tiene tilde.
+ */
+function contenidoTieneTilde(contenido) {
+  if (!contenido) return false;
+
+  // Cuento: sílabas dentro de ____()
+  if (contenido.tipo === "cuento" && contenido.texto) {
+    const matches = [...contenido.texto.matchAll(/_{2,}\(([^)]*)\)/g)];
+    if (matches.some((m) => TILDE_REGEX.test(m[1]))) return true;
+  }
+
+  // Oracion y PalabraRevuelta: array de palabras con silabas[]
+  if (Array.isArray(contenido.palabras)) {
+    for (const p of contenido.palabras) {
+      if (Array.isArray(p.silabas) && p.silabas.some((s) => TILDE_REGEX.test(s)))
+        return true;
+    }
+  }
+
+  return false;
+}
+
 export function crearCuento(silaba, cuento) {
   let ejercicio = cuento;
 
@@ -17,14 +43,29 @@ export function crear({ formData, setErrores, setMensaje, onGuardado }) {
   const handleSubmit = async (event) => {
     event.preventDefault();
 
+    if (contenidoTieneTilde(formData.contenido)) {
+      await import("sweetalert2").then(({ default: Swal }) =>
+        Swal.fire({
+          icon: "warning",
+          title: "Sílabas con tilde",
+          text: "Las sílabas no pueden contener tildes (acentos). Corrígelas antes de guardar.",
+          confirmButtonText: "Entendido",
+        }),
+      );
+      return;
+    }
+
     try {
-      const dataConvertida = {
-        ...formData,
-        fecha_inicio: new Date(formData.fecha_inicio).toISOString(),
-        fecha_final: new Date(formData.fecha_final).toISOString(),
-      };
-      const res = await api.guardarEjercicio(dataConvertida);
-      await mensaje("Ejercicio creado con exito", res);
+      await api.guardarEjercicio(formData);
+      const { default: Swal } = await import("sweetalert2");
+      await Swal.fire({
+        icon: "success",
+        title: "¡Ejercicio creado!",
+        text: "El ejercicio se guardó correctamente.",
+        timer: 1800,
+        timerProgressBar: true,
+        showConfirmButton: false,
+      });
       onGuardado();
     } catch (error) {
       const { data } = error.response;
@@ -60,6 +101,17 @@ export function actualizar(
   const handleSubmit = async (event) => {
     event.preventDefault();
 
+    if (contenidoTieneTilde(formData.contenido)) {
+      const { default: Swal } = await import("sweetalert2");
+      await Swal.fire({
+        icon: "warning",
+        title: "Sílabas con tilde",
+        text: "Las sílabas no pueden contener tildes (acentos). Corrígelas antes de guardar.",
+        confirmButtonText: "Entendido",
+      });
+      return;
+    }
+
     try {
       const dataActualizar = {
         titulo: formData.titulo,
@@ -69,8 +121,16 @@ export function actualizar(
         contenido: formData.contenido,
       };
 
-      const actualizado = await api.actualizar(id_ejercicio, dataActualizar);
-      await mensaje("Ejercicio editado con exito", actualizado);
+      await api.actualizar(id_ejercicio, dataActualizar);
+      const { default: Swal } = await import("sweetalert2");
+      await Swal.fire({
+        icon: "success",
+        title: "¡Ejercicio actualizado!",
+        text: "Los cambios se guardaron correctamente.",
+        timer: 1800,
+        timerProgressBar: true,
+        showConfirmButton: false,
+      });
       onGuardado();
     } catch (error) {
       const { data } = error.response;
