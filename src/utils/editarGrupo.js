@@ -1,3 +1,4 @@
+import Swal from "sweetalert2";
 import { agregarAlumno, editarGrupo } from "../api/grupo.api";
 import mensaje from "./mensajes";
 
@@ -6,8 +7,15 @@ export function actualizar({ id }, { formData, setMensaje, onGuardado }) {
     event.preventDefault();
 
     try {
-      const respuesta = await editarGrupo(id, formData);
-      await mensaje("Grupo editado con exito", respuesta);
+      await editarGrupo(id, formData);
+      await Swal.fire({
+        icon: "success",
+        title: "¡Grupo actualizado!",
+        text: "Los cambios se guardaron correctamente.",
+        timer: 1800,
+        timerProgressBar: true,
+        showConfirmButton: false,
+      });
       onGuardado();
     } catch (error) {
       const { data } = error.response;

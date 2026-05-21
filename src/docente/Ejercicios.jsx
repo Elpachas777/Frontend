@@ -239,6 +239,7 @@ function Ejercicios() {
         <CrearEjercicio
           onCerrar={() => setMostrarCrear(false)}
           onGuardado={() => {
+            setMostrarCrear(false);
             cargar();
           }}
         />
@@ -251,7 +252,11 @@ function Ejercicios() {
             setMostrarEditar(false);
             setSeleccionada(null);
           }}
-          onGuardado={() => cargar()}
+          onGuardado={() => {
+            setMostrarEditar(false);
+            setSeleccionada(null);
+            cargar();
+          }}
         />
       )}
     </section>

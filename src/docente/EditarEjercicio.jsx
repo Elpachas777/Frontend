@@ -4,6 +4,18 @@ import { USUARIOS } from "../enums/tipoUsuarios";
 import useFormData from "../hooks/useFormData";
 import { actualizar } from "../utils/ejercicio";
 
+function getNowLocal() {
+  const now = new Date();
+  return new Date(now - now.getTimezoneOffset() * 60000).toISOString().slice(0, 16);
+}
+
+function toLocalInput(val) {
+  if (!val) return "";
+  const d = new Date(val);
+  if (isNaN(d)) return "";
+  return new Date(d - d.getTimezoneOffset() * 60000).toISOString().slice(0, 16);
+}
+
 function EditarEjercicio({ ejercicio, onCerrar, onGuardado }) {
   const [errores, setErrores] = useState({});
   const [mensaje, setMensaje] = useState(null);
@@ -49,6 +61,17 @@ function EditarEjercicio({ ejercicio, onCerrar, onGuardado }) {
             <input
               name="titulo"
               value={formData.titulo}
+              onChange={handleChange}
+            />
+          </div>
+
+          <div className="modal-field">
+            <label>Fecha de Entrega</label>
+            <input
+              name="fecha_final"
+              type="datetime-local"
+              value={toLocalInput(formData.fecha_final)}
+              min={toLocalInput(formData.fecha_inicio) || getNowLocal()}
               onChange={handleChange}
             />
           </div>

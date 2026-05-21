@@ -1,3 +1,4 @@
+import Swal from "sweetalert2";
 import { crearGrupo } from "../api/grupo.api";
 import mensaje from "./mensajes";
 
@@ -6,14 +7,21 @@ function crear({ formData, onGuardado }) {
     event.preventDefault();
 
     try {
-      const respuesta = await crearGrupo({
+      await crearGrupo({
         ...formData,
         nombre: String(formData.nombre || "")
           .trim()
           .toUpperCase(),
       });
 
-      await mensaje("¡Grupo creado!", respuesta);
+      await Swal.fire({
+        icon: "success",
+        title: "¡Grupo creado!",
+        text: "El grupo se registró correctamente.",
+        timer: 1800,
+        timerProgressBar: true,
+        showConfirmButton: false,
+      });
       onGuardado();
     } catch (error) {
       const { data } = error.response;
