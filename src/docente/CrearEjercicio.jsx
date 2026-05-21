@@ -8,6 +8,13 @@ import "../RolAdmin/RolAdmin.css";
 import { crear, listarTipos } from "../utils/ejercicio";
 import "./Ejercicios.css";
 
+function getNowLocal() {
+  const now = new Date();
+  return new Date(now - now.getTimezoneOffset() * 60000)
+    .toISOString()
+    .slice(0, 16);
+}
+
 async function confirmarCancelacion(onCerrar) {
   const res = await Swal.fire({
     title: "¿Cancelar?",
@@ -26,9 +33,27 @@ function CrearEjercicio({ onCerrar, onGuardado }) {
   const [errores, setErrores] = useState({});
   const [mensaje, setMensaje] = useState(null);
 
-  const { formData, handleChange, handleObjectChange } = useFormData(
+  const { formData, setFormData, handleChange, handleObjectChange } = useFormData(
     USUARIOS.EJERCICIO,
   );
+
+  const handleTipoChange = async (event) => {
+    const nuevoTipo = event.target.value;
+    if (Object.keys(formData.contenido).length > 0) {
+      const res = await Swal.fire({
+        title: "¿Cambiar tipo de ejercicio?",
+        text: "Se perderá todo el contenido escrito hasta ahora.",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonText: "Sí, cambiar",
+        cancelButtonText: "No, quedarme",
+        reverseButtons: true,
+      });
+      if (!res.isConfirmed) return;
+    }
+    setFormData((prev) => ({ ...prev, id_tipo: nuevoTipo, contenido: {} }));
+  };
+
   const { handleSubmit } = crear({
     formData,
     setErrores,
@@ -76,6 +101,7 @@ function CrearEjercicio({ onCerrar, onGuardado }) {
               name="fecha_inicio"
               type="datetime-local"
               value={formData.fecha_inicio}
+              min={getNowLocal()}
               onChange={handleChange}
             />
           </div>
@@ -86,6 +112,7 @@ function CrearEjercicio({ onCerrar, onGuardado }) {
               name="fecha_final"
               type="datetime-local"
               value={formData.fecha_final}
+              min={formData.fecha_inicio || getNowLocal()}
               onChange={handleChange}
             />
           </div>
@@ -95,7 +122,7 @@ function CrearEjercicio({ onCerrar, onGuardado }) {
             <select
               name="id_tipo"
               value={formData.id_tipo}
-              onChange={handleChange}
+              onChange={handleTipoChange}
             >
               <option value="">Seleccione el tipo de ejercicio</option>
               {tipos.map((tipo) => (

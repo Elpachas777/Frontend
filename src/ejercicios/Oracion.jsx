@@ -51,7 +51,7 @@ function Oracion({ ejercicio, contenido, handleObjectChange }) {
   useEffect(() => {
     if (!contenido) return;
 
-    setTexto(contenido.texto);
+    setTexto(contenido.texto ?? "");
 
     if (contenido.palabras) {
       setPalabrasObj(
@@ -64,6 +64,13 @@ function Oracion({ ejercicio, contenido, handleObjectChange }) {
       );
     }
   }, []);
+
+  useEffect(() => {
+    const currentKeys = new Set(
+      texto.trim().split(/\s+/).map(cleanWord).filter(Boolean)
+    );
+    setPalabrasObj((prev) => prev.filter((p) => currentKeys.has(p.key)));
+  }, [texto]);
 
   useEffect(() => {
     const contenido = {
