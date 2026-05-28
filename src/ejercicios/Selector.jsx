@@ -6,21 +6,6 @@ import "../docente/EjercicioPlayer.css";
 import mensaje from "../utils/mensajes";
 import { dividirCanvas, predecir } from "../utils/modelo";
 
-/**
- * Player para ejercicios de tipo "Palabra revuelta".
- *
- * El alumno ve, para cada palabra:
- *   - Arriba: las sílabas REVUELTAS (mezcladas) como referencia visual.
- *   - Debajo: los canvases en el ORDEN CORRECTO, cada uno etiquetado con
- *             la sílaba que debe trazar.
- *
- * El alumno traza, presiona "Predecir" para ver el porcentaje, y al avanzar
- * a la siguiente palabra (o finalizar) se guarda el intento con un POST al
- * backend, exactamente como en el player de oración.
- */
-
-// Algoritmo Fisher-Yates: revuelve las sílabas asegurando que el orden
-// resultante sea distinto al original (siempre que haya más de una sílaba).
 function revolverSilabas(silabas) {
   if (!silabas || silabas.length <= 1) return [...(silabas || [])];
 
@@ -110,7 +95,8 @@ function EjercicioPalabraPlayer({ ejercicio, idIngreso, onCerrar }) {
 
   const predecirSilaba = (canvas, silaba, indiceSilaba) => {
     if (!modelo) throw new Error("El modelo aún está cargando.");
-    if (!canvas) throw new Error(`No se encontró el canvas de la sílaba ${silaba}.`);
+    if (!canvas)
+      throw new Error(`No se encontró el canvas de la sílaba ${silaba}.`);
     if (!canvasTieneTrazo(canvas)) {
       throw new Error(
         `Dibuja la sílaba ${silaba.toUpperCase()} antes de avanzar.`,
@@ -292,7 +278,9 @@ function EjercicioPalabraPlayer({ ejercicio, idIngreso, onCerrar }) {
             flexWrap: "wrap",
           }}
         >
-          <span style={{ alignSelf: "center", color: "#666", fontSize: "0.9em" }}>
+          <span
+            style={{ alignSelf: "center", color: "#666", fontSize: "0.9em" }}
+          >
             Sílabas revueltas:
           </span>
           {silabasRevueltas.map((sil, i) => (

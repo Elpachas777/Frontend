@@ -20,7 +20,7 @@ function limpiarSilaba(valor) {
 
 function parsearCuento(texto) {
   const segmentos = [];
-  const regex = /_{2,}\(([^)]+)\)/g;
+  const regex = /_{2,}\(([A-Za-z]{2})\)/g;
 
   let ultimoIndice = 0;
   let match;
@@ -73,7 +73,9 @@ function Cuento({ ejercicio, contenido, handleObjectChange }) {
     // Validar si alguna sílaba dentro de paréntesis tiene tilde
     const silabasActuales = silabasEnParentesis(valor);
     if (silabasActuales.some((s) => TILDE_REGEX.test(s))) {
-      setErrorTilde("Las sílabas entre paréntesis no pueden contener tildes (acentos).");
+      setErrorTilde(
+        "Las sílabas entre paréntesis no pueden contener tildes (acentos).",
+      );
     } else {
       setErrorTilde("");
     }
@@ -124,7 +126,7 @@ function Cuento({ ejercicio, contenido, handleObjectChange }) {
         <textarea
           rows={5}
           name="cuento"
-          placeholder='Ej. Fernan____(da), Per____(la) estaban en el par____(que) jugan____(do).'
+          placeholder="Ej. Fernan____(da), Per____(la) estaban en el par____(que) jugan____(do)."
           value={texto}
           onChange={handleTextoChange}
           style={errorTilde ? { borderColor: "#c62828" } : {}}
@@ -141,7 +143,7 @@ function Cuento({ ejercicio, contenido, handleObjectChange }) {
               marginTop: 6,
             }}
           >
-             {errorTilde}
+            {errorTilde}
           </p>
         )}
       </div>

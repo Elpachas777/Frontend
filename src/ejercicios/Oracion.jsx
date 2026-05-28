@@ -21,7 +21,8 @@ function Oracion({ ejercicio, contenido, handleObjectChange }) {
 
   const togglePalabra = (rawWord) => {
     const key = cleanWord(rawWord);
-    if (!key) return;
+    if (!key || key.length < 2) return;
+
     const existe = palabrasObj.find((p) => p.key === key);
     if (existe) {
       setPalabrasObj((prev) => prev.filter((p) => p.key !== key));
@@ -38,11 +39,21 @@ function Oracion({ ejercicio, contenido, handleObjectChange }) {
       setErrorTilde("Las sílabas no pueden contener tildes (acentos).");
       return;
     }
-    setErrorTilde("");
+
     const silabas = valor
       .split("-")
       .map((s) => s.trim())
       .filter(Boolean);
+
+    const silabaInvalida = silabas.some((s) => s.length < 2);
+
+    if (silabaInvalida) {
+      setErrorTilde("Las sílabas deben contener al menos 2 letras.");
+      return;
+    }
+
+    setErrorTilde("");
+
     setPalabrasObj((prev) =>
       prev.map((p) => (p.key === key ? { ...p, silabas } : p)),
     );
@@ -67,7 +78,7 @@ function Oracion({ ejercicio, contenido, handleObjectChange }) {
 
   useEffect(() => {
     const currentKeys = new Set(
-      texto.trim().split(/\s+/).map(cleanWord).filter(Boolean)
+      texto.trim().split(/\s+/).map(cleanWord).filter(Boolean),
     );
     setPalabrasObj((prev) => prev.filter((p) => currentKeys.has(p.key)));
   }, [texto]);
@@ -140,7 +151,7 @@ function Oracion({ ejercicio, contenido, handleObjectChange }) {
                 marginBottom: 10,
               }}
             >
-               {errorTilde}
+              {errorTilde}
             </p>
           )}
           <div className="visualiza-palabras">
