@@ -265,7 +265,6 @@ function EjercicioPlayer({ ejercicio, idIngreso, onCerrar }) {
             {indice + 1} / {total}
           </span>
         </div>
-
         <p className="ep-sentence">{ejercicio.titulo}</p>
         {ejercicio.contenido?.texto && (
           <p className="ep-sentence">{ejercicio.contenido.texto}</p>

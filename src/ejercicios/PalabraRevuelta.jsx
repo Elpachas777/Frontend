@@ -3,6 +3,21 @@ import EjercicioPalabraPlayer from "../alumno/EjercicioPalabraPlayer";
 
 const TILDE_REGEX = /[áéíóúÁÉÍÓÚàèìòùäëïöüâêîôû]/;
 
+function obtenerSilabasValidas(valor) {
+  return valor
+    .split("-")
+    .map((s) => s.trim().toLowerCase())
+    .filter((s) => s.length === 2);
+}
+
+function tieneSilabasInvalidas(valor) {
+  return valor
+    .split("-")
+    .map((s) => s.trim())
+    .filter(Boolean)
+    .some((s) => s.length !== 2);
+}
+
 function PalabraRevuelta({ ejercicio, contenido, handleObjectChange }) {
   const [palabras, setPalabras] = useState([
     { palabra: "", silabasRaw: "" },
@@ -26,14 +41,18 @@ function PalabraRevuelta({ ejercicio, contenido, handleObjectChange }) {
   // Sincronizar con el form padre cuando cambian las palabras
   useEffect(() => {
     const palabrasValidas = palabras
-      .map(({ palabra, silabasRaw }) => ({
-        palabra: palabra.trim().toLowerCase(),
-        silabas: silabasRaw
-          .split("-")
-          .map((s) => s.trim())
-          .filter(Boolean),
-      }))
-      .filter((p) => p.palabra && p.silabas.length > 0);
+      .map(({ palabra, silabasRaw }) => {
+        const palabraLimpia = palabra.trim().toLowerCase();
+        const silabas = obtenerSilabasValidas(silabasRaw);
+
+        return {
+          palabra: palabraLimpia,
+          silabas,
+          tieneInvalidas: tieneSilabasInvalidas(silabasRaw),
+        };
+      })
+      .filter((p) => p.palabra && p.silabas.length > 0 && !p.tieneInvalidas)
+      .map(({ palabra, silabas }) => ({ palabra, silabas }));
 
     handleObjectChange("contenido", {
       tipo: "palabra_revuelta",
@@ -47,15 +66,16 @@ function PalabraRevuelta({ ejercicio, contenido, handleObjectChange }) {
     );
   };
 
-  // IMPORTANTE: guardamos el texto literal que escribe el docente.
-  // Si filtráramos vacíos aquí, no podría escribir "ma-" porque al
-  // teclear el guion el último elemento (vacío tras split) se eliminaría.
   const actualizarSilabasRaw = (i, valor) => {
     if (TILDE_REGEX.test(valor)) {
       setErrorTilde("Las sílabas no pueden contener tildes (acentos).");
       return;
     }
-    setErrorTilde("");
+    setErrorTilde(
+      tieneSilabasInvalidas(valor)
+        ? "Las sílabas deben tener exactamente 2 letras. No se aceptan sílabas de 1 letra ni de más de 2 letras."
+        : "",
+    );
     setPalabras((prev) =>
       prev.map((p, idx) => (idx === i ? { ...p, silabasRaw: valor } : p)),
     );
@@ -70,18 +90,20 @@ function PalabraRevuelta({ ejercicio, contenido, handleObjectChange }) {
     setPalabras((prev) => prev.filter((_, idx) => idx !== i));
   };
 
-  // Si el docente quiere previsualizar, renderizamos el mismo player que
-  // verá el alumno, con el contenido que está editando.
   if (previewing) {
     const palabrasParaPreview = palabras
-      .map(({ palabra, silabasRaw }) => ({
-        palabra: palabra.trim().toLowerCase(),
-        silabas: silabasRaw
-          .split("-")
-          .map((s) => s.trim())
-          .filter(Boolean),
-      }))
-      .filter((p) => p.palabra && p.silabas.length > 0);
+      .map(({ palabra, silabasRaw }) => {
+        const palabraLimpia = palabra.trim().toLowerCase();
+        const silabas = obtenerSilabasValidas(silabasRaw);
+
+        return {
+          palabra: palabraLimpia,
+          silabas,
+          tieneInvalidas: tieneSilabasInvalidas(silabasRaw),
+        };
+      })
+      .filter((p) => p.palabra && p.silabas.length > 0 && !p.tieneInvalidas)
+      .map(({ palabra, silabas }) => ({ palabra, silabas }));
 
     const ejercicioPreview = {
       ...(ejercicio || {}),
@@ -104,10 +126,7 @@ function PalabraRevuelta({ ejercicio, contenido, handleObjectChange }) {
 
   // Helper visual para mostrar las sílabas ya divididas
   const silabasDivididas = (raw) =>
-    raw
-      .split("-")
-      .map((s) => s.trim())
-      .filter(Boolean);
+    obtenerSilabasValidas(raw);
 
   return (
     <>

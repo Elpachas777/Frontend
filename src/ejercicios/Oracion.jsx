@@ -11,6 +11,21 @@ function tieneTilde(valor) {
   return TILDE_REGEX.test(valor);
 }
 
+function obtenerSilabasValidas(valor) {
+  return valor
+    .split("-")
+    .map((s) => s.trim().toLowerCase())
+    .filter((s) => s.length === 2);
+}
+
+function tieneSilabasInvalidas(valor) {
+  return valor
+    .split("-")
+    .map((s) => s.trim())
+    .filter(Boolean)
+    .some((s) => s.length !== 2);
+}
+
 function Oracion({ ejercicio, contenido, handleObjectChange }) {
   const [texto, setTexto] = useState("");
   const [palabrasObj, setPalabrasObj] = useState([]);
@@ -27,9 +42,16 @@ function Oracion({ ejercicio, contenido, handleObjectChange }) {
     if (existe) {
       setPalabrasObj((prev) => prev.filter((p) => p.key !== key));
     } else {
+      const silabasIniciales = key.length === 2 ? [key] : [];
       setPalabrasObj((prev) => [
         ...prev,
-        { key, palabra: key, silabas: [key], raw: rawWord },
+        {
+          key,
+          palabra: key,
+          silabas: silabasIniciales,
+          silabasRaw: silabasIniciales.join("-"),
+          raw: rawWord,
+        },
       ]);
     }
   };
@@ -40,22 +62,18 @@ function Oracion({ ejercicio, contenido, handleObjectChange }) {
       return;
     }
 
-    const silabas = valor
-      .split("-")
-      .map((s) => s.trim())
-      .filter(Boolean);
+    const silabas = obtenerSilabasValidas(valor);
 
-    const silabaInvalida = silabas.some((s) => s.length < 2);
-
-    if (silabaInvalida) {
-      setErrorTilde("Las sílabas deben contener al menos 2 letras.");
-      return;
-    }
-
-    setErrorTilde("");
+    setErrorTilde(
+      tieneSilabasInvalidas(valor)
+        ? "Las sílabas deben tener exactamente 2 letras. No se aceptan sílabas de 1 letra ni de más de 2 letras."
+        : "",
+    );
 
     setPalabrasObj((prev) =>
-      prev.map((p) => (p.key === key ? { ...p, silabas } : p)),
+      prev.map((p) =>
+        p.key === key ? { ...p, silabasRaw: valor, silabas } : p,
+      ),
     );
   };
 
@@ -66,12 +84,19 @@ function Oracion({ ejercicio, contenido, handleObjectChange }) {
 
     if (contenido.palabras) {
       setPalabrasObj(
-        contenido.palabras.map((p) => ({
-          key: p.palabra,
-          palabra: p.palabra,
-          silabas: p.silabas || [p.palabra],
-          raw: p.palabra,
-        })),
+        contenido.palabras.map((p) => {
+          const silabasRaw = (p.silabas || [])
+            .filter((s) => s.length === 2)
+            .join("-");
+
+          return {
+            key: p.palabra,
+            palabra: p.palabra,
+            silabas: obtenerSilabasValidas(silabasRaw),
+            silabasRaw,
+            raw: p.palabra,
+          };
+        }),
       );
     }
   }, []);
@@ -86,10 +111,15 @@ function Oracion({ ejercicio, contenido, handleObjectChange }) {
   useEffect(() => {
     const contenido = {
       texto,
-      palabras: palabrasObj.map(({ palabra, silabas }) => ({
-        palabra,
-        silabas,
-      })),
+      palabras: palabrasObj
+        .filter(
+          ({ silabasRaw }) =>
+            silabasRaw && !tieneSilabasInvalidas(silabasRaw),
+        )
+        .map(({ palabra, silabas }) => ({
+          palabra,
+          silabas,
+        })),
     };
 
     handleObjectChange("contenido", contenido);
@@ -159,12 +189,12 @@ function Oracion({ ejercicio, contenido, handleObjectChange }) {
               <div className="palabra" key={p.key}>
                 <span>{p.palabra}</span>
                 <input
-                  value={p.silabas.join("-")}
+                  value={p.silabasRaw ?? ""}
                   onChange={(e) => updateSilabas(p.key, e.target.value)}
                   style={errorTilde ? { borderColor: "#c62828" } : {}}
                 />
                 <span className="palabra-separada">
-                  → {p.silabas.join(" · ")}
+                  → {p.silabas.length > 0 ? p.silabas.join(" · ") : "—"}
                 </span>
               </div>
             ))}
