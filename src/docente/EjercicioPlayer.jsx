@@ -38,10 +38,6 @@ function EjercicioPlayer({ ejercicio, idIngreso, onCerrar }) {
     cargarModelo();
   }, []);
 
-  useEffect(() => {
-    canvaRef.current = [];
-  }, [indice]);
-
   const crearClave = (indicePalabra, indiceSilaba, silaba) => {
     return `${indicePalabra}-${indiceSilaba}-${silaba}`;
   };
@@ -254,7 +250,7 @@ function EjercicioPlayer({ ejercicio, idIngreso, onCerrar }) {
       }}
     >
       <div className="ep-card">
-        <button className="ep-close" onClick={onCerrar} aria-label="Cerrar">
+        <button className="ep-close" onClick={onCerrar}>
           ✕
         </button>
 
