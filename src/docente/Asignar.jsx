@@ -71,6 +71,17 @@ function Asignar() {
 
     if (!confirm.isConfirmed) return;
 
+    if (estadisticasMap.get(Number(grupo.id)).total_alumnos < 1) {
+      await Swal.fire({
+        icon: "error",
+        title: "¡El grupo no tiene alumnos!",
+        html: `"El grupo <strong>${grupo.nombre}</strong> cuenta con <strong>0</strong> alumnos.`,
+        timer: 1800,
+        showConfirmButton: false,
+      });
+      return;
+    }
+
     await utilsEjercicios.asignarEjercicio(ejercicioActual, grupo);
 
     await cargar();

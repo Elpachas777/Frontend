@@ -7,13 +7,19 @@ const GOOGLE_MAPS_REGEX =
 
 function validar(formData) {
   const e = {};
+  const regex = /^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+$/;
+
   if (!formData.nombre) e.nombre = "El nombre es obligatorio.";
+  else if (!regex.test(formData.nombre))
+    e.nombre = "El nombre cuenta con caracteres invalidos";
   if (!formData.ubicacion) {
     e.ubicacion = "La URL de Google Maps es obligatoria.";
   } else if (!GOOGLE_MAPS_REGEX.test(formData.ubicacion)) {
     e.ubicacion = "Ingresa una URL válida de Google Maps (google.com/maps).";
   }
   if (!formData.director) e.director = "El director a cargo es obligatorio.";
+  else if (!regex.test(formData.director))
+    e.director = "El nombre del director cuenta con caracteres invalidos";
   if (!formData.contacto) {
     e.contacto = "El número de contacto es obligatorio.";
   } else if (!PHONE_REGEX.test(formData.contacto)) {

@@ -34,7 +34,7 @@ function EditarAlumno({ alumno, onCerrar, onGuardado }) {
   });
 
   return (
-    <div className="modal-overlay" onClick={onCerrar}>
+    <div className="modal-overlay">
       <div
         className="modal-card modal-card--wide"
         onClick={(e) => e.stopPropagation()}

@@ -19,7 +19,10 @@ function contenidoTieneTilde(contenido) {
   // Oracion y PalabraRevuelta: array de palabras con silabas[]
   if (Array.isArray(contenido.palabras)) {
     for (const p of contenido.palabras) {
-      if (Array.isArray(p.silabas) && p.silabas.some((s) => TILDE_REGEX.test(s)))
+      if (
+        Array.isArray(p.silabas) &&
+        p.silabas.some((s) => TILDE_REGEX.test(s))
+      )
         return true;
     }
   }
@@ -146,15 +149,9 @@ export function actualizar(
 export async function asignarEjercicio({ id_ejercicio }, { id }) {
   try {
     const data = { id };
-
     await api.asignarEjercicio(id_ejercicio, data);
   } catch (error) {
-    console.log(
-      error?.response?.data || {
-        tipo: "error",
-        mensaje: "No se pudo asignar el ejercicio",
-      },
-    );
+    mensaje("No se pudo asignar el ejercicio", error.response.data);
   }
 }
 

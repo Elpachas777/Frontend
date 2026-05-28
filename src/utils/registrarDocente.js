@@ -6,8 +6,16 @@ const PASSWORD_REGEX =
 
 function validar(formData) {
   const e = {};
+  const regex = /^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+$/;
+
   if (!formData.nombres) e.nombre = "El nombre es obligatorio.";
+  else if (!regex.test(formData.nombres))
+    e.nombre = "El nombre cuenta con caracteres invalidos";
+
   if (!formData.apellidos) e.apellidos = "Los apellidos son obligatorios.";
+  else if (!regex.test(formData.apellidos))
+    e.apellidos = "Los apellidos cuentan con caracteres invalidos";
+
   if (!formData.escuela) e.escuela = "Selecciona una escuela.";
   if (!formData.correo) e.correo = "El correo es obligatorio.";
   if (!formData.password) {
